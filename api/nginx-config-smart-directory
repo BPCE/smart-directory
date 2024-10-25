@@ -1,0 +1,8 @@
+server {
+
+            server_name smart-directory.qaxh.io;  
+            location /smart-directory/ {
+                    proxy_pass http://localhost:6020; 
+        }   
+    
+}

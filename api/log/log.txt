@@ -1,0 +1,26 @@
+flask version: 3.0.3 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/flask/__init__.py
+web3.py version: 7.4.0 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/web3/__init__.py
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:6020
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+flask version: 3.0.3 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/flask/__init__.py
+web3.py version: 7.4.0 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/web3/__init__.py
+ * Debugger is active!
+ * Debugger PIN: 530-546-216
+127.0.0.1 - - [25/Oct/2024 17:54:04] "GET /smart-directory/ping HTTP/1.0" 200 -
+flask version: 3.0.3 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/flask/__init__.py
+web3.py version: 7.4.0 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/web3/__init__.py
+flask version: 3.0.3 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/flask/__init__.py
+web3.py version: 7.4.0 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/web3/__init__.py
+flask version: 3.0.3 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/flask/__init__.py
+web3.py version: 7.4.0 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/web3/__init__.py
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:6020
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+flask version: 3.0.3 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/flask/__init__.py
+web3.py version: 7.4.0 from: /var/www/smart-directory/api/venv/lib/python3.12/site-packages/web3/__init__.py
+ * Debugger is active!
+ * Debugger PIN: 530-546-216
+127.0.0.1 - - [25/Oct/2024 18:00:52] "GET /smart-directory/ping HTTP/1.0" 200 -
