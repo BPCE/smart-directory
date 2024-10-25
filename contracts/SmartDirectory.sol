@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.17;
 
-contract SmartDirectory {
+contract SmartDirectoryLib {
 
     string private constant VERSION = "SmartDirectory 1.0";
 
@@ -33,8 +33,7 @@ contract SmartDirectory {
     //EVENTS
 
     event SmartDirectoryInitialized (
-        address indexed parent1,
-        address indexed parent2
+        address indexed parent1
     );
 
     event NewRegistrant (
@@ -74,18 +73,20 @@ contract SmartDirectory {
         string _referenceType, string _referenceVersion, uint8 _status, string _registrantUri) public returns (bool) {
 
         require (_referenceAddress != address(0x0), "address null");
-        require (!isDeclaredReference(self, _referenceAddress), "already registered");
-        require (!isDeclaredRegistrant(self, msg.sender), "already registered");
+        require (!isDeclaredReference(_referenceAddress), "already registered");
+        require (!isDeclaredRegistrant(msg.sender), "already registered");
 
-        self.referenceData[_referenceAddress].registrantAddress = msg.sender;
-        self.referenceData[_referenceAddress].referenceAddress = _referenceAddress;
-        self.referenceData[_referenceAddress].projectID = _projectID;
-        self.referenceData[_referenceAddress].referenceType = _referenceType;
-        self.referenceData[_referenceAddress].referenceVersion = _referenceVersion;
-        self.referenceData[_referenceAddress].referenceStatus.status = _status;
-        self.referenceData[_referenceAddress].referenceStatus.timeStamp = block.timestamp;
 
-        self.registrants.push = msg.sender;
+        Reference storage ref = self.referenceData[_referenceAddress];
+        ref.registrantAddress = msg.sender;
+        ref.referenceAddress = _referenceAddress;
+        ref.projectID = _projectID;
+        ref.referenceType = _referenceType;
+        ref.referenceVersion = _referenceVersion;
+        ref.referenceStatus.push(ReferenceStatus(_status, block.timestamp));
+
+        self.references.push(_referenceAddress);
+        self.registrants.push(msg.sender);
         self.registrantUris[msg.sender] = _registrantUri;
 
         emit NewReference(msg.sender, _referenceAddress, _projectID);
@@ -94,21 +95,20 @@ contract SmartDirectory {
     }
 
     //smartDirectoryReferenceStatusEoaUpdate
-    function updateReferenceStatus (SmartDirectoryStorage storage self, address _referenceAddress, string projectID,
-        uint8 _status) public override returns (bool) {
+    function updateReferenceStatus (SmartDirectoryStorage storage self, address _referenceAddress,
+        uint8 _status) public returns (bool) {
 
-        require (isDeclaredReference(_referenceAddress) != false , "undeclared contract");
+        require (isDeclaredReference(_referenceAddress), "undeclared contract");
 
-        self.referenceData[_referenceAddress].referenceStatus.status = _status;
-        self.referenceData[_referenceAddress].referenceStatus.timestamp = block.timestamp;
+        self.referenceData[_referenceAddress].referenceStatus.push(ReferenceStatus(_status, block.timestamp));
 
         return true;
     }
 
     //smartDirectoryRegistrantUriEoaWrite
-    function updateRegistrantUri (SmartDirectoryStorage storage self, string _registrantUri) public override returns (bool) {
+    function updateRegistrantUri (SmartDirectoryStorage storage self, string _registrantUri) public returns (bool) {
 
-        require (isDeclaredRegistrant(msg.sender) != false, "unknown registrant");
+        require (isDeclaredRegistrant(msg.sender), "unknown registrant");
 
         self.registrantUris[msg.sender] = _registrantUri;
 
@@ -140,8 +140,7 @@ contract SmartDirectory {
     }
 
     function generateReferenceHash (SmartDirectoryStorage storage self, address _referenceAddress, string _projectId) internal returns(bytes32) {
-        keccak256();
-        return;
+        return keccak256(abi.encodePacked(-_referenceAddress, -_projectId));
     }
 
     //SMART DIRECTORY GETTERS
