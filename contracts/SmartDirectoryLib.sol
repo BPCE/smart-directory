@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.17;
 
-contract SmartDirectoryLib {
+library SmartDirectoryLib {
 
     string private constant VERSION = "SmartDirectory 1.0";
 
@@ -55,18 +55,6 @@ contract SmartDirectoryLib {
     }
     */
     //SMART DIRECTORY FUNCTIONS
-    /*
-    //smartDirectoryRegistrantEoaAdd
-    function addRegistrant (SmartDirectoryStorage storage self, string _registrantUri) public returns (bool) {
-        require (isDeclaredRegistrant(msg.sender) != true, "already registered");
-
-        self.registrants.push = msg.sender;
-        self.registrantUris[msg.sender] = _registrantUri;
-
-        emit NewRegistrant(msg.sender, _registrantUri);
-        return true;
-    }
-    */
 
     //smartDirectoryReferenceEoaCreate
     function addReference (SmartDirectoryStorage storage self, address _referenceAddress, string _projectID,
@@ -86,6 +74,7 @@ contract SmartDirectoryLib {
         ref.referenceStatus.push(ReferenceStatus(_status, block.timestamp));
 
         self.references.push(_referenceAddress);
+
         self.registrants.push(msg.sender);
         self.registrantUris[msg.sender] = _registrantUri;
 
@@ -152,10 +141,12 @@ contract SmartDirectoryLib {
     }
 
     //smartDirectoryReferencesCount
-    function getReferencesCount (SmartDirectoryStorage storage self, address _registrantAddress) public view returns (uint256) {
+    function getRegistrantReferencesCount (SmartDirectoryStorage storage self, address _registrantAddress) public view returns (uint256) {
         uint256 count = 0;
         for (uint256 i = 0; i < self.references.length; i++) {
-            count++;
+            if(self.referenceData[self.references[i]].registrantAddress == _registrantAddress) {
+                count++;
+            }
         }
         return count;
     }
@@ -180,12 +171,12 @@ contract SmartDirectoryLib {
 
     //smartDirectoryRegistrantLastIndexGet
     function getRegistrantLastIndex (SmartDirectoryStorage storage self) external view returns(uint256) {
-        return self.registrants.length;
+        return self.registrants.length-1;
     }
 
     //smartDirectoryRegistrantUriGet
     function getRegistrantUri (SmartDirectoryStorage storage self, address _registrantAddress) external view returns(string memory) {
-        return self.registrants[_registrantAddress].registrantUri;
+        return self.registrantUris[_registrantAddress];
     }
 
 }
