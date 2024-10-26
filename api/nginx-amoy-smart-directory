@@ -1,0 +1,7 @@
+# caution, this wile is referenced by the live system config
+# /etc/nginx/sites-enabled/nginx-config-xxx
+
+   location /smart-directory/ {
+        proxy_read_timeout 600;
+        proxy_pass http://localhost:6020;
+    }

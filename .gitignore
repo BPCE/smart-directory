@@ -28,3 +28,5 @@ __pycache__/
 test_uSafe.py
 fhe_pk.bin
 zero_value.bin
+custom_variables.py
+venv
