@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: UNLICENSED
+//SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.17;
 
@@ -106,7 +106,7 @@ library SmartDirectoryLib {
 
     //SMART DIRECTORY ADMINISTRATION FUNCTIONS
 
-    function version() public pure override returns(string memory) {
+    function version() public pure returns(string memory) {
         return VERSION;
     }
 
@@ -119,7 +119,9 @@ library SmartDirectoryLib {
         return false;
     }
 
-    function isDeclaredReference (SmartDirectoryStorage storage self, address _referenceAddress) internal view returns (bool){
+    function isDeclaredReference (SmartDirectoryStorage storage self, address _referenceAddress) internal view returns
+    (bool){
+
         for (uint256 i = 0; i < self.references.length; i++) {
             if (self.references[i] == _referenceAddress) {
                 return true;
@@ -128,20 +130,45 @@ library SmartDirectoryLib {
         return false;
     }
 
-    function generateReferenceHash (SmartDirectoryStorage storage self, address _referenceAddress, string _projectId) internal returns(bytes32) {
-        return keccak256(abi.encodePacked(-_referenceAddress, -_projectId));
+    function generateReferenceHash (SmartDirectoryStorage storage self, address _referenceAddress, string _projectId)
+    internal returns(bytes32) {
+
+        return keccak256(abi.encodePacked(_referenceAddress, -_projectId));
     }
 
     //SMART DIRECTORY GETTERS
 
     //smartDirectoryReferenceGet
-    function getReference (SmartDirectoryStorage storage self, address _referenceAddress) public view returns(address memory referenceAddress,
-        string memory projectID) {
-        return;
+    function getReference (SmartDirectoryStorage storage self, address _referenceAddress) public view returns(
+        address memory registrantAddress,
+        address memory referenceAddress,
+        string memory projectID,
+        bytes32 memory referenceHash,
+        string memory referenceType,
+        string memory referenceVersion,
+        uint8 status,
+        uint256 timeStamp) {
+
+        Reference storage ref = self.referenceData[_referenceAddress];
+
+        (uint8 latestStatus, uint256 latestTimeStamp) = getReferenceLastStatus(ref.referenceStatus);
+
+        return (
+            ref.registrantAddress,
+            ref.referenceAddress,
+            ref.projectID,
+            ref.referenceHash,
+            ref.referenceType,
+            ref.referenceVersion,
+            latestStatus,
+            latestTimeStamp
+        );
     }
 
     //smartDirectoryReferencesCount
-    function getRegistrantReferencesCount (SmartDirectoryStorage storage self, address _registrantAddress) public view returns (uint256) {
+    function getRegistrantReferencesCount (SmartDirectoryStorage storage self, address _registrantAddress) public view
+    returns (uint256) {
+
         uint256 count = 0;
         for (uint256 i = 0; i < self.references.length; i++) {
             if(self.referenceData[self.references[i]].registrantAddress == _registrantAddress) {
@@ -152,9 +179,16 @@ library SmartDirectoryLib {
     }
 
     //smartDirectoryReferenceStatusGet
-    function getReferenceStatus (address _referenceAddress, uint256 _statusIndex) public view returns (uint256) {
-        return;
+    function getReferenceLastStatus (ReferenceStatus [] storage statuses) internal view returns (uint8 status, uint256 timeStamp) {
+        if (statuses.length > 0) {
+            ReferenceStatus storage lastStatus = statuses[statuses.length - 1];
+            return (lastStatus.status, lastStatus.timeStamp);
+        } else {
+            return (0,0);
+        }
     }
+
+    //reprendre ici avec function getReferenceStatus () {}
 
     //smartDirectoryReferencesListsGet
     function getReferencesLists (address _registrantAddress) public view returns (
@@ -175,7 +209,9 @@ library SmartDirectoryLib {
     }
 
     //smartDirectoryRegistrantUriGet
-    function getRegistrantUri (SmartDirectoryStorage storage self, address _registrantAddress) external view returns(string memory) {
+    function getRegistrantUri (SmartDirectoryStorage storage self, address _registrantAddress) external view returns
+    (string memory) {
+
         return self.registrantUris[_registrantAddress];
     }
 
