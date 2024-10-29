@@ -200,7 +200,7 @@ library SmartDirectoryLib {
 
     //smartDirectoryReferencesListsGet
     function getReferencesLists (SmartDirectoryStorage storage self, address _registrantAddress) public view
-    returns(address[] memory referenceAddress, string[] memory projectId) {
+    returns(address[] memory referenceAddresses, string[] memory projectIDs) {
 
         uint256 count = getRegistrantReferencesCount(self, _registrantAddress);
         address[] memory references = new address[](count);
@@ -261,7 +261,7 @@ library SmartDirectoryLib {
         return VERSION;
     }
 
-    function isParent(SmartDirectoryStorage storage self, address _from) public view returns (bool) {
+    function isParent(SmartDirectoryStorage storage self, address _from) internal view returns (bool) {
         return _from == self.parents[0] || _from == self.parents[1];
     }
 
@@ -317,7 +317,7 @@ library SmartDirectoryLib {
     }
 
     //smartDirectoryHeadersGet (smartDirectoryAddress)
-    function getSmartDirectoryHeaders (SmartDirectoryStorage storage self) public view returns(
+    function getSmartDirectoryHeaders (SmartDirectoryStorage storage self) internal view returns(
         address parent1,
         address parent2,
         uint8 contractVersion,
