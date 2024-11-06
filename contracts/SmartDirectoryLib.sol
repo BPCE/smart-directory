@@ -73,8 +73,12 @@ library SmartDirectoryLib {
     );
 
     event NewRegistrant (
+        address indexed registrant
+    );
+
+    event NewRegistrantUri (
         address indexed registrant,
-        string registrantUri
+        string indexed registrantUri
     );
 
     //CONSTRUCTOR
@@ -105,7 +109,7 @@ library SmartDirectoryLib {
     //REFERENCES
     //smartDirectoryReferenceEoaCreate
     function addReference (SmartDirectoryStorage storage self, address _referenceAddress, string memory _projectId,
-        string memory _referenceType, string memory _referenceVersion, uint8 _status, string memory _registrantUri)
+        string memory _referenceType, string memory _referenceVersion, uint8 _status)
     public returns (bool) {
 
         require (_referenceAddress != address(0x0), "address null");
@@ -124,10 +128,9 @@ library SmartDirectoryLib {
         self.references.push(_referenceAddress);
 
         self.registrants.push(msg.sender);
-        self.registrantUris[msg.sender] = _registrantUri;
 
         emit NewReference(msg.sender, _referenceAddress, _projectId);
-        emit NewRegistrant(msg.sender, _registrantUri);
+        emit NewRegistrant(msg.sender);
         return true;
     }
 
@@ -153,6 +156,7 @@ library SmartDirectoryLib {
         require (isDeclaredRegistrant(self, msg.sender), "unknown registrant");
 
         self.registrantUris[msg.sender] = _registrantUri;
+        emit NewRegistrantUri(msg.sender, _registrantUri);
 
         return true;
     }
