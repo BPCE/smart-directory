@@ -77,6 +77,10 @@ contract SmartDirectory {
         return smartDirectoryStorage.getReferenceStatus(_referenceAddress, _index);
     }
 
+    function getReferenceLastStatusIndex (address _referenceAddress) external view returns(uint256 lastStatusIndex) {
+        return smartDirectoryStorage.getReferenceLastStatusIndex(_referenceAddress);
+    }
+
     //smartDirectoryReferencesListsGet
     function getReferencesLists(address _registrantAddress) public view returns (address[] memory referenceAddresses,
         string[] memory projectIds) {
