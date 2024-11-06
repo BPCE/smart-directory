@@ -298,14 +298,19 @@ library SmartDirectoryLib {
     }*/
 
     function getReferenceLastStatus (ReferenceStatus[] storage statuses) internal view
-    returns(uint8 status, uint256 timeStamp) {
+        returns(uint8 status, uint256 timeStamp) {
 
-        if (statuses.length > 0) {
-            ReferenceStatus storage lastStatus = statuses[statuses.length - 1];
-            return (lastStatus.status, lastStatus.timeStamp);
-        } else {
-            return (0,0);
-        }
+            if (statuses.length > 0) {
+                ReferenceStatus storage lastStatus = statuses[statuses.length - 1];
+                return (lastStatus.status, lastStatus.timeStamp);
+            } else {
+                return (0,0);
+            }
+    }
+
+    function getReferenceLastStatusIndex (SmartDirectoryStorage storage self, address _referenceAddress) external view
+    returns(uint256) {
+        return self.referenceData[_referenceAddress].referenceStatus.length-1;
     }
 
     //smartDirectoryActivationCodeEoaUpdate
