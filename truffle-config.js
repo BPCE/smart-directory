@@ -96,7 +96,7 @@ module.exports = {
       maxFeePerGas: 1500000100 // must add twice the base fee
     },
     zamadev: {
-      network_id: 8009,
+      network_id: 9000,
       networkCheckTimeout: 1200000,
       deploymentPollingInterval: 1000,
       provider: () => {
@@ -129,12 +129,13 @@ module.exports = {
           providerOrUrl: process.env.RPC_AMOY_PROVIDER
         })
       },
-	SkipDryRun: true,
-      gas:10000000,
-      timeoutBlocks: 200,
+      SkipDryRun: true,
+      //gas:10000000,
+      //gasPrice: 35000000000,
       // check here: https://gas-station.qaxh.io/testnet-polygon
-      maxPriorityFeePerGas: 17000000000,
-      maxFeePerGas: 19000000000 // must add twice the base fee
+      maxPriorityFeePerGas: 25000000000,
+      maxFeePerGas: 25000000030, // must add twice the base fee
+      timeoutBlocks: 200,
     },
     mumbai_local_rpc: {
       network_id: 80001,
