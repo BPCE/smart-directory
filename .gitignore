@@ -30,3 +30,6 @@ fhe_pk.bin
 zero_value.bin
 custom_variables.py
 venv
+.idea
+qodana.yaml
+Writerside
