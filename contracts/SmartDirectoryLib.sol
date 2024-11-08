@@ -137,7 +137,7 @@ library SmartDirectoryLib {
 
     //smartDirectoryReferenceStatusEoaUpdate
     function updateReferenceStatus (SmartDirectoryStorage storage self, address _referenceAddress,
-        uint8 _status) public returns (bool) {
+        uint8 _status) public {
 
         require (isDeclaredReference(self,_referenceAddress), "undeclared contract");
         require (isDeclaredRegistrant(self, msg.sender), "undeclared registrant");
@@ -146,7 +146,7 @@ library SmartDirectoryLib {
             block.timestamp));
 
         emit ReferenceStatusUpdate(msg.sender, _referenceAddress, _status);
-        return true;
+
     }
 
     //REGISTRANTS
