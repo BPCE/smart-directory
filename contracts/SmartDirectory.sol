@@ -17,8 +17,8 @@ contract SmartDirectory {
         uint8 _contractVersion,
         uint8 _contractType,
         string memory _contractUri,
-        uint8 _mintCode
-    ) {
+        uint8 _mintCode) {
+
         smartDirectoryStorage.init(
             _parent1,
             _parent2,
@@ -53,6 +53,10 @@ contract SmartDirectory {
     //smartDirectoryRegistrantUriEoaWrite
     function updateRegistrantUri(string memory _registrantUri) public returns (bool) {
         return smartDirectoryStorage.updateRegistrantUri(_registrantUri);
+    }
+
+    function createRegistrant (address _registrantAddress) public returns (bool) {
+        return smartDirectoryStorage.createRegistrant(_registrantAddress);
     }
 
     //SMART DIRECTORY GETTERS
@@ -114,8 +118,14 @@ contract SmartDirectory {
     }
 
     //smartDirectoryActivationCodeEoaUpdate
-    function setSmartDirectoryActivation(SmartDirectoryLib.ActivationCode _code) public {
-        smartDirectoryStorage.setSmartDirectoryActivation(_code);
+    function setSmartDirectoryActivationCode(SmartDirectoryLib.ActivationCode _activationCode) public {
+        smartDirectoryStorage.setSmartDirectoryActivationCode(_activationCode);
+    }
+
+    function getMintCode(SmartDirectoryLib.SmartDirectoryStorage storage self) internal view returns(
+        SmartDirectoryLib.MintCode mintCode) {
+
+        return self.getMintCode();
     }
 
     //smartDirectoryHeadersGet (smartDirectoryAddress)
