@@ -45,8 +45,8 @@ contract SmartDirectory {
     }
 
     //smartDirectoryReferenceStatusEoaUpdate
-    function updateReferenceStatus(address _referenceAddress, uint8 _status) public returns (bool) {
-        return smartDirectoryStorage.updateReferenceStatus(_referenceAddress, _status);
+    function updateReferenceStatus(address _referenceAddress, uint8 _status) public {
+        smartDirectoryStorage.updateReferenceStatus(_referenceAddress, _status);
     }
 
     //REGISTRANTS
