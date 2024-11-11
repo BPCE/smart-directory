@@ -28,9 +28,10 @@ contract SmartDirectory {
             _mintCode);
     }
 
-    //SMART DIRECTORY SETTERS
+    //REFERENCES MANAGEMENT
 
-    //REFERENCES
+        //SETTERS
+
     //smartDirectoryReferenceEoaCreate
     function createReference (address _referenceAddress, string memory _projectId, string memory _referenceType,
         string memory _referenceVersion, uint8 _status) public returns (bool) {
@@ -50,19 +51,8 @@ contract SmartDirectory {
         smartDirectoryStorage.updateReferenceStatus(_referenceAddress, _status);
     }
 
-    //REGISTRANTS
-    //smartDirectoryRegistrantUriEoaWrite
-    function updateRegistrantUri(string memory _registrantUri) public returns (bool) {
-        return smartDirectoryStorage.updateRegistrantUri(_registrantUri);
-    }
+        //GETTERS
 
-    function createRegistrant (address _registrantAddress) public returns (bool) {
-        return smartDirectoryStorage.createRegistrant(_registrantAddress);
-    }
-
-    //SMART DIRECTORY GETTERS
-
-    //REFERENCES
     //smartDirectoryReferenceGet
     function getReference(address _referenceAddress) public view returns (
         address registrantAddress,
@@ -92,20 +82,24 @@ contract SmartDirectory {
         return smartDirectoryStorage.getReferencesLists(_registrantAddress);
     }
 
-    //smartDirectoryReferencesCount
-    function getRegistrantReferencesCount(address _registrantAddress) public view returns (uint256) {
-        return smartDirectoryStorage.getRegistrantReferencesCount(_registrantAddress);
+    //REGISTRANTS MANAGEMENT
+
+        //SETTERS
+
+    function createRegistrant (address _registrantAddress) public returns (bool) {
+        return smartDirectoryStorage.createRegistrant(_registrantAddress);
     }
 
-    //REGISTRANTS
+    //smartDirectoryRegistrantUriEoaWrite
+    function updateRegistrantUri(string memory _registrantUri) public returns (bool) {
+        return smartDirectoryStorage.updateRegistrantUri(_registrantUri);
+    }
+
+        //GETTERS
+
     //smartDirectoryRegistrantUriGet
     function getRegistrantUri(address _registrantAddress) public view returns (string memory) {
         return smartDirectoryStorage.getRegistrantUri(_registrantAddress);
-    }
-
-    //smartDirectoryRegistrantLastIndexGet
-    function getRegistrantLastIndex() public view returns (uint256) {
-        return smartDirectoryStorage.getRegistrantLastIndex();
     }
 
     //smartDirectoryRegistrantIndexGet
@@ -113,7 +107,18 @@ contract SmartDirectory {
         return smartDirectoryStorage.getRegistrantIndex(_registrantAddress);
     }
 
-    //SMART DIRECTORY INTERNAL FUNCTIONS
+    //smartDirectoryRegistrantLastIndexGet
+    function getRegistrantLastIndex() public view returns (uint256) {
+        return smartDirectoryStorage.getRegistrantLastIndex();
+    }
+
+    //smartDirectoryReferencesCount
+    function getRegistrantReferencesCount(address _registrantAddress) public view returns (uint256) {
+        return smartDirectoryStorage.getRegistrantReferencesCount(_registrantAddress);
+    }
+
+    //SMART DIRECTORY UTILITY FUNCTIONS
+
     function version() public pure returns (string memory) {
         return SmartDirectoryLib.version();
     }
