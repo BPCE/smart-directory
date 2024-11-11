@@ -108,14 +108,47 @@ library SmartDirectoryLib {
     //REFERENCES
 
     //smartDirectoryReferenceEoaCreate
-    function addReference (SmartDirectoryStorage storage self, address _referenceAddress, string memory _projectId,
+
+    function createReference (SmartDirectoryStorage storage self, address _referenceAddress, string memory _projectId,
         string memory _referenceType, string memory _referenceVersion, uint8 _status)
     public returns (bool) {
 
-        require (_referenceAddress != address(0x0), "address null");
-        require (!isDeclaredReference(self, _referenceAddress), "already registered");
+        if (getMintCode(self) == MintCode.parentsAuthorized) {
+
+            require (isDeclaredRegistrant(self, msg.sender));
+            addReference(self, _referenceAddress, _projectId, _referenceType,
+                _referenceVersion, _status);
+
+        } else if (getMintCode(self) == MintCode.selfDeclaration) {
+
+            if (!isDeclaredRegistrant(self, msg.sender)) {
+
+                addReference(self, _referenceAddress, _projectId,
+                    _referenceType, _referenceVersion, _status);
+                self.registrants.push(msg.sender);
+                emit NewRegistrant(msg.sender);
+
+            } else if (isDeclaredRegistrant(self, msg.sender)) {
+
+                addReference(self, _referenceAddress, _projectId,
+                    _referenceType, _referenceVersion, _status);
+
+            }
+        }
+
+        return true;
+
+    }
+
+    function addReference (SmartDirectoryStorage storage self, address _referenceAddress, string memory _projectId,
+        string memory _referenceType, string memory _referenceVersion, uint8 _status)
+    internal {
+
+        require (_referenceAddress != address(0x0), "Invalid reference address");
+        require (!isDeclaredReference(self, _referenceAddress), "reference already registered");
 
         Reference storage ref = self.referenceData[_referenceAddress];
+
         ref.registrantAddress = msg.sender;
         ref.referenceAddress = _referenceAddress;
         ref.projectId = _projectId;
@@ -126,13 +159,6 @@ library SmartDirectoryLib {
         self.references.push(_referenceAddress);
         emit NewReference(msg.sender, _referenceAddress, _projectId);
 
-        if (getMintCode(self) == MintCode.selfDeclaration) {
-            require(!isDeclaredRegistrant(self, msg.sender), "registrant already declared");
-            self.registrants.push(msg.sender);
-            emit NewRegistrant(msg.sender);
-        }
-
-        return true;
     }
 
     //smartDirectoryReferenceStatusEoaUpdate
@@ -153,13 +179,14 @@ library SmartDirectoryLib {
 
     //smartDirectoryRegistrantEoaCreate (smartDirectoryAddress, registrant_address)
     function createRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public returns (bool) {
-        require(getMintCode(self) == MintCode.parentsAuthorized, "SmartDirectory should be in parentsAuthorized mode");
+
+        require(getMintCode(self) == MintCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
         require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
 
         self.registrants.push(_registrantAddress);
-
         emit NewRegistrant(_registrantAddress);
         return true;
+
     }
 
     //smartDirectoryRegistrantUriEoaWrite
@@ -172,6 +199,7 @@ library SmartDirectoryLib {
         emit NewRegistrantUri(msg.sender, _registrantUri);
 
         return true;
+
     }
 
     //SMART DIRECTORY GETTERS
@@ -251,18 +279,18 @@ library SmartDirectoryLib {
     //REGISTRANTS
 
     //smartDirectoryRegistrantUriGet
-    function getRegistrantUri (SmartDirectoryStorage storage self, address _registrantAddress) external view
+    function getRegistrantUri (SmartDirectoryStorage storage self, address _registrantAddress) public view
     returns(string memory) {
         return self.registrantUris[_registrantAddress];
     }
 
     //smartDirectoryRegistrantLastIndexGet
-    function getRegistrantLastIndex (SmartDirectoryStorage storage self) external view returns(uint256) {
+    function getRegistrantLastIndex (SmartDirectoryStorage storage self) public view returns(uint256) {
         return self.registrants.length-1;
     }
 
     //smartDirectoryRegistrantIndexGet
-    function getRegistrantIndex (SmartDirectoryStorage storage self, address _registrantAddress) external view
+    function getRegistrantIndex (SmartDirectoryStorage storage self, address _registrantAddress) public view
     returns(uint256) {
 
         for (uint256 i = 0; i < self.references.length; i++) {
@@ -305,7 +333,7 @@ library SmartDirectoryLib {
         return false;
     }
 
-    function getReferenceLastStatus (ReferenceStatus[] storage statuses) internal view
+    function getReferenceLastStatus (ReferenceStatus[] storage statuses) public view
         returns(uint8 status, uint256 timeStamp) {
 
             if (statuses.length > 0) {
@@ -316,17 +344,17 @@ library SmartDirectoryLib {
             }
     }
 
-    function getReferenceLastStatusIndex (SmartDirectoryStorage storage self, address _referenceAddress) external view
+    function getReferenceLastStatusIndex (SmartDirectoryStorage storage self, address _referenceAddress) public view
     returns(uint256) {
         return self.referenceData[_referenceAddress].referenceStatus.length-1;
     }
 
     function getMintCode(SmartDirectoryStorage storage self) internal view returns(MintCode) {
-        return(self.mintCode);
+        return self.mintCode;
     }
 
     //smartDirectoryHeadersGet (smartDirectoryAddress)
-    function getSmartDirectoryHeaders (SmartDirectoryStorage storage self) internal view returns(
+    function getSmartDirectoryHeaders (SmartDirectoryStorage storage self) public view returns(
         address parent1,
         address parent2,
         uint8 contractVersion,
@@ -349,15 +377,19 @@ library SmartDirectoryLib {
     }
 
     //smartDirectoryActivationCodeEoaUpdate
-    function setSmartDirectoryActivationCode(SmartDirectoryStorage storage self, ActivationCode _activationCode) public {
+    function setSmartDirectoryActivationCode(SmartDirectoryStorage storage self, ActivationCode _activationCode)
+        public returns(bool) {
 
         require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
         require(self.activationCode == ActivationCode.pending || self.activationCode == ActivationCode.active &&
         _activationCode != ActivationCode.pending, "SmartDirectory activation cannot be modified");
+        require(_activationCode == ActivationCode.active || _activationCode == ActivationCode.closed, "invalid activation value");
 
         self.activationCode = _activationCode;
 
         emit SmartDirectoryActivationUpdate(msg.sender, _activationCode);
+
+        return true;
     }
 
 }
