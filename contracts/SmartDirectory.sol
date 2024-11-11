@@ -32,16 +32,17 @@ contract SmartDirectory {
 
     //REFERENCES
     //smartDirectoryReferenceEoaCreate
-    function addReference(address _referenceAddress, string memory _projectId, string memory _referenceType,
+    function createReference (address _referenceAddress, string memory _projectId, string memory _referenceType,
         string memory _referenceVersion, uint8 _status) public returns (bool) {
 
-        return smartDirectoryStorage.addReference(
-            _referenceAddress,
-            _projectId,
-            _referenceType,
-            _referenceVersion,
-            _status
-        );
+            return smartDirectoryStorage.createReference(
+                _referenceAddress,
+                _projectId,
+                _referenceType,
+                _referenceVersion,
+                _status
+            );
+
     }
 
     //smartDirectoryReferenceStatusEoaUpdate
@@ -70,8 +71,8 @@ contract SmartDirectory {
         string memory referenceType,
         string memory referenceVersion,
         uint8 status,
-        uint256 timeStamp
-    ) {
+        uint256 timeStamp) {
+
         return smartDirectoryStorage.getReference(_referenceAddress);
     }
 
