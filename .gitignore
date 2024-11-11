@@ -33,4 +33,6 @@ venv
 .idea
 qodana.yaml
 Writerside
+api/log/
+constants.py
 
