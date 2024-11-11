@@ -11,6 +11,7 @@ contract SmartDirectory {
     SmartDirectoryLib.SmartDirectoryStorage private smartDirectoryStorage;
 
     //CONSTRUCTOR to initialize the SmartDirectory
+
     constructor(
         address _parent1,
         address _parent2,
@@ -34,7 +35,7 @@ contract SmartDirectory {
 
     //smartDirectoryReferenceEoaCreate
     function createReference (address _referenceAddress, string memory _projectId, string memory _referenceType,
-        string memory _referenceVersion, uint8 _status) public returns (bool) {
+        string memory _referenceVersion, string memory _status) public returns (bool) {
 
             return smartDirectoryStorage.createReference(
                 _referenceAddress,
@@ -47,7 +48,7 @@ contract SmartDirectory {
     }
 
     //smartDirectoryReferenceStatusEoaUpdate
-    function updateReferenceStatus(address _referenceAddress, uint8 _status) public {
+    function updateReferenceStatus(address _referenceAddress, string memory _status) public {
         smartDirectoryStorage.updateReferenceStatus(_referenceAddress, _status);
     }
 
@@ -60,14 +61,14 @@ contract SmartDirectory {
         string memory projectId,
         string memory referenceType,
         string memory referenceVersion,
-        uint8 status,
+        string memory status,
         uint256 timeStamp) {
 
         return smartDirectoryStorage.getReference(_referenceAddress);
     }
 
     ///smartDirectoryReferenceStatusGet
-    function getReferenceStatus(address _referenceAddress, uint256 _index) public view returns (uint8 status,
+    function getReferenceStatus(address _referenceAddress, uint256 _index) public view returns (string memory status,
         uint256 timeStamps) {
         return smartDirectoryStorage.getReferenceStatus(_referenceAddress, _index);
     }
@@ -123,18 +124,18 @@ contract SmartDirectory {
         return SmartDirectoryLib.version();
     }
 
-    //smartDirectoryActivationCodeEoaUpdate
-    function setSmartDirectoryActivationCode(SmartDirectoryLib.ActivationCode _activationCode) public {
-        smartDirectoryStorage.setSmartDirectoryActivationCode(_activationCode);
-    }
-
     function getMintCode(SmartDirectoryLib.SmartDirectoryStorage storage self) internal view returns(
         SmartDirectoryLib.MintCode mintCode) {
 
         return self.getMintCode();
     }
 
-    //smartDirectoryHeadersGet (smartDirectoryAddress)
+    //smartDirectoryActivationCodeEoaUpdate
+    function setSmartDirectoryActivationCode(SmartDirectoryLib.ActivationCode _activationCode) public {
+        smartDirectoryStorage.setSmartDirectoryActivationCode(_activationCode);
+    }
+
+    //smartDirectoryHeadersGet
     function getSmartDirectoryHeaders (SmartDirectoryLib.SmartDirectoryStorage storage self) internal view returns(
         address parent1,
         address parent2,
