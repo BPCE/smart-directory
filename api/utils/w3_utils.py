@@ -155,19 +155,22 @@ def get_transaction_dict(from_add = None, w3 = None):
 
     # call gas station
     try:
+        logging.info("gas station url: " + url)
         resp = requests.get(url=url, params={})
         data = resp.json()
         if 'fast' in data: # polygon gas station
-            print ("polygon gas station")
+            logging.info ("polygon gas station")
             base_fee = int(data['estimatedBaseFee']*1000000000)
             result['maxPriorityFeePerGas'] = int(
                 data['standard']['maxPriorityFee']*1000000000)
             result['maxFeePerGas'] = int(
                 data['standard']['maxFee']*1000000000)
             while (result['maxPriorityFeePerGas'] > result['maxFeePerGas']):
-                result['maxFeePerGas'] = result['maxFeePerGas'] + base_fee
+                result['maxFeePerGas'] = result['maxFeePerGas'] + 2 * base_fee
+            logging.info (str(result))
             return result
-        elif 'result' in data: # etherscan or our gasstation
+        elif 'result' in data:
+            logging.info ("etherscan or our gasstation")
             fee_data = data['result']
             base_fee = int(fee_data['suggestBaseFee']*1000000000)
             the_maxPriorityFee = int(
@@ -176,6 +179,7 @@ def get_transaction_dict(from_add = None, w3 = None):
                 the_maxPriorityFee = 1000000000;
             result['maxPriorityFeePerGas'] = the_maxPriorityFee
             result['maxFeePerGas'] = the_maxPriorityFee + 2 * base_fee
+            logging.info (str(result))
             return result
     except requests.exceptions.ConnectionError as e:
         the_maxPriorityFee = 50 * 1000000000
