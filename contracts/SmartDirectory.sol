@@ -6,6 +6,7 @@ import "./SmartDirectoryLib.sol";
 contract SmartDirectory {
 
     string private constant VERSION = "SD 1.0";
+    uint8 private constant TYPE = 42;
 
     using SmartDirectoryLib for SmartDirectoryLib.SmartDirectoryStorage;
     SmartDirectoryLib.SmartDirectoryStorage private smartDirectoryStorage;
@@ -15,16 +16,14 @@ contract SmartDirectory {
     constructor(
         address _parent1,
         address _parent2,
-        uint8 _contractVersion,
-        uint8 _contractType,
         string memory _contractUri,
         uint8 _mintCode) {
 
         smartDirectoryStorage.init(
             _parent1,
             _parent2,
-            _contractVersion,
-            _contractType,
+            VERSION,
+            TYPE,
             _contractUri,
             _mintCode);
     }
@@ -139,7 +138,7 @@ contract SmartDirectory {
     function getSmartDirectoryHeaders (SmartDirectoryLib.SmartDirectoryStorage storage self) internal view returns(
         address parent1,
         address parent2,
-        uint8 contractVersion,
+        string memory contractVersion,
         uint8 contractType,
         string memory contractUri,
         SmartDirectoryLib.ActivationCode activationCode,

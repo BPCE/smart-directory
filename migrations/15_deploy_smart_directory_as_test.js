@@ -7,7 +7,6 @@ module.exports = function(deployer) {
 	return deployer.deploy(smartDirectory,
 			"0xe3f1413e071332840db2735f809cf3240c4a4255",
 			"0x8a5f2f59a281751965C90d3AEbB4Ba853e1E64bb",
-			13, 1, 
 			"https://BPCE.fr",
 			1 
         );

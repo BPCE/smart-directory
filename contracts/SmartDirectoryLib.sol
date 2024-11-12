@@ -35,7 +35,7 @@ library SmartDirectoryLib {
 
     struct SmartDirectoryStorage {
         address[2] parents;
-        uint8 contractVersion;
+        string contractVersion;
         uint8 contractType;
         string contractUri;
         ActivationCode activationCode;
@@ -85,7 +85,7 @@ library SmartDirectoryLib {
     function init(SmartDirectoryStorage storage self,
         address _parent1,
         address _parent2,
-        uint8 _contractVersion,
+        string memory _contractVersion,
         uint8 _contractType,
         string memory _contractUri,
         uint8 _mintCode) public {
@@ -94,7 +94,7 @@ library SmartDirectoryLib {
 
         self.parents[0] = _parent1;
         self.parents[1] = _parent2;
-        self.contractVersion = _contractVersion;
+        self.contractVersion =string.concat(_contractVersion, VERSION);
         self.contractType = _contractType;
         self.contractUri = _contractUri;
 
@@ -373,7 +373,7 @@ library SmartDirectoryLib {
     function getSmartDirectoryHeaders (SmartDirectoryStorage storage self) public view returns(
         address parent1,
         address parent2,
-        uint8 contractVersion,
+        string memory contractVersion,
         uint8 contractType,
         string memory contractUri,
         ActivationCode activationCode,
