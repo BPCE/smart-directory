@@ -11,6 +11,7 @@ contract SmartDirectory {
     SmartDirectoryLib.SmartDirectoryStorage private smartDirectoryStorage;
 
     //CONSTRUCTOR to initialize the SmartDirectory
+
     constructor(
         address _parent1,
         address _parent2,
@@ -28,40 +29,31 @@ contract SmartDirectory {
             _mintCode);
     }
 
-    //SMART DIRECTORY SETTERS
+    //REFERENCES MANAGEMENT
 
-    //REFERENCES
+        //SETTERS
+
     //smartDirectoryReferenceEoaCreate
-    function addReference(address _referenceAddress, string memory _projectId, string memory _referenceType,
-        string memory _referenceVersion, uint8 _status) public returns (bool) {
+    function createReference (address _referenceAddress, string memory _projectId, string memory _referenceType,
+        string memory _referenceVersion, string memory _status) public returns (bool) {
 
-        return smartDirectoryStorage.addReference(
-            _referenceAddress,
-            _projectId,
-            _referenceType,
-            _referenceVersion,
-            _status
-        );
+            return smartDirectoryStorage.createReference(
+                _referenceAddress,
+                _projectId,
+                _referenceType,
+                _referenceVersion,
+                _status
+            );
+
     }
 
     //smartDirectoryReferenceStatusEoaUpdate
-    function updateReferenceStatus(address _referenceAddress, uint8 _status) public returns (bool) {
-        return smartDirectoryStorage.updateReferenceStatus(_referenceAddress, _status);
+    function updateReferenceStatus(address _referenceAddress, string memory _status) public {
+        smartDirectoryStorage.updateReferenceStatus(_referenceAddress, _status);
     }
 
-    //REGISTRANTS
-    //smartDirectoryRegistrantUriEoaWrite
-    function updateRegistrantUri(string memory _registrantUri) public returns (bool) {
-        return smartDirectoryStorage.updateRegistrantUri(_registrantUri);
-    }
+        //GETTERS
 
-    function createRegistrant (address _registrantAddress) public returns (bool) {
-        return smartDirectoryStorage.createRegistrant(_registrantAddress);
-    }
-
-    //SMART DIRECTORY GETTERS
-
-    //REFERENCES
     //smartDirectoryReferenceGet
     function getReference(address _referenceAddress) public view returns (
         address registrantAddress,
@@ -69,14 +61,14 @@ contract SmartDirectory {
         string memory projectId,
         string memory referenceType,
         string memory referenceVersion,
-        uint8 status,
-        uint256 timeStamp
-    ) {
+        string memory status,
+        uint256 timeStamp) {
+
         return smartDirectoryStorage.getReference(_referenceAddress);
     }
 
     ///smartDirectoryReferenceStatusGet
-    function getReferenceStatus(address _referenceAddress, uint256 _index) public view returns (uint8 status,
+    function getReferenceStatus(address _referenceAddress, uint256 _index) public view returns (string memory status,
         uint256 timeStamps) {
         return smartDirectoryStorage.getReferenceStatus(_referenceAddress, _index);
     }
@@ -91,20 +83,24 @@ contract SmartDirectory {
         return smartDirectoryStorage.getReferencesLists(_registrantAddress);
     }
 
-    //smartDirectoryReferencesCount
-    function getRegistrantReferencesCount(address _registrantAddress) public view returns (uint256) {
-        return smartDirectoryStorage.getRegistrantReferencesCount(_registrantAddress);
+    //REGISTRANTS MANAGEMENT
+
+        //SETTERS
+
+    function createRegistrant (address _registrantAddress) public returns (bool) {
+        return smartDirectoryStorage.createRegistrant(_registrantAddress);
     }
 
-    //REGISTRANTS
+    //smartDirectoryRegistrantUriEoaWrite
+    function updateRegistrantUri(string memory _registrantUri) public returns (bool) {
+        return smartDirectoryStorage.updateRegistrantUri(_registrantUri);
+    }
+
+        //GETTERS
+
     //smartDirectoryRegistrantUriGet
     function getRegistrantUri(address _registrantAddress) public view returns (string memory) {
         return smartDirectoryStorage.getRegistrantUri(_registrantAddress);
-    }
-
-    //smartDirectoryRegistrantLastIndexGet
-    function getRegistrantLastIndex() public view returns (uint256) {
-        return smartDirectoryStorage.getRegistrantLastIndex();
     }
 
     //smartDirectoryRegistrantIndexGet
@@ -112,14 +108,20 @@ contract SmartDirectory {
         return smartDirectoryStorage.getRegistrantIndex(_registrantAddress);
     }
 
-    //SMART DIRECTORY INTERNAL FUNCTIONS
-    function version() public pure returns (string memory) {
-        return SmartDirectoryLib.version();
+    //smartDirectoryRegistrantLastIndexGet
+    function getRegistrantLastIndex() public view returns (uint256) {
+        return smartDirectoryStorage.getRegistrantLastIndex();
     }
 
-    //smartDirectoryActivationCodeEoaUpdate
-    function setSmartDirectoryActivationCode(SmartDirectoryLib.ActivationCode _activationCode) public {
-        smartDirectoryStorage.setSmartDirectoryActivationCode(_activationCode);
+    //smartDirectoryReferencesCount
+    function getRegistrantReferencesCount(address _registrantAddress) public view returns (uint256) {
+        return smartDirectoryStorage.getRegistrantReferencesCount(_registrantAddress);
+    }
+
+    //SMART DIRECTORY UTILITY FUNCTIONS
+
+    function version() public pure returns (string memory) {
+        return SmartDirectoryLib.version();
     }
 
     function getMintCode(SmartDirectoryLib.SmartDirectoryStorage storage self) internal view returns(
@@ -128,7 +130,12 @@ contract SmartDirectory {
         return self.getMintCode();
     }
 
-    //smartDirectoryHeadersGet (smartDirectoryAddress)
+    //smartDirectoryActivationCodeEoaUpdate
+    function setSmartDirectoryActivationCode(SmartDirectoryLib.ActivationCode _activationCode) public {
+        smartDirectoryStorage.setSmartDirectoryActivationCode(_activationCode);
+    }
+
+    //smartDirectoryHeadersGet
     function getSmartDirectoryHeaders (SmartDirectoryLib.SmartDirectoryStorage storage self) internal view returns(
         address parent1,
         address parent2,
