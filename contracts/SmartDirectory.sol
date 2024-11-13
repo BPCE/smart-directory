@@ -1,6 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+// specific versions accepted by remix
+//import "@openzeppelin/contracts@4.4.0/utils/math/SafeMath.sol";
+//import "@openzeppelin/contracts@4.4.0/token/ERC721/ERC721.sol";
+//import "@openzeppelin/contracts@4.4.0/utils/Counters.sol";
+
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+// documentation here: https://docs.openzeppelin.com/contracts/4.x/api/token/erc721
 import "./SmartDirectoryLib.sol";
 
 contract SmartDirectory {
@@ -13,11 +22,11 @@ contract SmartDirectory {
 
     //CONSTRUCTOR to initialize the SmartDirectory
 
-    constructor(
+    function init (
         address _parent1,
         address _parent2,
         string memory _contractUri,
-        uint8 _mintCode) {
+        uint8 _mintCode) public {
 
         smartDirectoryStorage.init(
             _parent1,
@@ -123,28 +132,41 @@ contract SmartDirectory {
         return SmartDirectoryLib.version();
     }
 
-    function getMintCode(SmartDirectoryLib.SmartDirectoryStorage storage self) internal view returns(
+    function getSmartDirectoryParent1() public view returns(address) {
+        return smartDirectoryStorage.getSmartDirectoryParent1();
+    }
+
+    function getSmartDirectoryParent2() public view returns(address) {
+        return smartDirectoryStorage.getSmartDirectoryParent2();
+    }
+
+    function getSmartDirectoryContractType() public view returns(uint8) {
+        return smartDirectoryStorage.getSmartDirectoryContractType();
+    }
+
+    function getSmartDirectoryContractVersion() public view returns(string memory) {
+        return smartDirectoryStorage.getSmartDirectoryContractVersion();
+    }
+
+    function getSmartDirectoryActivationCode() public view returns(
+        SmartDirectoryLib.ActivationCode) {
+
+        return smartDirectoryStorage.getSmartDirectoryActivationCode();
+    }
+
+    function getSmartDirectoryContractUri() public view returns(string memory) {
+        return smartDirectoryStorage.getSmartDirectoryContractUri();
+    }
+
+    function getSmartDirectoryMintCode() public view returns(
         SmartDirectoryLib.MintCode mintCode) {
 
-        return self.getMintCode();
+        return smartDirectoryStorage.getSmartDirectoryMintCode();
     }
 
     //smartDirectoryActivationCodeEoaUpdate
     function setSmartDirectoryActivationCode(SmartDirectoryLib.ActivationCode _activationCode) public {
         smartDirectoryStorage.setSmartDirectoryActivationCode(_activationCode);
-    }
-
-    //smartDirectoryHeadersGet
-    function getSmartDirectoryHeaders (SmartDirectoryLib.SmartDirectoryStorage storage self) internal view returns(
-        address parent1,
-        address parent2,
-        string memory contractVersion,
-        uint8 contractType,
-        string memory contractUri,
-        SmartDirectoryLib.ActivationCode activationCode,
-        SmartDirectoryLib.MintCode mintCode) {
-
-        return self.getSmartDirectoryHeaders();
     }
 
 }
