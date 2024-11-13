@@ -2,9 +2,21 @@
 
 pragma solidity ^0.8.17;
 
+// specific versions accepted by remix
+//import "@openzeppelin/contracts@4.4.0/utils/math/SafeMath.sol";
+//import "@openzeppelin/contracts@4.4.0/token/ERC721/ERC721.sol";
+//import "@openzeppelin/contracts@4.4.0/utils/Counters.sol";
+
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+// documentation here: https://docs.openzeppelin.com/contracts/4.x/api/token/erc721
+
 library SmartDirectoryLib {
 
     string private constant VERSION = "SDL 1.0";
+
+    using Counters for Counters.Counter;
 
     //DATA STRUCTURES
 
@@ -82,7 +94,7 @@ library SmartDirectoryLib {
 
     //CONSTRUCTOR
 
-    function init(SmartDirectoryStorage storage self,
+    function init (SmartDirectoryStorage storage self,
         address _parent1,
         address _parent2,
         string memory _contractVersion,
@@ -113,13 +125,13 @@ library SmartDirectoryLib {
         string memory _referenceType, string memory _referenceVersion, string memory _status)
     public returns (bool) {
 
-        if (getMintCode(self) == MintCode.parentsAuthorized) {
+        if (getSmartDirectoryMintCode(self) == MintCode.parentsAuthorized) {
 
             require (isDeclaredRegistrant(self, msg.sender));
             addReference(self, _referenceAddress, _projectId, _referenceType,
                 _referenceVersion, _status);
 
-        } else if (getMintCode(self) == MintCode.selfDeclaration) {
+        } else if (getSmartDirectoryMintCode(self) == MintCode.selfDeclaration) {
 
             if (!isDeclaredRegistrant(self, msg.sender)) {
 
@@ -256,7 +268,7 @@ library SmartDirectoryLib {
     //smartDirectoryRegistrantEoaCreate (smartDirectoryAddress, registrant_address)
     function createRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public returns (bool) {
 
-        require(getMintCode(self) == MintCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
+        require(getSmartDirectoryMintCode(self) == MintCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
         require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
 
         self.registrants.push(_registrantAddress);
@@ -348,7 +360,31 @@ library SmartDirectoryLib {
         return false;
     }
 
-    function getMintCode(SmartDirectoryStorage storage self) internal view returns(MintCode) {
+    function getSmartDirectoryContractVersion(SmartDirectoryStorage storage self) public view returns(string memory) {
+        return self.contractVersion;
+    }
+
+    function getSmartDirectoryParent1(SmartDirectoryStorage storage self) public view returns(address) {
+        return self.parents[0];
+    }
+
+    function getSmartDirectoryParent2(SmartDirectoryStorage storage self) public view returns(address) {
+        return self.parents[1];
+    }
+
+    function getSmartDirectoryContractType(SmartDirectoryStorage storage self) public view returns(uint8) {
+        return self.contractType;
+    }
+
+    function getSmartDirectoryActivationCode(SmartDirectoryStorage storage self) public view returns(ActivationCode) {
+        return self.activationCode;
+    }
+
+    function getSmartDirectoryContractUri(SmartDirectoryStorage storage self) public view returns(string memory) {
+        return self.contractUri;
+    }
+
+    function getSmartDirectoryMintCode(SmartDirectoryStorage storage self) public view returns(MintCode) {
         return self.mintCode;
     }
 
@@ -357,8 +393,8 @@ library SmartDirectoryLib {
     public returns(bool) {
 
         require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
-        require(self.activationCode == ActivationCode.pending || self.activationCode == ActivationCode.active &&
-        _activationCode != ActivationCode.pending, "SmartDirectory activation cannot be modified");
+        require(self.activationCode == ActivationCode.pending || self.activationCode == ActivationCode.active,
+            "SmartDirectory activation cannot be modified");
         require(_activationCode == ActivationCode.active || _activationCode == ActivationCode.closed,
             "invalid activation value");
 
@@ -367,29 +403,6 @@ library SmartDirectoryLib {
         emit SmartDirectoryActivationUpdate(msg.sender, _activationCode);
 
         return true;
-    }
-
-    //smartDirectoryHeadersGet (smartDirectoryAddress)
-    function getSmartDirectoryHeaders (SmartDirectoryStorage storage self) public view returns(
-        address parent1,
-        address parent2,
-        string memory contractVersion,
-        uint8 contractType,
-        string memory contractUri,
-        ActivationCode activationCode,
-        MintCode mintCode) {
-
-        require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
-
-        return(
-            self.parents[0],
-            self.parents[1],
-            self.contractVersion,
-            self.contractType,
-            self.contractUri,
-            self.activationCode,
-            self.mintCode
-        );
     }
 
 }
