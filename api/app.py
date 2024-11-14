@@ -116,7 +116,51 @@ def smart_directory_create():
              ]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
     return deploy_contract(globals.w3, to_be_deployed, params)
 
-                                                                                                                                 
+
+@app.route("/smart-directory/directory721create", methods=['GET', 'POST'])
+def smart_directory_create_token_721():
+    route = str(request.url_rule)
+    logging.info("enter api: %s" % route)
+    response = {}
+    return_code = 200
+    args = request.args
+
+    w3 = globals.w3
+
+    try:
+        check_args(args, [
+                                    'chain_id',
+                                    'max_token',
+                                    'parent_address1',
+                                    'parent_address2',
+                                    'smart_directory',
+                                    'registrant_address',
+                                    'name',
+                                    'symbol',
+                                    'base_uri',
+                                    ]
+                        )
+    except ValueError as e:
+        return_code = 400
+        response['message'] = str(e)
+        response['return_code'] = return_code
+        return_json = json.dumps(response)
+        logging.info(route + " returns: " + return_json)
+        return jsonify(response), return_code
+
+    params=[ 
+                args['name'],
+                args['symbol'],
+                toChecksumAddress(args['parent_address1']),
+                toChecksumAddress(args['parent_address2']),
+                toChecksumAddress(args['smart_directory']),
+                toChecksumAddress(args['registrant_address']),
+                args['base_uri'],                
+                int(args['max_token'])
+             ]
+
+    return deploy_contract_from_name(w3, "DirectoryToken721", params)
+    
 #                                                                
 def load_smart_directory_abi(network_id):
     network_id = str(network_id)
