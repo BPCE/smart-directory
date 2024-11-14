@@ -312,15 +312,15 @@ library SmartDirectoryLib {
     }
 
     //smartDirectoryRegistrantIndexGet
-    function getRegistrantIndex (SmartDirectoryStorage storage self, address _registrantAddress) public view
-    returns(uint256) {
+    function getRegistrantIndex (SmartDirectoryStorage storage self, uint256 _registrantIndex) public view
+    returns(address registrantAddress, string memory registrantUri) {
 
-        for (uint256 i = 0; i < self.references.length; i++) {
-            if (self.registrants[i] == _registrantAddress) {
-                return i;
-            }
-        }
-        return type(uint256).max;
+        require(_registrantIndex < self.registrants.length, "Index out of bounds");
+
+        address searchedAddress = self.registrants[_registrantIndex];
+        string memory searchedUri = getRegistrantUri(self,searchedAddress);
+
+        return (searchedAddress, searchedUri);
     }
 
     //smartDirectoryRegistrantLastIndexGet
