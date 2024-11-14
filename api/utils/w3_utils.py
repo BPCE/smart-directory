@@ -408,12 +408,13 @@ def transfer_wei(w3, how_many_wei, from_address, to):
 def deploy_contract(w3, contract_struct, constructor_params, name = ""):
     tx_hash = None
     response = {"name": name}
-    signed_tx = get_signed_raw(
-                    contract_struct.constructor(*constructor_params),
-                    custom_variables.QAXH_PVK)
+
     try:
         logging.debug("address %s is deploying contract" %
                                         check_address(custom_variables.QAXH_PVK))
+        signed_tx = get_signed_raw(
+                    contract_struct.constructor(*constructor_params),
+                    custom_variables.QAXH_PVK)
         if True: # deploy contract using a raw transaction
             tx_hash = w3.eth.send_raw_transaction(
                                         signed_tx.rawTransaction)
