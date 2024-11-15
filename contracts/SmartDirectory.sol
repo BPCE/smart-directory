@@ -22,11 +22,11 @@ contract SmartDirectory {
 
     //CONSTRUCTOR to initialize the SmartDirectory
 
-    function init (
+    constructor (
         address _parent1,
         address _parent2,
         string memory _contractUri,
-        uint8 _mintCode) public {
+        uint8 _mintCode)  {
 
         smartDirectoryStorage.init(
             _parent1,
