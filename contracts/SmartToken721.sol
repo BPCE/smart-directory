@@ -68,8 +68,35 @@ contract SmartToken721 is ERC721 {
         parent1 = _parent1;
     }
 
+//  GETTERS
 
     function _baseURI() internal view virtual override returns (string memory)   {
         return base_uri;
     }
+
+    function get_registrant_address() public view virtual returns(address) {
+		return registrant_address;
+	}
+
+    function get_smart_directory() public view virtual returns(address) {
+		return smart_directory;
+	}
+
+    function get_max_token() public view virtual returns(uint256) {
+		return max_token;
+	}
+
+    function version() public view virtual returns(string memory) {
+		return VERSION;
+	}
+
+	function getParent1() public view returns(address) {
+		return parent1;
+	}
+
+	function getParent2() public view returns(address) {
+		return parent2;
+	}
+
 }
+
