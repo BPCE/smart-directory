@@ -216,7 +216,7 @@ library SmartDirectoryLib {
 
     //smartDirectoryReferenceStatusGet
     function getReferenceStatus (SmartDirectoryStorage storage self, address _referenceAddress, uint256 _index)
-    public view returns(string memory status, uint256 timeStamps) {
+    public view returns(string memory status, uint256 timeStamp) {
 
         require(_index < self.referenceData[_referenceAddress].referenceStatus.length, "index out of range");
 
@@ -390,7 +390,7 @@ library SmartDirectoryLib {
 
     //smartDirectoryActivationCodeEoaUpdate
     function setSmartDirectoryActivationCode(SmartDirectoryStorage storage self, ActivationCode _activationCode)
-    public returns(bool) {
+    external {
 
         require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
         require(self.activationCode == ActivationCode.pending || self.activationCode == ActivationCode.active,
@@ -402,7 +402,6 @@ library SmartDirectoryLib {
 
         emit SmartDirectoryActivationUpdate(msg.sender, _activationCode);
 
-        return true;
     }
 
 }
