@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 library SmartDirectoryLib {
 
-    string private constant VERSION = "SDL 1.01";
+    string private constant VERSION = "SDL 1.02";
 
     using Counters for Counters.Counter;
 
@@ -47,8 +47,6 @@ library SmartDirectoryLib {
 
     struct SmartDirectoryStorage {
         address[2] parents;
-        string contractVersion;
-        uint8 contractType;
         string contractUri;
         ActivationCode activationCode;
         MintCode mintCode;
@@ -97,8 +95,6 @@ library SmartDirectoryLib {
     function init (SmartDirectoryStorage storage self,
         address _parent1,
         address _parent2,
-        string memory _contractVersion,
-        uint8 _contractType,
         string memory _contractUri,
         uint8 _mintCode) public {
 
@@ -106,8 +102,6 @@ library SmartDirectoryLib {
 
         self.parents[0] = _parent1;
         self.parents[1] = _parent2;
-        self.contractVersion =string.concat(_contractVersion, VERSION);
-        self.contractType = _contractType;
         self.contractUri = _contractUri;
 
         self.activationCode = ActivationCode.pending;
@@ -118,7 +112,7 @@ library SmartDirectoryLib {
 
     //REFERENCE MANAGEMENT
 
-        //SETTERS
+    //SETTERS
 
     //smartDirectoryReferenceEoaCreate
     function createReference (SmartDirectoryStorage storage self, address _referenceAddress, string memory _projectId,
@@ -147,9 +141,7 @@ library SmartDirectoryLib {
 
             }
         }
-
         return true;
-
     }
 
     function addReference (SmartDirectoryStorage storage self, address _referenceAddress, string memory _projectId,
@@ -364,20 +356,12 @@ library SmartDirectoryLib {
         return false;
     }
 
-    function getSmartDirectoryContractVersion(SmartDirectoryStorage storage self) public view returns(string memory) {
-        return self.contractVersion;
-    }
-
     function getSmartDirectoryParent1(SmartDirectoryStorage storage self) public view returns(address) {
         return self.parents[0];
     }
 
     function getSmartDirectoryParent2(SmartDirectoryStorage storage self) public view returns(address) {
         return self.parents[1];
-    }
-
-    function getSmartDirectoryContractType(SmartDirectoryStorage storage self) public view returns(uint8) {
-        return self.contractType;
     }
 
     function getSmartDirectoryActivationCode(SmartDirectoryStorage storage self) public view returns(ActivationCode) {
