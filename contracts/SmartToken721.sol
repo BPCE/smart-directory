@@ -13,16 +13,16 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 
 
-contract DirectoryToken721 is ERC721 {
+contract SmartToken721 is ERC721 {
 
 	string private constant VERSION = "DT721_1.0";
 
-    address _parent1;
-    address _parent2;
-    address _smart_directory;
-    address _registrant_address;
-    string _base_uri;
-    uint256 _max_token;
+    address parent1;
+    address parent2;
+    address smart_directory;
+    address registrant_address;
+    string base_uri;
+    uint256 max_token;
 
 	Counters.Counter        nextToken; // id of the next token to be minted
 
@@ -60,16 +60,16 @@ contract DirectoryToken721 is ERC721 {
                             string memory _base_uri,
                             uint256 _max_token) internal {
 		nextToken.increment(); // token_ids start at 1
-		_max_token = _max_token;
-        _base_uri = _base_uri;
-        _registrant_address = _registrant_address;
-        _smart_directory = _smart_directory;
-        _parent2 = _parent2;
-        _parent1 = _parent1;
+		max_token = _max_token;
+        base_uri = _base_uri;
+        registrant_address = _registrant_address;
+        smart_directory = _smart_directory;
+        parent2 = _parent2;
+        parent1 = _parent1;
     }
 
 
     function _baseURI() internal view virtual override returns (string memory)   {
-        return _base_uri;
+        return base_uri;
     }
 }
