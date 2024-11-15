@@ -1,4 +1,4 @@
-var smartToken721    = artifacts.require("./DirectoryToken721.sol");
+var smartToken721    = artifacts.require("./SmartToken721.sol");
 
 module.exports = function(deployer) {
 	return deployer.deploy(smartToken721,
