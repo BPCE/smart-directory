@@ -14,7 +14,7 @@ import "./SmartDirectoryLib.sol";
 
 contract SmartDirectory {
 
-    string private constant VERSION = "SD 1.0";
+    string private constant VERSION = "SD 1.01";
     uint8 private constant TYPE = 42;
 
     using SmartDirectoryLib for SmartDirectoryLib.SmartDirectoryStorage;
@@ -31,8 +31,6 @@ contract SmartDirectory {
         smartDirectoryStorage.init(
             _parent1,
             _parent2,
-            VERSION,
-            TYPE,
             _contractUri,
             _mintCode);
     }
@@ -129,7 +127,7 @@ contract SmartDirectory {
     //SMART DIRECTORY UTILITY FUNCTIONS
 
     function version() public pure returns (string memory) {
-        return SmartDirectoryLib.version();
+        return string.concat(VERSION,SmartDirectoryLib.version());
     }
 
     function getSmartDirectoryParent1() public view returns(address) {
@@ -140,12 +138,8 @@ contract SmartDirectory {
         return smartDirectoryStorage.getSmartDirectoryParent2();
     }
 
-    function getSmartDirectoryContractType() public view returns(uint8) {
-        return smartDirectoryStorage.getSmartDirectoryContractType();
-    }
-
-    function getSmartDirectoryContractVersion() public view returns(string memory) {
-        return smartDirectoryStorage.getSmartDirectoryContractVersion();
+    function getSmartDirectoryContractType() public pure returns(uint8) {
+        return TYPE;
     }
 
     function getSmartDirectoryActivationCode() public view returns(
@@ -160,7 +154,6 @@ contract SmartDirectory {
 
     function getSmartDirectoryMintCode() public view returns(
         SmartDirectoryLib.MintCode mintCode) {
-
         return smartDirectoryStorage.getSmartDirectoryMintCode();
     }
 
