@@ -77,7 +77,7 @@ contract SmartDirectory {
 
     ///smartDirectoryReferenceStatusGet
     function getReferenceStatus(address _referenceAddress, uint256 _index) public view returns (string memory status,
-        uint256 timeStamps) {
+        uint256 timeStamp) {
         return smartDirectoryStorage.getReferenceStatus(_referenceAddress, _index);
     }
 
