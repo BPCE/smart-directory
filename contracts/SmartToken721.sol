@@ -17,6 +17,8 @@ contract SmartToken721 is ERC721 {
 
 	string private constant VERSION = "DT721_1.0";
 
+    string private constant TYPE = "Smart721";
+
     address parent1;
     address parent2;
     address smart_directory;
@@ -90,13 +92,17 @@ contract SmartToken721 is ERC721 {
 		return VERSION;
 	}
 
-	function getParent1() public view returns(address) {
+	function get_parent1() public view returns(address) {
 		return parent1;
 	}
 
-	function getParent2() public view returns(address) {
+	function get_parent2() public view returns(address) {
 		return parent2;
 	}
+
+    function get_type()  public pure returns(string memory) {
+        return TYPE;
+    }
 
 }
 
