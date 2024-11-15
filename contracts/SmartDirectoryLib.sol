@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 library SmartDirectoryLib {
 
-    string private constant VERSION = "SDL 1.0";
+    string private constant VERSION = "SDL 1.01";
 
     using Counters for Counters.Counter;
 
@@ -156,6 +156,7 @@ library SmartDirectoryLib {
         string memory _referenceType, string memory _referenceVersion, string memory _status)
     internal {
 
+        require (self.activationCode == ActivationCode.active);
         require (_referenceAddress != address(0x0), "Invalid reference address");
         require (!isDeclaredReference(self, _referenceAddress), "reference already registered");
 
@@ -177,6 +178,7 @@ library SmartDirectoryLib {
     function updateReferenceStatus (SmartDirectoryStorage storage self, address _referenceAddress,
         string memory _status) public {
 
+        require (self.activationCode == ActivationCode.active);
         require (isDeclaredReference(self,_referenceAddress), "undeclared contract");
         require (isDeclaredRegistrant(self, msg.sender), "undeclared registrant");
 
@@ -268,6 +270,7 @@ library SmartDirectoryLib {
     //smartDirectoryRegistrantEoaCreate (smartDirectoryAddress, registrant_address)
     function createRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public returns (bool) {
 
+        require (self.activationCode == ActivationCode.active);
         require(getSmartDirectoryMintCode(self) == MintCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
         require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
 
@@ -281,6 +284,7 @@ library SmartDirectoryLib {
     function updateRegistrantUri (SmartDirectoryStorage storage self, string memory _registrantUri) public
     returns(bool) {
 
+        require (self.activationCode == ActivationCode.active);
         require (isDeclaredRegistrant(self, msg.sender), "unknown registrant");
 
         self.registrantUris[msg.sender] = _registrantUri;
