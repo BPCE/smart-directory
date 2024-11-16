@@ -18,7 +18,7 @@ contract SmartDirectory {
     uint8 private constant TYPE = 42;
 
     using SmartDirectoryLib for SmartDirectoryLib.SmartDirectoryStorage;
-    SmartDirectoryLib.SmartDirectoryStorage private smartDirectoryStorage;
+    SmartDirectoryLib.SmartDirectoryStorage smartDirectoryStorage;
 
     //CONSTRUCTOR to initialize the SmartDirectory
 
@@ -93,8 +93,14 @@ contract SmartDirectory {
 
         //SETTERS
 
-    function createRegistrant (address _registrantAddress) public returns (bool) {
-        return smartDirectoryStorage.createRegistrant(_registrantAddress);
+    //smartDirectoryRegistrantEoaCreate
+    function createRegistrant (address _registrantAddress) public {
+        smartDirectoryStorage.createRegistrant(_registrantAddress);
+    }
+
+    //smartDirectoryRegistrantEoaDelete
+    function delRegistrant (address _registrantAddress) public {
+        smartDirectoryStorage.delRegistrant(_registrantAddress);
     }
 
     //smartDirectoryRegistrantUriEoaWrite
@@ -110,8 +116,10 @@ contract SmartDirectory {
     }
 
     //smartDirectoryRegistrantIndexGet
-    function getRegistrantIndex(uint256 _registrantIndex) public view returns (address registrantAddress, string memory registrantUri) {
-        return smartDirectoryStorage.getRegistrantIndex(_registrantIndex);
+    function getRegistrant(uint256 _registrantIndex) public view returns (address registrantAddress,
+        string memory registrantUri) {
+
+        return smartDirectoryStorage.getRegistrant(_registrantIndex);
     }
 
     //smartDirectoryRegistrantLastIndexGet
@@ -130,36 +138,33 @@ contract SmartDirectory {
         return string.concat(VERSION,SmartDirectoryLib.version());
     }
 
-    function getSmartDirectoryParent1() public view returns(address) {
-        return smartDirectoryStorage.getSmartDirectoryParent1();
+    function getParent1() public view returns(address) {
+        return smartDirectoryStorage.getParent1();
     }
 
-    function getSmartDirectoryParent2() public view returns(address) {
-        return smartDirectoryStorage.getSmartDirectoryParent2();
+    function getParent2() public view returns(address) {
+        return smartDirectoryStorage.getParent2();
     }
 
-    function getSmartDirectoryContractType() public pure returns(uint8) {
+    function getContractType() public pure returns(uint8) {
         return TYPE;
     }
 
-    function getSmartDirectoryActivationCode() public view returns(
-        SmartDirectoryLib.ActivationCode) {
-
-        return smartDirectoryStorage.getSmartDirectoryActivationCode();
+    function getContractUri() public view returns(string memory) {
+        return smartDirectoryStorage.getContractUri();
     }
 
-    function getSmartDirectoryContractUri() public view returns(string memory) {
-        return smartDirectoryStorage.getSmartDirectoryContractUri();
+    function getMintCode() public view returns(SmartDirectoryLib.MintCode mintCode) {
+        return smartDirectoryStorage.getMintCode();
     }
 
-    function getSmartDirectoryMintCode() public view returns(
-        SmartDirectoryLib.MintCode mintCode) {
-        return smartDirectoryStorage.getSmartDirectoryMintCode();
+    function getActivationCode() public view returns(SmartDirectoryLib.ActivationCode) {
+        return smartDirectoryStorage.getActivationCode();
     }
 
     //smartDirectoryActivationCodeEoaUpdate
-    function setSmartDirectoryActivationCode(SmartDirectoryLib.ActivationCode _activationCode) public {
-        smartDirectoryStorage.setSmartDirectoryActivationCode(_activationCode);
+    function setActivationCode(SmartDirectoryLib.ActivationCode _activationCode) public {
+        smartDirectoryStorage.setActivationCode(_activationCode);
     }
 
 }

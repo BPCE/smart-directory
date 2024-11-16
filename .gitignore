@@ -35,4 +35,5 @@ qodana.yaml
 Writerside
 api/log/
 constants.py
+.states
 
