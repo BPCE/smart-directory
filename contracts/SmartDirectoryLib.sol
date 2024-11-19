@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 library SmartDirectoryLib {
 
-    string private constant VERSION = "SDL 1.03";
+    string private constant VERSION = "SDL 1.05";
 
     using Counters for Counters.Counter;
 
@@ -110,6 +110,7 @@ library SmartDirectoryLib {
 
         self.activationCode = ActivationCode.pending;
         self.mintCode = MintCode(_mintCode);
+        self.registrants.push(address(0)); // list of addresses start at 1
         emit SmartDirectoryCreated(_parent1, _parent2, _contractUri);
     }
 
@@ -266,7 +267,7 @@ library SmartDirectoryLib {
     //smartDirectoryRegistrantEoaCreate
     function createRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public {
 
-        require (self.activationCode == ActivationCode.active);
+        require (self.activationCode == ActivationCode.active, "SmartDirectory has not been activated");
         require(getMintCode(self) == MintCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
         require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
 
