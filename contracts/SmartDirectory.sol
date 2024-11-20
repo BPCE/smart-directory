@@ -14,7 +14,7 @@ import "./SmartDirectoryLib.sol";
 
 contract SmartDirectory {
 
-    string private constant VERSION = "SD 1.02";
+    string private constant VERSION = "SD 1.03";
     uint8 private constant TYPE = 42;
 
     using SmartDirectoryLib for SmartDirectoryLib.SmartDirectoryStorage;
