@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 library SmartDirectoryLib {
 
-    string private constant VERSION = "SDL 1.05";
+    string private constant VERSION = "SDL 1.06";
 
     using Counters for Counters.Counter;
 
@@ -45,13 +45,18 @@ library SmartDirectoryLib {
         ReferenceStatus [] referenceStatus;
     }
 
+    struct Registrant {
+        string Uri;
+        uint256 index;
+    }
+
     struct SmartDirectoryStorage {
         address[2] parents;
         string contractUri;
         ActivationCode activationCode;
         MintCode mintCode;
         address [] registrants;
-        mapping (address => string) registrantUris;
+        mapping (address => Registrant) registrantData;
         address [] references;
         mapping (address => Reference) referenceData;
     }
@@ -102,7 +107,7 @@ library SmartDirectoryLib {
         string memory _contractUri,
         uint8 _mintCode) public {
 
-        require(_mintCode < 2, "invalid mintCode value");
+        require(_mintCode < 2, "mintCode value too large");
 
         self.parents[0] = _parent1;
         self.parents[1] = _parent2;
@@ -123,9 +128,9 @@ library SmartDirectoryLib {
         string memory _referenceType, string memory _referenceVersion, string memory _status)
     internal {
 
-        require (self.activationCode == ActivationCode.active);
-        require (_referenceAddress != address(0x0), "Invalid reference address");
-        require (!isDeclaredReference(self, _referenceAddress), "reference already registered");
+        require (self.activationCode == ActivationCode.active, "SmartDirectory has not been activated");
+        require (_referenceAddress != address(0x0), "reference must not be address 0");
+        require (!isDeclaredReference(self, _referenceAddress), "reference already known");
 
         Reference storage ref = self.referenceData[_referenceAddress];
 
@@ -148,20 +153,20 @@ library SmartDirectoryLib {
 
         if (getMintCode(self) == MintCode.parentsAuthorized) {
 
-            require (isDeclaredRegistrant(self, msg.sender), "registrantAddress does not exist");
+            require (isValidRegistrant(self, msg.sender), "unknown registrant");
             addReference(self, _referenceAddress, _projectId, _referenceType,
                 _referenceVersion, _status);
 
         } else if (getMintCode(self) == MintCode.selfDeclaration) {
 
-            if (!isDeclaredRegistrant(self, msg.sender)) {
+            if (!isValidRegistrant(self, msg.sender)) {
 
                 addReference(self, _referenceAddress, _projectId,
                     _referenceType, _referenceVersion, _status);
                 self.registrants.push(msg.sender);
                 emit RegistrantCreated(msg.sender);
 
-            } else if (isDeclaredRegistrant(self, msg.sender)) {
+            } else if (isValidRegistrant(self, msg.sender)) {
 
                 addReference(self, _referenceAddress, _projectId,
                     _referenceType, _referenceVersion, _status);
@@ -175,9 +180,10 @@ library SmartDirectoryLib {
     function updateReferenceStatus (SmartDirectoryStorage storage self, address _referenceAddress,
         string memory _status) public {
 
-        require (self.activationCode == ActivationCode.active, "SmartDirectory must be in parentsAuthorized mode");
-        require (isDeclaredReference(self,_referenceAddress), "undeclared contract");
-        require (isDeclaredRegistrant(self, msg.sender), "undeclared registrant");
+        require (self.activationCode == ActivationCode.active, "SmartDirectory must be activated");
+        require (isValidRegistrant(self, msg.sender), "unknown registrant");
+        require (isDeclaredReference(self,_referenceAddress), "unknown reference");
+
 
         self.referenceData[_referenceAddress].referenceStatus.push(ReferenceStatus(_status,
             block.timestamp));
@@ -217,7 +223,8 @@ library SmartDirectoryLib {
     function getReferenceStatus (SmartDirectoryStorage storage self, address _referenceAddress, uint256 _index)
     public view returns(string memory status, uint256 timeStamp) {
 
-        require(_index < self.referenceData[_referenceAddress].referenceStatus.length, "index out of range");
+        require(_index < self.referenceData[_referenceAddress].referenceStatus.length, "index too large");
+        require(_index > 0, "index 0 is not used");
 
         Reference storage ref = self.referenceData[_referenceAddress];
 
@@ -264,16 +271,24 @@ library SmartDirectoryLib {
 
         //SETTERS
 
+    function createRegistrantInternal(SmartDirectoryStorage storage self, address _registrantAddress) private {
+        Registrant memory registrant;
+        registrant.index = self.registrants.length;
+
+        self.registrants.push(_registrantAddress);
+        self.registrantData[_registrantAddress] = registrant;
+        emit RegistrantCreated(_registrantAddress);
+    }
+
     //smartDirectoryRegistrantEoaCreate
     function createRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public {
 
         require (self.activationCode == ActivationCode.active, "SmartDirectory has not been activated");
-        require(getMintCode(self) == MintCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
-        require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
+                //SmartDirectory must be in parentsAuthorized mode
+        require (getMintCode(self) == MintCode.parentsAuthorized, "in selfDeclaration mode, just create a reference, registrant will be create from msg.sender");
+        require(isParent(self, msg.sender), "unauthorized access: only one of the parents may create a registrant");
 
-        self.registrants.push(_registrantAddress);
-        emit RegistrantCreated(_registrantAddress);
-
+        createRegistrantInternal(self, _registrantAddress);
     }
 
     //smartDirectoryRegistrantEoaDelete
@@ -282,34 +297,28 @@ library SmartDirectoryLib {
         uint256 registrantIndex = getRegistrantIndex(self,_registrantAddress);
 
         require(self.activationCode == ActivationCode.active, "SmartDirectory must be in active mode");
-        require(registrantIndex <= self.registrants.length, "Index out of bounds");
+        require(registrantIndex <= self.registrants.length, "Index too large");
+        require(registrantIndex > 0 , "Index must be greater than 0");
         require(getMintCode(self) == MintCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
         require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
-        require(isDeclaredRegistrant(self, _registrantAddress),"registrant does not exist");
+        require(isValidRegistrant(self, _registrantAddress),"registrant not known");
 
-        delete self.registrantUris[_registrantAddress];
-
-        for (uint256 i = registrantIndex; i <= self.registrants.length - 1; i++) {
-            self.registrants[i] = self.registrants[i + 1];
-            self.registrants.pop();
-            }
+        self.registrantData[_registrantAddress].index = 0;
 
         emit RegistrantDeleted(_registrantAddress);
-
     }
 
     //smartDirectoryRegistrantUriEoaWrite
     function updateRegistrantUri (SmartDirectoryStorage storage self, string memory _registrantUri) public
     returns(bool) {
 
-        require (self.activationCode == ActivationCode.active);
-        require (isDeclaredRegistrant(self, msg.sender), "unknown registrant");
+        require(self.activationCode == ActivationCode.active, "SmartDirectory must be in active mode");
+        require (isValidRegistrant(self, msg.sender), "unknown registrant");
 
-        self.registrantUris[msg.sender] = _registrantUri;
+        self.registrantData[msg.sender].Uri = _registrantUri;
         emit RegistrantUriUpdated(msg.sender, _registrantUri);
 
         return true;
-
     }
 
         //GETTERS
@@ -318,7 +327,8 @@ library SmartDirectoryLib {
     function getRegistrant (SmartDirectoryStorage storage self, uint256 _registrantIndex) public view
     returns(address registrantAddress, string memory registrantUri) {
 
-        require(_registrantIndex < self.registrants.length, "Index out of bounds");
+        require(_registrantIndex < self.registrants.length, "Index too large");
+        require(_registrantIndex > 0, "Index 0 is not used, list starts at 1");
 
         address searchedAddress = self.registrants[_registrantIndex];
         string memory searchedUri = getRegistrantUri(self,searchedAddress);
@@ -329,22 +339,17 @@ library SmartDirectoryLib {
     function getRegistrantIndex (SmartDirectoryStorage storage self, address _registrantAddress) internal view
     returns(uint256) {
 
-        for (uint i = 0; i < self.registrants.length; i++) {
-            if (self.registrants[i] == _registrantAddress) {
-                return i;
-            }
-        }
-
-        return (type(uint).max);
+        return self.registrantData[_registrantAddress].index;
     }
 
     //smartDirectoryRegistrantUriGet
     function getRegistrantUri (SmartDirectoryStorage storage self, address _registrantAddress) public view
     returns(string memory) {
-        return self.registrantUris[_registrantAddress];
+        return self.registrantData[_registrantAddress].Uri;
     }
 
     //smartDirectoryReferencesCount
+    // TODO add a list in registrantData ?
     function getRegistrantReferencesCount (SmartDirectoryStorage storage self, address _registrantAddress) public view
     returns (uint256) {
 
@@ -368,26 +373,14 @@ library SmartDirectoryLib {
         return _from == self.parents[0] || _from == self.parents[1];
     }
 
-    function isDeclaredRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) internal view
-    returns(bool) {
-
-        for (uint256 i = 0; i < self.registrants.length; i++) {
-            if (self.registrants[i] == _registrantAddress) {
-                return true;
-            }
-        }
-        return false;
+    function isValidRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) 
+                    internal view returns(bool) {
+        return self.registrantData[_registrantAddress].index != 0;
     }
 
-    function isDeclaredReference (SmartDirectoryStorage storage self, address _referenceAddress) internal view
-    returns(bool) {
-
-        for (uint256 i = 0; i < self.references.length; i++) {
-            if (self.references[i] == _referenceAddress) {
-                return true;
-            }
-        }
-        return false;
+    function isDeclaredReference (SmartDirectoryStorage storage self, address _referenceAddress)
+                    internal view returns(bool) {
+        return self.referenceData[_referenceAddress].registrantAddress   != address(0);
     }
 
     function version() public pure returns(string memory) {
@@ -418,9 +411,9 @@ library SmartDirectoryLib {
     function setActivationCode(SmartDirectoryStorage storage self, ActivationCode _activationCode)
     external {
 
-        require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
+        require(isParent(self, msg.sender), "unauthorized access: only a parent may call this function");
         require(self.activationCode == ActivationCode.pending || self.activationCode == ActivationCode.active,
-            "SmartDirectory activation cannot be modified");
+            "SmartDirectory activation code cannot be modified");
         require(_activationCode == ActivationCode.active || _activationCode == ActivationCode.closed,
             "invalid activation value");
 
