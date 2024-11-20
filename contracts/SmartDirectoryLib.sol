@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 library SmartDirectoryLib {
 
-    string private constant VERSION = "SDL 1.06";
+    string private constant VERSION = "SDL 1.07";
 
     using Counters for Counters.Counter;
 
@@ -323,8 +323,8 @@ library SmartDirectoryLib {
 
         //GETTERS
 
-    //smartDirectoryRegistrantIndexGet
-    function getRegistrant (SmartDirectoryStorage storage self, uint256 _registrantIndex) public view
+    //smartDirectoryRegistrantAtIndexGet
+    function getRegistrantAtIndex (SmartDirectoryStorage storage self, uint256 _registrantIndex) public view
     returns(address registrantAddress, string memory registrantUri) {
 
         require(_registrantIndex < self.registrants.length, "Index too large");
@@ -338,7 +338,6 @@ library SmartDirectoryLib {
 
     function getRegistrantIndex (SmartDirectoryStorage storage self, address _registrantAddress) internal view
     returns(uint256) {
-
         return self.registrantData[_registrantAddress].index;
     }
 

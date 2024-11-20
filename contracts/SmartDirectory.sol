@@ -115,11 +115,16 @@ contract SmartDirectory {
         return smartDirectoryStorage.getRegistrantUri(_registrantAddress);
     }
 
-    //smartDirectoryRegistrantIndexGet
-    function getRegistrant(uint256 _registrantIndex) public view returns (address registrantAddress,
+    //smartDirectoryRegistrantAtIndexGet
+    function getRegistrantAtIndex(uint256 _registrantIndex) public view returns (address registrantAddress,
         string memory registrantUri) {
 
-        return smartDirectoryStorage.getRegistrant(_registrantIndex);
+        return smartDirectoryStorage.getRegistrantAtIndex(_registrantIndex);
+    }
+
+        //smartDirectoryRegistrantIndexGet
+    function getRegistrantIndex(uint256 _registrantIndex) public view returns(uint256) {
+        return smartDirectoryStorage.getRegistrantIIndex(_registrantIndex);
     }
 
     //smartDirectoryRegistrantLastIndexGet
