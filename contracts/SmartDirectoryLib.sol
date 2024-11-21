@@ -8,15 +8,12 @@ pragma solidity ^0.8.17;
 //import "@openzeppelin/contracts@4.4.0/utils/Counters.sol";
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 // documentation here: https://docs.openzeppelin.com/contracts/4.x/api/token/erc721
 
 library SmartDirectoryLib {
 
-    string private constant VERSION = "SDL 1.07";
-
-    using Counters for Counters.Counter;
+    string private constant VERSION = "SDL 1.09";
 
     //DATA STRUCTURES
 
@@ -116,6 +113,7 @@ library SmartDirectoryLib {
         self.activationCode = ActivationCode.pending;
         self.mintCode = MintCode(_mintCode);
         self.registrants.push(address(0)); // list of addresses start at 1
+        self.references.push(address(0)); // list of references start at 1
         emit SmartDirectoryCreated(_parent1, _parent2, _contractUri);
     }
 
@@ -139,6 +137,7 @@ library SmartDirectoryLib {
         ref.projectId = _projectId;
         ref.referenceType = _referenceType;
         ref.referenceVersion = _referenceVersion;
+        ref.referenceStatus.push(ReferenceStatus("", block.timestamp)); // index 0 is not used
         ref.referenceStatus.push(ReferenceStatus(_status, block.timestamp));
 
         self.references.push(_referenceAddress);
@@ -160,17 +159,13 @@ library SmartDirectoryLib {
         } else if (getMintCode(self) == MintCode.selfDeclaration) {
 
             if (!isValidRegistrant(self, msg.sender)) {
-
                 addReference(self, _referenceAddress, _projectId,
                     _referenceType, _referenceVersion, _status);
                 self.registrants.push(msg.sender);
                 emit RegistrantCreated(msg.sender);
-
             } else if (isValidRegistrant(self, msg.sender)) {
-
                 addReference(self, _referenceAddress, _projectId,
                     _referenceType, _referenceVersion, _status);
-
             }
         }
         return true;
@@ -205,6 +200,8 @@ library SmartDirectoryLib {
         uint256 timeStamp) {
 
         Reference storage ref = self.referenceData[_referenceAddress];
+
+        require(ref.referenceAddress != address(0), "unknown reference");
 
         (string memory latestStatus, uint256 latestTimeStamp) = getReferenceLastStatus(ref.referenceStatus);
 
@@ -244,6 +241,7 @@ library SmartDirectoryLib {
 
     function getReferenceLastStatusIndex (SmartDirectoryStorage storage self, address _referenceAddress) public view
     returns(uint256) {
+        require(isValidRegistrant(self,self.referenceData[_referenceAddress].registrantAddress), "unknown reference");
         return self.referenceData[_referenceAddress].referenceStatus.length-1;
     }
 
@@ -256,7 +254,7 @@ library SmartDirectoryLib {
         string[] memory projectIds = new string[](count);
 
         uint256 index = 0;
-        for (uint256 i = 0; i < self.references.length; i++) {
+        for (uint256 i = 1; i < self.references.length; i++) {
             if(self.referenceData[self.references[i]].registrantAddress == _registrantAddress) {
                 references[index] = self.references[i];
                 projectIds[index] = self.referenceData[self.references[i]].projectId;
@@ -353,7 +351,7 @@ library SmartDirectoryLib {
     returns (uint256) {
 
         uint256 count = 0;
-        for (uint256 i = 0; i < self.references.length; i++) {
+        for (uint256 i = 1; i < self.references.length; i++) {
             if(self.referenceData[self.references[i]].registrantAddress == _registrantAddress) {
                 count++;
             }
