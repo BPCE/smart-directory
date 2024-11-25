@@ -14,7 +14,7 @@ import "./SmartDirectoryLib.sol";
 
 contract SmartDirectory {
 
-    string private constant VERSION = "SD 1.03";
+    string private constant VERSION = "SD 1.04";
     uint8 private constant TYPE = 42;
 
     using SmartDirectoryLib for SmartDirectoryLib.SmartDirectoryStorage;
@@ -74,9 +74,16 @@ contract SmartDirectory {
     }
 
     ///smartDirectoryReferenceStatusGet
-    function getReferenceStatus(address _referenceAddress, uint256 _index) public view returns (string memory status,
+    function getReferenceStatus(address _referenceAddress) public view returns (string memory status,
         uint256 timeStamp) {
-        return smartDirectoryStorage.getReferenceStatus(_referenceAddress, _index);
+        return smartDirectoryStorage.getReferenceStatus(_referenceAddress);
+    }
+
+
+    ///smartDirectoryReferenceStatusAtIndexGet
+    function getReferenceStatusAtIndex(address _referenceAddress, uint256 _index) public view returns (string memory status,
+        uint256 timeStamp) {
+        return smartDirectoryStorage.getReferenceStatusAtIndex(_referenceAddress, _index);
     }
 
     function getReferenceLastStatusIndex (address _referenceAddress) external view returns(uint256 lastStatusIndex) {
