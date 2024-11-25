@@ -13,7 +13,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 library SmartDirectoryLib {
 
-    string private constant VERSION = "SDL 1.09";
+    string private constant VERSION = "SDL 1.11";
 
     //DATA STRUCTURES
 
@@ -118,6 +118,23 @@ library SmartDirectoryLib {
     }
 
 
+  // VALIDITY CHECKS
+
+    function isParent(SmartDirectoryStorage storage self, address _from) internal view returns (bool) {
+        return _from == self.parents[0] || _from == self.parents[1];
+    }
+
+    function isValidRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) 
+                    internal view returns(bool) {
+        return self.registrantData[_registrantAddress].index != 0;
+    }
+
+    function isDeclaredReference (SmartDirectoryStorage storage self, address _referenceAddress)
+                    internal view returns(bool) {
+        return self.referenceData[_referenceAddress].registrantAddress   != address(0);
+    }
+
+
     //REFERENCE MANAGEMENT
 
     //SETTERS
@@ -216,8 +233,30 @@ library SmartDirectoryLib {
         );
     }
 
-    //smartDirectoryReferenceStatusGet
-    function getReferenceStatus (SmartDirectoryStorage storage self, address _referenceAddress, uint256 _index)
+     function getReferenceLastStatus (ReferenceStatus[] storage statuses) public view
+     returns(string memory status, uint256 timeStamp) {
+ 
+        if (statuses.length > 0) {
+            ReferenceStatus storage lastStatus = statuses[statuses.length - 1];
+            return (lastStatus.status, lastStatus.timeStamp);
+        } else {
+            return ("null",0);
+        }
+    }
+        ///smartDirectoryReferenceStatusGet
+    function getReferenceStatus(SmartDirectoryStorage storage self, address _referenceAddress) public view returns (string memory status,
+        uint256 timeStamp) {
+
+        require(isDeclaredReference(self, _referenceAddress), "unknown reference");
+        uint256 index = self.referenceData[_referenceAddress].referenceStatus.length -1;
+
+        Reference storage ref = self.referenceData[_referenceAddress];
+
+        return(ref.referenceStatus[index].status, ref.referenceStatus[index].timeStamp);
+    }
+
+    //smartDirectoryReferenceStatusAtIndexGet
+    function getReferenceStatusAtIndex (SmartDirectoryStorage storage self, address _referenceAddress, uint256 _index)
     public view returns(string memory status, uint256 timeStamp) {
 
         require(_index < self.referenceData[_referenceAddress].referenceStatus.length, "index too large");
@@ -226,17 +265,6 @@ library SmartDirectoryLib {
         Reference storage ref = self.referenceData[_referenceAddress];
 
         return(ref.referenceStatus[_index].status, ref.referenceStatus[_index].timeStamp);
-    }
-
-    function getReferenceLastStatus (ReferenceStatus[] storage statuses) public view
-    returns(string memory status, uint256 timeStamp) {
-
-        if (statuses.length > 0) {
-            ReferenceStatus storage lastStatus = statuses[statuses.length - 1];
-            return (lastStatus.status, lastStatus.timeStamp);
-        } else {
-            return ("null",0);
-        }
     }
 
     function getReferenceLastStatusIndex (SmartDirectoryStorage storage self, address _referenceAddress) public view
@@ -285,6 +313,7 @@ library SmartDirectoryLib {
                 //SmartDirectory must be in parentsAuthorized mode
         require (getMintCode(self) == MintCode.parentsAuthorized, "in selfDeclaration mode, just create a reference, registrant will be create from msg.sender");
         require(isParent(self, msg.sender), "unauthorized access: only one of the parents may create a registrant");
+        require( self.registrantData[_registrantAddress].index == 0, "registrant already known");
 
         createRegistrantInternal(self, _registrantAddress);
     }
@@ -342,6 +371,7 @@ library SmartDirectoryLib {
     //smartDirectoryRegistrantUriGet
     function getRegistrantUri (SmartDirectoryStorage storage self, address _registrantAddress) public view
     returns(string memory) {
+        require (self.registrantData[_registrantAddress].index > 0, "unknown registrant");
         return self.registrantData[_registrantAddress].Uri;
     }
 
@@ -365,20 +395,6 @@ library SmartDirectoryLib {
     }
 
     //SMART DIRECTORY UTILITY FUNCTIONS
-
-    function isParent(SmartDirectoryStorage storage self, address _from) internal view returns (bool) {
-        return _from == self.parents[0] || _from == self.parents[1];
-    }
-
-    function isValidRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) 
-                    internal view returns(bool) {
-        return self.registrantData[_registrantAddress].index != 0;
-    }
-
-    function isDeclaredReference (SmartDirectoryStorage storage self, address _referenceAddress)
-                    internal view returns(bool) {
-        return self.referenceData[_referenceAddress].registrantAddress   != address(0);
-    }
 
     function version() public pure returns(string memory) {
         return VERSION;
