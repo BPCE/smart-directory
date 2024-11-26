@@ -13,7 +13,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 library SmartDirectoryLib {
 
-    string private constant VERSION = "SDL 1.11";
+    string private constant VERSION = "SDL 1.12";
 
     //DATA STRUCTURES
 
@@ -23,7 +23,7 @@ library SmartDirectoryLib {
         closed    // SmartDirectory is closed : no transactions or updates allowed
     }
 
-    enum MintCode {
+    enum AdminCode {
         parentsAuthorized,  // Only addresses registered by parents can create references
         selfDeclaration     // Any addresses can create references
     }
@@ -51,7 +51,7 @@ library SmartDirectoryLib {
         address[2] parents;
         string contractUri;
         ActivationCode activationCode;
-        MintCode mintCode;
+        AdminCode adminCode;
         address [] registrants;
         mapping (address => Registrant) registrantData;
         address [] references;
@@ -102,16 +102,16 @@ library SmartDirectoryLib {
         address _parent1,
         address _parent2,
         string memory _contractUri,
-        uint8 _mintCode) public {
+        uint8 _adminCode) public {
 
-        require(_mintCode < 2, "mintCode value too large");
+        require(_adminCode < 2, "adminCode value too large");
 
         self.parents[0] = _parent1;
         self.parents[1] = _parent2;
         self.contractUri = _contractUri;
 
         self.activationCode = ActivationCode.pending;
-        self.mintCode = MintCode(_mintCode);
+        self.adminCode = AdminCode(_adminCode);
         self.registrants.push(address(0)); // list of addresses start at 1
         self.references.push(address(0)); // list of references start at 1
         emit SmartDirectoryCreated(_parent1, _parent2, _contractUri);
@@ -167,13 +167,13 @@ library SmartDirectoryLib {
         string memory _referenceType, string memory _referenceVersion, string memory _status)
     public returns (bool) {
 
-        if (getMintCode(self) == MintCode.parentsAuthorized) {
+        if (getAdminCode(self) == AdminCode.parentsAuthorized) {
 
             require (isValidRegistrant(self, msg.sender), "unknown registrant");
             addReference(self, _referenceAddress, _projectId, _referenceType,
                 _referenceVersion, _status);
 
-        } else if (getMintCode(self) == MintCode.selfDeclaration) {
+        } else if (getAdminCode(self) == AdminCode.selfDeclaration) {
 
             if (!isValidRegistrant(self, msg.sender)) {
                 addReference(self, _referenceAddress, _projectId,
@@ -311,7 +311,7 @@ library SmartDirectoryLib {
 
         require (self.activationCode == ActivationCode.active, "SmartDirectory has not been activated");
                 //SmartDirectory must be in parentsAuthorized mode
-        require (getMintCode(self) == MintCode.parentsAuthorized, "in selfDeclaration mode, just create a reference, registrant will be create from msg.sender");
+        require (getAdminCode(self) == AdminCode.parentsAuthorized, "in selfDeclaration mode, just create a reference, registrant will be create from msg.sender");
         require(isParent(self, msg.sender), "unauthorized access: only one of the parents may create a registrant");
         require( self.registrantData[_registrantAddress].index == 0, "registrant already known");
 
@@ -326,7 +326,7 @@ library SmartDirectoryLib {
         require(self.activationCode == ActivationCode.active, "SmartDirectory must be in active mode");
         require(registrantIndex <= self.registrants.length, "Index too large");
         require(registrantIndex > 0 , "Index must be greater than 0");
-        require(getMintCode(self) == MintCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
+        require(getAdminCode(self) == AdminCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
         require(isParent(self, msg.sender), "unauthorized access: only parent may call this function");
         require(isValidRegistrant(self, _registrantAddress),"registrant not known");
 
@@ -412,8 +412,8 @@ library SmartDirectoryLib {
         return self.contractUri;
     }
 
-    function getMintCode(SmartDirectoryStorage storage self) public view returns(MintCode) {
-        return self.mintCode;
+    function getAdminCode(SmartDirectoryStorage storage self) public view returns(AdminCode) {
+        return self.adminCode;
     }
 
     function getActivationCode(SmartDirectoryStorage storage self) public view returns(ActivationCode) {

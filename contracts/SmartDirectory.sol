@@ -14,7 +14,7 @@ import "./SmartDirectoryLib.sol";
 
 contract SmartDirectory {
 
-    string private constant VERSION = "SD 1.04";
+    string private constant VERSION = "SD 1.05";
     uint8 private constant TYPE = 42;
 
     using SmartDirectoryLib for SmartDirectoryLib.SmartDirectoryStorage;
@@ -26,13 +26,13 @@ contract SmartDirectory {
         address _parent1,
         address _parent2,
         string memory _contractUri,
-        uint8 _mintCode)  {
+        uint8 _adminCode)  {
 
         smartDirectoryStorage.init(
             _parent1,
             _parent2,
             _contractUri,
-            _mintCode);
+            _adminCode);
     }
 
     //REFERENCES MANAGEMENT
@@ -166,8 +166,8 @@ contract SmartDirectory {
         return smartDirectoryStorage.getContractUri();
     }
 
-    function getMintCode() public view returns(SmartDirectoryLib.MintCode mintCode) {
-        return smartDirectoryStorage.getMintCode();
+    function getAdminCode() public view returns(SmartDirectoryLib.AdminCode adminCode) {
+        return smartDirectoryStorage.getAdminCode();
     }
 
     function getActivationCode() public view returns(SmartDirectoryLib.ActivationCode) {
