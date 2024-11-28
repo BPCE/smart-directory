@@ -35,7 +35,7 @@ from utils.w3_utils import (check_address, init_w3,
                             toChecksumAddress, logging_setup,
                             check_nft_exists,
                             deploy_contract, deploy_contract_from_name)
-                            
+
 from utils.custom_variables import QAXH_PVK
 from utils.api_utils import check_args
 
@@ -81,7 +81,7 @@ def smart_directory_create():
                                     'parent_address1',
                                     'parent_address2',
                                     'contract_uri',
-                                    'mint_code',
+                                    'admin_code',
                                     'chain_id'
                                     ]
                         )
@@ -99,21 +99,21 @@ def smart_directory_create():
         to_be_deployed = globals.w3.eth.contract(abi=abi, bytecode=bytecode)
     except binascii.Error:
         return_code = 400;
-        message = "***Error: %s bytecode link failure" % (folder_class_name +                                                                                                                                                                                                                                                    
+        message = "***Error: %s bytecode link failure" % (folder_class_name +
                             variant)
         logging.critical(message)
-        response['message'] = message                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+        response['message'] = message
         response["retcode"] = return_code
         return_json = json.dumps(response)
         logging.info(route + " returns: " + return_json)
         return jsonify(response), return_code
 
-    params = [  
+    params = [
                 toChecksumAddress(args['parent_address1']),
                 toChecksumAddress(args['parent_address2']),
                 args['contract_uri'],
                 int(args['mint_code'])
-             ]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+             ]
     return deploy_contract(globals.w3, to_be_deployed, params)
 
 
@@ -148,20 +148,20 @@ def smart_directory_create_token_721():
         logging.info(route + " returns: " + return_json)
         return jsonify(response), return_code
 
-    params=[ 
+    params=[
                 args['name'],
                 args['symbol'],
                 toChecksumAddress(args['parent_address1']),
                 toChecksumAddress(args['parent_address2']),
                 toChecksumAddress(args['smart_directory']),
                 toChecksumAddress(args['registrant_address']),
-                args['base_uri'],                
+                args['base_uri'],
                 int(args['max_token'])
              ]
 
     return deploy_contract_from_name(w3, "SmartToken721", params)
-    
-#                                                                
+
+#
 def load_smart_directory_abi(network_id):
     network_id = str(network_id)
     logging.info("Entering load_directory_abi on network: " + network_id)
