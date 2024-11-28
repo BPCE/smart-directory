@@ -112,7 +112,7 @@ def smart_directory_create():
                 toChecksumAddress(args['parent_address1']),
                 toChecksumAddress(args['parent_address2']),
                 args['contract_uri'],
-                int(args['mint_code'])
+                int(args['admin_code'])
              ]
     return deploy_contract(globals.w3, to_be_deployed, params)
 
