@@ -13,7 +13,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 library SmartDirectoryLib {
 
-    string private constant VERSION = "SDL 1.12";
+    string private constant VERSION = "SDL 1.13";
 
     //DATA STRUCTURES
 
@@ -149,7 +149,6 @@ library SmartDirectoryLib {
 
         Reference storage ref = self.referenceData[_referenceAddress];
 
-        ref.registrantAddress = msg.sender;
         ref.referenceAddress = _referenceAddress;
         ref.projectId = _projectId;
         ref.referenceType = _referenceType;
@@ -319,7 +318,7 @@ library SmartDirectoryLib {
     }
 
     //smartDirectoryRegistrantEoaDelete
-    function delRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public {
+    function disableRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public {
 
         uint256 registrantIndex = getRegistrantIndex(self,_registrantAddress);
 

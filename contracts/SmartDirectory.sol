@@ -14,7 +14,7 @@ import "./SmartDirectoryLib.sol";
 
 contract SmartDirectory {
 
-    string private constant VERSION = "SD 1.05";
+    string private constant VERSION = "SD 1.06";
     uint8 private constant TYPE = 42;
 
     using SmartDirectoryLib for SmartDirectoryLib.SmartDirectoryStorage;
@@ -106,8 +106,8 @@ contract SmartDirectory {
     }
 
     //smartDirectoryRegistrantEoaDelete
-    function delRegistrant (address _registrantAddress) public {
-        smartDirectoryStorage.delRegistrant(_registrantAddress);
+    function disableRegistrant (address _registrantAddress) public {
+        smartDirectoryStorage.disableRegistrant(_registrantAddress);
     }
 
     //smartDirectoryRegistrantUriEoaWrite
