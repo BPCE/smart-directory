@@ -14,4 +14,5 @@ else # git bash
     GIT_SDK_PATH=/c/git-sdk-64
     export JAVA_HOME=`cygpath -w /C/Program\ Files/java/jdk1.8.0_181`
     PATH=${PATH}:${GIT_SDK_PATH}/usr/bin
+    PATH=/c/Program\ Files/nodejs:${PATH}
 fi
