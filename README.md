@@ -1,4 +1,3 @@
-**Le développement est transferé ici avec tout son historique: https://github.com/BPCE/smart-directory/**
 
 ## Problématique : la multiplication des smartContracts
 
