@@ -1,4 +1,4 @@
-Problématique : la multiplication des smartContracts
+## Problématique : la multiplication des smartContracts
 
 La vision autour des smartContracts a fortement évolué dans l’écosystème Blockchain, principalement Ethereum. Initialement ils étaient perçus comme des artefacts quasi-uniques dont l’utilisation est garantie par la connaissance de l’adresse du smartContract. Une telle sécurité d’utilisation nécessite que chaque utilisateur gère par ses propres moyens, la liste des adresses à laquelle il fait confiance.
 
@@ -19,8 +19,8 @@ En synthèse, nous identifions les besoins génériques suivants :
 •  une nécessité d’identifier des écosystèmes de smartContracts pour en faire une analyse,
 •  une capacité de maintenir à jour ces écosystèmes.
 
-Le composant central de la solution proposée : le smartDirectory
+## Le composant central de la solution proposée : le smartDirectory
 
 Le smartDirectory est un smartContract qui va permettre de conserver de façon partagée sur la blockchain des  listes d’adresses, soit EOA soit smartContracts. Fonctionnellement, ces listes représentent les tables des matières des différents écosystèmes.
 
-Une entité, le déclarant, munie d’un accès blockchain avec capacité de signature pourra écrire un ou plusieurs enregistrements dans le smartDirectory permettant la constitution de ces listes. Pour laisser de la  latitude aux utilisateurs, le fonctionnement du smartDirectory reste le plus basique possible avec principalement deux structures logiques : les référencements et les déclarants.
+Une entité, **le déclarant **, munie d’un accès blockchain avec capacité de signature pourra écrire un ou plusieurs enregistrements dans le smartDirectory permettant la constitution de ces listes. Pour laisser de la  latitude aux utilisateurs, le fonctionnement du smartDirectory reste le plus basique possible avec principalement deux structures logiques : les référencements et les déclarants.
