@@ -54,9 +54,8 @@ import utils.globals as globals
 
 # Global values and environment setup:
 
-os.environ["WEB3_INFURA_PROJECT_ID"] = "6fc00519e1cf453099f0f3c24b0db027"
-os.environ["WEB3_INFURA_API_SECRET"] = "512f69b2c1fb49d1a421d555994acd8a"
 os.environ["WEB3_INFURA_SCHEME"] = "https"
+etherscan_gasstation_api_key = os.environ["ETHERSCAN_GASSTATION_API_KEY"]
 
 logger = logging.getLogger(__name__)
 
@@ -101,7 +100,7 @@ def set_poa_chain(w): #for poa eg. rinkeby polygon
 
 def get_gasstation(chain_id):
     if int(chain_id) ==  1:
-        return "https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=7WKFQQDPD3JUSF7VGFCVGKZHTQM3B6QNM9"
+        return "https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=" + etherscan_gasstation_api_key
     elif int(chain_id) == 5:
         return "https://gas-station.qaxh.io/goerli-ethereum"
     elif int(chain_id) == 11155111:
