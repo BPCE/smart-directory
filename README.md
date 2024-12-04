@@ -13,11 +13,11 @@ la création de smartContracts en grands nombres pour les actifs et les utilisat
 la création de smartContracts liés à la gestion des processus des actifs, en nombre guère plus restreint, avec un besoin de contrôles des smartContracts précédents dans toutes les étapes de leur propre exécution.
 
 En synthèse, nous identifions les besoins génériques suivants : 
-•  une facilité de déploiement de nouveaux smartContracts,
-•  une capacité de contrôle de la validité de ces smartContracts par un utilisateur externe à la blockchain,
-•  une capacité de contrôle de la validité de ces smartContracts par un autre smartContract,
-•  une nécessité d’identifier des écosystèmes de smartContracts pour en faire une analyse,
-•  une capacité de maintenir à jour ces écosystèmes.
+-  une facilité de déploiement de nouveaux smartContracts,
+-  une capacité de contrôle de la validité de ces smartContracts par un utilisateur externe à la blockchain,
+-  une capacité de contrôle de la validité de ces smartContracts par un autre smartContract,
+-  une nécessité d’identifier des écosystèmes de smartContracts pour en faire une analyse,
+-  une capacité de maintenir à jour ces écosystèmes.
 
 ## Le composant central de la solution proposée : le smartDirectory
 
