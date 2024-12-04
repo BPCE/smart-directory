@@ -1,3 +1,5 @@
+**Le développement est transferé ici: https://github.com/BPCE/smart-directory/**
+
 ## Problématique : la multiplication des smartContracts
 
 La vision autour des smartContracts a fortement évolué dans l’écosystème Blockchain, principalement Ethereum. Initialement ils étaient perçus comme des artefacts quasi-uniques dont l’utilisation est garantie par la connaissance de l’adresse du smartContract. Une telle sécurité d’utilisation nécessite que chaque utilisateur gère par ses propres moyens, la liste des adresses à laquelle il fait confiance.
