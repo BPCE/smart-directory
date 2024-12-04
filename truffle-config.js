@@ -126,7 +126,7 @@ module.exports = {
 			  //phrase: process.env.MNEMONIC
 		  //},
           privateKeys:[process.env.QAXH_PVK],
-          providerOrUrl: process.env.RPC_AMOY_PROVIDER
+          providerOrUrl: 'https://rpc-amoy.polygon.technology/'
         })
       },
       SkipDryRun: true,
