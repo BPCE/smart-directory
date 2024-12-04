@@ -116,6 +116,47 @@ def smart_directory_create():
              ]
     return deploy_contract(globals.w3, to_be_deployed, params)
 
+@app.route("/smart-directory/smartErc20Acreate", methods=['GET', 'POST'])
+def smart_directory_create_token_erc20a():
+    route = str(request.url_rule)
+    logging.info("enter api: %s" % route)
+    response = {}
+    return_code = 200
+    args = request.args
+
+    w3 = globals.w3
+
+    try:
+        check_args(args, [
+                                    'chain_id',
+                                    'parent_address1',
+                                    'parent_address2',
+                                    'smart_directory',
+                                    'registrant_address',
+                                    'name',
+                                    'symbol',
+                                    'allow_non_zero_total_balance'
+                                    ]
+                        )
+    except ValueError as e:
+        return_code = 400
+        response['message'] = str(e)
+        response['return_code'] = return_code
+        return_json = json.dumps(response)
+        logging.info(route + " returns: " + return_json)
+        return jsonify(response), return_code
+
+    params=[
+                args['name'],
+                args['symbol'],
+                'True' == args['allow_non_zero_total_balance'],
+                toChecksumAddress(args['parent_address1']),
+                toChecksumAddress(args['parent_address2']),
+                toChecksumAddress(args['smart_directory']),
+                toChecksumAddress(args['registrant_address'])
+             ]
+    logging.info("params: %s" % str(params))
+    return deploy_contract_from_name(w3, "SmartTokenERC20A", params)
 
 @app.route("/smart-directory/smart721create", methods=['GET', 'POST'])
 def smart_directory_create_token_721():
