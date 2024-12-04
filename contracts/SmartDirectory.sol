@@ -14,7 +14,7 @@ import "./SmartDirectoryLib.sol";
 
 contract SmartDirectory {
 
-    string private constant VERSION = "SD 1.06";
+    string private constant VERSION = "SD 1.07";
     uint8 private constant TYPE = 42;
 
     using SmartDirectoryLib for SmartDirectoryLib.SmartDirectoryStorage;
@@ -63,6 +63,7 @@ contract SmartDirectory {
     //smartDirectoryReferenceGet
     function getReference(address _referenceAddress) public view returns (
         address registrantAddress,
+        uint256 registrantIndex,
         address referenceAddress,
         string memory projectId,
         string memory referenceType,
@@ -129,7 +130,7 @@ contract SmartDirectory {
         return smartDirectoryStorage.getRegistrantAtIndex(_registrantIndex);
     }
 
-        //smartDirectoryRegistrantIndexGet
+    //smartDirectoryRegistrantIndexGet
     function getRegistrantIndex(address _registrantAddress) public view returns(uint256) {
         return smartDirectoryStorage.getRegistrantIndex(_registrantAddress);
     }
@@ -144,7 +145,12 @@ contract SmartDirectory {
         return smartDirectoryStorage.getRegistrantReferencesCount(_registrantAddress);
     }
 
-    //SMART DIRECTORY UTILITY FUNCTIONS
+    //smartDirectoryRegistrantsListGet
+    function getDisabledRegistrants() public view returns (address[] memory disabledRegistrantsList) {
+        return smartDirectoryStorage.getDisabledRegistrants();
+    }
+
+//SMART DIRECTORY UTILITY FUNCTIONS
 
     function version() public pure returns (string memory) {
         return string.concat(VERSION,SmartDirectoryLib.version());

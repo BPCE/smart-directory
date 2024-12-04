@@ -13,7 +13,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 library SmartDirectoryLib {
 
-    string private constant VERSION = "SDL 1.13";
+    string private constant VERSION = "SDL 1.14";
 
     //DATA STRUCTURES
 
@@ -92,7 +92,7 @@ library SmartDirectoryLib {
         string indexed registrantUri
     );
 
-    event RegistrantDeleted (
+    event RegistrantDisabled (
         address indexed registrant
     );
 
@@ -134,7 +134,6 @@ library SmartDirectoryLib {
         return self.referenceData[_referenceAddress].registrantAddress   != address(0);
     }
 
-
     //REFERENCE MANAGEMENT
 
     //SETTERS
@@ -149,6 +148,7 @@ library SmartDirectoryLib {
 
         Reference storage ref = self.referenceData[_referenceAddress];
 
+        ref.registrantAddress = msg.sender;
         ref.referenceAddress = _referenceAddress;
         ref.projectId = _projectId;
         ref.referenceType = _referenceType;
@@ -208,6 +208,7 @@ library SmartDirectoryLib {
     //smartDirectoryReferenceGet
     function getReference (SmartDirectoryStorage storage self, address _referenceAddress) public view returns(
         address registrantAddress,
+        uint256 registrantIndex,
         address referenceAddress,
         string memory projectId,
         string memory referenceType,
@@ -219,10 +220,12 @@ library SmartDirectoryLib {
 
         require(ref.referenceAddress != address(0), "unknown reference");
 
+        uint256 index = getRegistrantIndex(self,ref.registrantAddress);
         (string memory latestStatus, uint256 latestTimeStamp) = getReferenceLastStatus(ref.referenceStatus);
 
         return (
             ref.registrantAddress,
+            index,
             ref.referenceAddress,
             ref.projectId,
             ref.referenceType,
@@ -242,9 +245,10 @@ library SmartDirectoryLib {
             return ("null",0);
         }
     }
-        ///smartDirectoryReferenceStatusGet
-    function getReferenceStatus(SmartDirectoryStorage storage self, address _referenceAddress) public view returns (string memory status,
-        uint256 timeStamp) {
+
+    //smartDirectoryReferenceStatusGet
+    function getReferenceStatus(SmartDirectoryStorage storage self, address _referenceAddress) public view returns
+        (string memory status, uint256 timeStamp) {
 
         require(isDeclaredReference(self, _referenceAddress), "unknown reference");
         uint256 index = self.referenceData[_referenceAddress].referenceStatus.length -1;
@@ -268,7 +272,8 @@ library SmartDirectoryLib {
 
     function getReferenceLastStatusIndex (SmartDirectoryStorage storage self, address _referenceAddress) public view
     returns(uint256) {
-        require(isValidRegistrant(self,self.referenceData[_referenceAddress].registrantAddress), "unknown reference");
+        require(isValidRegistrant(self,self.referenceData[_referenceAddress].registrantAddress),
+            "unknown reference");
         return self.referenceData[_referenceAddress].referenceStatus.length-1;
     }
 
@@ -317,7 +322,7 @@ library SmartDirectoryLib {
         createRegistrantInternal(self, _registrantAddress);
     }
 
-    //smartDirectoryRegistrantEoaDelete
+    //smartDirectoryRegistrantEoaDisable
     function disableRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public {
 
         uint256 registrantIndex = getRegistrantIndex(self,_registrantAddress);
@@ -331,7 +336,7 @@ library SmartDirectoryLib {
 
         self.registrantData[_registrantAddress].index = 0;
 
-        emit RegistrantDeleted(_registrantAddress);
+        emit RegistrantDisabled(_registrantAddress);
     }
 
     //smartDirectoryRegistrantUriEoaWrite
@@ -348,6 +353,30 @@ library SmartDirectoryLib {
     }
 
         //GETTERS
+
+    //smartDirectoryDisabledRegistrantsListGet
+    function getDisabledRegistrants(SmartDirectoryStorage storage self) public view returns
+        (address[] memory) {
+
+        uint256 disabledCount = 0;
+        for (uint256 i = 1; i < self.registrants.length; i++) {
+            if (self.registrantData[self.registrants[i]].index == 0) {
+                disabledCount++;
+            }
+        }
+
+        address[] memory disabledRegistrants = new address[](disabledCount);
+        uint256 index = 0;
+
+        for (uint256 i = 1; i < self.registrants.length; i++) {
+            if (self.registrantData[self.registrants[i]].index == 0) {
+                disabledRegistrants[index] = self.registrants[i];
+                index++;
+            }
+        }
+
+        return disabledRegistrants;
+    }
 
     //smartDirectoryRegistrantAtIndexGet
     function getRegistrantAtIndex (SmartDirectoryStorage storage self, uint256 _registrantIndex) public view
