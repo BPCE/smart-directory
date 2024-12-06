@@ -1,5 +1,5 @@
 
-contractFiles=SmartDirectory
+contractFiles=SmartDirectory SmartTokenERC20A
 openZeppelinPaths=
 facetFiles=
 
