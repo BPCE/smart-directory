@@ -13,7 +13,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 library SmartDirectoryLib {
 
-    string private constant VERSION = "SDL 1.14";
+    string private constant VERSION = "SDL 1.15";
 
     //DATA STRUCTURES
 
@@ -74,7 +74,7 @@ library SmartDirectoryLib {
     event ReferenceCreated (
         address indexed registrant,
         address indexed referenceAddress,
-        string indexed projectId
+        string projectId
     );
 
     event ReferenceStatusUpdated (
@@ -117,6 +117,11 @@ library SmartDirectoryLib {
         emit SmartDirectoryCreated(_parent1, _parent2, _contractUri);
     }
 
+    //MODIFIERS
+    modifier onlyActive(SmartDirectoryStorage storage self) {
+        require(self.activationCode == ActivationCode.active, "SmartDirectory has not been activated");
+        _;
+    }
 
   // VALIDITY CHECKS
 
@@ -139,10 +144,9 @@ library SmartDirectoryLib {
     //SETTERS
 
     function addReference (SmartDirectoryStorage storage self, address _referenceAddress, string memory _projectId,
-        string memory _referenceType, string memory _referenceVersion, string memory _status)
-    internal {
+        string memory _referenceType, string memory _referenceVersion, string memory _status) internal onlyActive(self)
+    {
 
-        require (self.activationCode == ActivationCode.active, "SmartDirectory has not been activated");
         require (_referenceAddress != address(0x0), "reference must not be address 0");
         require (!isDeclaredReference(self, _referenceAddress), "reference already known");
 
@@ -168,7 +172,7 @@ library SmartDirectoryLib {
 
         if (getAdminCode(self) == AdminCode.parentsAuthorized) {
 
-            require (isValidRegistrant(self, msg.sender), "unknown registrant");
+            require (isValidRegistrant(self, msg.sender), "unknown or disabled registrant");
             addReference(self, _referenceAddress, _projectId, _referenceType,
                 _referenceVersion, _status);
 
@@ -177,8 +181,14 @@ library SmartDirectoryLib {
             if (!isValidRegistrant(self, msg.sender)) {
                 addReference(self, _referenceAddress, _projectId,
                     _referenceType, _referenceVersion, _status);
+
+                Registrant memory registrant;
+                registrant.index = self.registrants.length;
+
                 self.registrants.push(msg.sender);
+                self.registrantData[msg.sender] = registrant;
                 emit RegistrantCreated(msg.sender);
+
             } else if (isValidRegistrant(self, msg.sender)) {
                 addReference(self, _referenceAddress, _projectId,
                     _referenceType, _referenceVersion, _status);
@@ -189,12 +199,10 @@ library SmartDirectoryLib {
 
     //smartDirectoryReferenceStatusEoaUpdate
     function updateReferenceStatus (SmartDirectoryStorage storage self, address _referenceAddress,
-        string memory _status) public {
+        string memory _status) public onlyActive(self) {
 
-        require (self.activationCode == ActivationCode.active, "SmartDirectory must be activated");
-        require (isValidRegistrant(self, msg.sender), "unknown registrant");
+        require (isValidRegistrant(self, msg.sender), "unknown or disabled registrant");
         require (isDeclaredReference(self,_referenceAddress), "unknown reference");
-
 
         self.referenceData[_referenceAddress].referenceStatus.push(ReferenceStatus(_status,
             block.timestamp));
@@ -311,23 +319,22 @@ library SmartDirectoryLib {
     }
 
     //smartDirectoryRegistrantEoaCreate
-    function createRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public {
+    function createRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public onlyActive(self) {
 
-        require (self.activationCode == ActivationCode.active, "SmartDirectory has not been activated");
-                //SmartDirectory must be in parentsAuthorized mode
+        //SmartDirectory must be in parentsAuthorized mode
         require (getAdminCode(self) == AdminCode.parentsAuthorized, "in selfDeclaration mode, just create a reference, registrant will be create from msg.sender");
         require(isParent(self, msg.sender), "unauthorized access: only one of the parents may create a registrant");
-        require( self.registrantData[_registrantAddress].index == 0, "registrant already known");
+        require(self.registrantData[_registrantAddress].index == 0, "registrant already known");
 
         createRegistrantInternal(self, _registrantAddress);
     }
 
     //smartDirectoryRegistrantEoaDisable
-    function disableRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public {
+    function disableRegistrant (SmartDirectoryStorage storage self, address _registrantAddress) public onlyActive(self)
+    {
 
         uint256 registrantIndex = getRegistrantIndex(self,_registrantAddress);
 
-        require(self.activationCode == ActivationCode.active, "SmartDirectory must be in active mode");
         require(registrantIndex <= self.registrants.length, "Index too large");
         require(registrantIndex > 0 , "Index must be greater than 0");
         require(getAdminCode(self) == AdminCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
@@ -341,9 +348,8 @@ library SmartDirectoryLib {
 
     //smartDirectoryRegistrantUriEoaWrite
     function updateRegistrantUri (SmartDirectoryStorage storage self, string memory _registrantUri) public
-    returns(bool) {
+    onlyActive(self) returns(bool) {
 
-        require(self.activationCode == ActivationCode.active, "SmartDirectory must be in active mode");
         require (isValidRegistrant(self, msg.sender), "unknown registrant");
 
         self.registrantData[msg.sender].Uri = _registrantUri;
