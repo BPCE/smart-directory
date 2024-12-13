@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "./SmartTokenIERC20A.sol";
-import "./SmartTokenIERC20AMetadata.sol";
+import {ISmartDirectory} from "./ISmartDirectory.sol";
+import {ISmartTokenERC20A} from "./ISmartTokenERC20A.sol";
+import {ISmartTokenERC20AMetadata} from "./ISmartTokenERC20AMetadata.sol";
+
 import "@openzeppelin/contracts/utils/Context.sol";
 
 /* supplementary documentation specific to ERC20A
@@ -11,12 +13,12 @@ import "@openzeppelin/contracts/utils/Context.sol";
  * fiat money for the payment of an NFT, one can record the fiat payment using this token. This allows the receiving
  * party to have an accounting record linked to the sale on the blockchain.
  *
- * Using openzeppelin ERC20. Documentation here : https://docs.openzeppelin.com/contracts/4.x/api/token/erc20#ERC20.
+ * Using open-zeppelin ERC20. Documentation here : https://docs.openzeppelin.com/contracts/4.x/api/token/erc20#ERC20.
  */
 
-contract SmartTokenERC20A is Context, SmartTokenIERC20A, SmartTokenIERC20AMetadata {
+contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetadata {
 
-    string private constant VERSION = "DTERC20A_1.0";
+    string private constant VERSION = "DTERC20A_1.01";
     string private constant TYPE = "SmartERC20A";
 
     mapping(address => int256) private balances;
@@ -27,10 +29,10 @@ contract SmartTokenERC20A is Context, SmartTokenIERC20A, SmartTokenIERC20AMetada
     string private name;
     string private symbol;
     bool private allowNonZeroTotalBalance;
-    address parent1;
-    address parent2;
-    address smart_directory;
-    address registrant_address;
+    address public parent1;
+    address public parent2;
+    address public smart_directory;
+    address public registrant_address;
 
     constructor(    string memory _name,
                     string memory _symbol,
@@ -46,6 +48,13 @@ contract SmartTokenERC20A is Context, SmartTokenIERC20A, SmartTokenIERC20AMetada
         smart_directory = _smart_directory;
         parent1 = _parent1;
         parent2 = _parent2;
+    }
+
+    //MODIFIERS
+    modifier activeRegistrant() {
+        require (ISmartDirectory(smart_directory).isValidRegistrant(msg.sender),
+            "unknown or disabled registrant");
+        _;
     }
 
     // GETTERS
@@ -92,22 +101,22 @@ contract SmartTokenERC20A is Context, SmartTokenIERC20A, SmartTokenIERC20AMetada
 
     // FUNCTIONS
 
-    function balanceOf(address account) public view virtual override returns (int256) {
+    function balanceOf(address account) public view virtual override activeRegistrant returns (int256) {
         return balances[account];
     }
 
     // Requirements: `to` cannot be the zero address & the caller must have a balance of at least `amount`.
-    function transfer(address to, uint256 amount) public virtual override returns (bool) {
+    function transfer(address to, uint256 amount) public virtual override activeRegistrant returns (bool) {
         address owner = _msgSender();
         _transfer(owner, to, amount);
         return true;
     }
 
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+    function allowance(address owner, address spender) public view virtual override activeRegistrant returns (uint256) {
         return allowances[owner][spender];
     }
 
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+    function approve(address spender, uint256 amount) public virtual override activeRegistrant returns (bool) {
         address owner = _msgSender();
         _approve(owner, spender, amount);
         return true;
@@ -117,20 +126,20 @@ contract SmartTokenERC20A is Context, SmartTokenIERC20A, SmartTokenIERC20AMetada
         address from,
         address to,
         uint256 amount
-    ) public virtual override returns (bool) {
+    ) public virtual override activeRegistrant returns (bool) {
         address spender = _msgSender();
         _spendAllowance(from, spender, amount);
         _transfer(from, to, amount);
         return true;
     }
 
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
+    function increaseAllowance(address spender, uint256 addedValue) public virtual activeRegistrant returns (bool) {
         address owner = _msgSender();
         _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
     }
 
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual activeRegistrant returns (bool) {
         address owner = _msgSender();
         uint256 currentAllowance = allowance(owner, spender);
         require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
@@ -145,15 +154,15 @@ contract SmartTokenERC20A is Context, SmartTokenIERC20A, SmartTokenIERC20AMetada
         address from,
         address to,
         uint256 amount
-    ) internal virtual {
+    ) internal virtual activeRegistrant {
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
-        require(amount < uint256(type(int256).max), "ERC20A: amount transfered too big");
+        require(amount < uint256(type(int256).max), "ERC20A: amount transferred too big");
         if (balances[to] > 0){
-            require(uint256(balances[to]) + amount< uint256(type(int256).max), "ERC20A: amount transfered too big, destination account overflow");
+            require(uint256(balances[to]) + amount< uint256(type(int256).max), "ERC20A: amount transferred too big, destination account overflow");
         }
         if (balances[from] < 0){
-            require(uint256(-balances[from]) + amount< uint256(type(int256).max), "ERC20A: amount transfered too big, source account underflow");
+            require(uint256(-balances[from]) + amount< uint256(type(int256).max), "ERC20A: amount transferred too big, source account underflow");
         }
 
         _beforeTokenTransfer(from, to, amount);
