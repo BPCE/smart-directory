@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17.0;
 
 // specific versions accepted by remix
@@ -7,16 +7,16 @@ pragma solidity ^0.8.17.0;
 //import "@openzeppelin/contracts@4.4.0/utils/Counters.sol";
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-// documentation here: https://docs.openzeppelin.com/contracts/4.x/api/token/erc721
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+// documentation here: https://docs.openzeppelin.com/contracts/4.x/api/token/erc721
 
+import {ISmartDirectory} from "./ISmartDirectory.sol";
+import {ISmartToken721} from "./ISmartToken721.sol";
 
+contract SmartToken721 is ERC721, ISmartToken721 {
 
-contract SmartToken721 is ERC721 {
-
-	string private constant VERSION = "DT721_1.0";
-
+	string private constant VERSION = "DT721_1.01";
     string private constant TYPE = "Smart721";
 
     address parent1;
@@ -26,7 +26,7 @@ contract SmartToken721 is ERC721 {
     string base_uri;
     uint256 max_token;
 
-	Counters.Counter        nextToken; // id of the next token to be minted
+	Counters.Counter nextToken; // id of the next token to be minted
 
     //	USING DIRECTIVES
     using Counters for Counters.Counter;
@@ -70,6 +70,13 @@ contract SmartToken721 is ERC721 {
         parent1 = _parent1;
     }
 
+    //MODIFIERS
+    modifier activeRegistrant() {
+        require (ISmartDirectory(smart_directory).isValidRegistrant(msg.sender),
+            "unknown or disabled registrant");
+        _;
+    }
+
 //  GETTERS
 
     function _baseURI() internal view virtual override returns (string memory)   {
@@ -100,9 +107,8 @@ contract SmartToken721 is ERC721 {
 		return parent2;
 	}
 
-    function get_type()  public pure returns(string memory) {
+    function get_type() public view returns(string memory) {
         return TYPE;
     }
 
 }
-
