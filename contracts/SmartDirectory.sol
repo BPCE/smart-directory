@@ -1,20 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-// specific versions accepted by remix
-//import "@openzeppelin/contracts@4.4.0/utils/math/SafeMath.sol";
-//import "@openzeppelin/contracts@4.4.0/token/ERC721/ERC721.sol";
-//import "@openzeppelin/contracts@4.4.0/utils/Counters.sol";
-
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-// documentation here: https://docs.openzeppelin.com/contracts/4.x/api/token/erc721
-import "./SmartDirectoryLib.sol";
+import {SmartDirectoryLib} from "./SmartDirectoryLib.sol";
 
 contract SmartDirectory {
 
-    string private constant VERSION = "SD 1.08";
+    string private constant VERSION = "SD 1.09";
     uint8 private constant TYPE = 42;
 
     using SmartDirectoryLib for SmartDirectoryLib.SmartDirectoryStorage;
@@ -38,6 +29,12 @@ contract SmartDirectory {
     //VALIDITY CHECK
     function isValidRegistrant (address _registrantAddress) public view returns(bool) {
         return smartDirectoryStorage.isValidRegistrant(_registrantAddress);
+    }
+
+    //MODIFIERS
+    modifier activeRegistrant() {
+        require (isValidRegistrant(msg.sender), "unknown or disabled registrant");
+        _;
     }
 
     //REFERENCES MANAGEMENT
