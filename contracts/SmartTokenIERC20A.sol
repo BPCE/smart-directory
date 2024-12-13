@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
-// documentation here: https://docs.openzeppelin.com/contracts/4.x/api/token/erc20#IERC20
-
 pragma solidity ^0.8.17;
 
-interface SmartTokenIERC20A {
+interface ISmartTokenERC20A {
 
     function get_totalSupply() external view returns (int256);
 
