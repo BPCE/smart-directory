@@ -21,7 +21,6 @@ trace.log
 package.json
 package-lock.json
 .vscode/
-.*.swp
 yarn.lock
 .ipynb_checkpoints/
 __pycache__/
@@ -37,3 +36,5 @@ api/log/
 constants.py
 .states
 
+/compiler_config.json
+/remix-compiler.config.js
