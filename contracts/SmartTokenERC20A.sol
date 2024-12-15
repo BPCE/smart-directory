@@ -18,8 +18,8 @@ import "@openzeppelin/contracts/utils/Context.sol";
 
 contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetadata {
 
-    string private constant VERSION = "DTERC20A_1.01";
-    string private constant TYPE = "SmartERC20A";
+    string private constant VERSION = "DTERC20A_1.02";
+    //string private constant TYPE = "SmartERC20A";
 
     mapping(address => int256) private balances;
     mapping(address => mapping(address => uint256)) private allowances;
@@ -28,6 +28,7 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
 
     string private name;
     string private symbol;
+    uint8 private tokenType; // 21: ERC20 classique, 22: ERC20A comptable
     bool private allowNonZeroTotalBalance;
     address public parent1;
     address public parent2;
@@ -36,18 +37,27 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
 
     constructor(    string memory _name,
                     string memory _symbol,
+                    uint8 _tokenType,
                     bool _allowNonZeroTotalBalance,
                     address _parent1,
                     address _parent2,
                     address _smart_directory,
-                    address _registrant_address) {
+                    address _registrant_address
+    ) {
+        require(_tokenType == 21 || _tokenType == 22, "Invalid token type. Must be 21 or 22");
         name = _name;
         symbol = _symbol;
+        tokenType = _tokenType;
         allowNonZeroTotalBalance = _allowNonZeroTotalBalance;
         registrant_address = _registrant_address;
         smart_directory = _smart_directory;
         parent1 = _parent1;
         parent2 = _parent2;
+
+        if (tokenType == 21) { // ERC20 classique : crédit initial des parents
+            _mint(_parent1, 1_000_000 * (10 ** uint256(get_decimals())));
+            _mint(_parent2, 1_000_000 * (10 ** uint256(get_decimals())));
+        }
     }
 
     //MODIFIERS
@@ -79,8 +89,8 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
         return VERSION;
     }
 
-    function get_type()  public pure returns(string memory) {
-        return TYPE;
+    function get_type()  public view returns(uint8) {
+        return tokenType;
     }
 
     function get_parent1() public view returns(address) {
@@ -158,6 +168,11 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
         require(amount < uint256(type(int256).max), "ERC20A: amount transferred too big");
+
+        if (tokenType == 21) { // ERC20 : interdiction des balances négatives
+            require(balances[from] >= int256(amount), "ERC20: insufficient balance");
+        }
+
         if (balances[to] > 0){
             require(uint256(balances[to]) + amount< uint256(type(int256).max), "ERC20A: amount transferred too big, destination account overflow");
         }
