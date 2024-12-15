@@ -16,7 +16,7 @@ import {ISmartToken721} from "./ISmartToken721.sol";
 
 contract SmartToken721 is ERC721, ISmartToken721 {
 
-	string private constant VERSION = "DT721_1.01";
+	string private constant VERSION = "DT721_1.02";
     string private constant TYPE = "Smart721";
 
     address parent1;
@@ -26,7 +26,7 @@ contract SmartToken721 is ERC721, ISmartToken721 {
     string base_uri;
     uint256 max_token;
 
-	Counters.Counter nextToken; // id of the next token to be minted
+	Counters.Counter internal nextToken; // id of the next token to be minted
 
     //	USING DIRECTIVES
     using Counters for Counters.Counter;
@@ -107,8 +107,25 @@ contract SmartToken721 is ERC721, ISmartToken721 {
 		return parent2;
 	}
 
-    function get_type() public view returns(string memory) {
+    function get_type() public pure override returns(string memory) {
         return TYPE;
+    }
+
+    // FUNCTIONS
+
+    function mint(address to) public activeRegistrant {
+        require(nextToken.current() <= max_token, "Max token limit reached");
+        _safeMint(to, nextToken.current());
+        nextToken.increment();
+    }
+
+    function transfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public activeRegistrant {
+        require(_isApprovedOrOwner(msg.sender, tokenId), "Caller is not owner nor approved");
+        _transfer(from, to, tokenId);
     }
 
 }
