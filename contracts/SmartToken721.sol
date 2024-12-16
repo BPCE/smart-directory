@@ -16,7 +16,7 @@ import {ISmartToken721} from "./ISmartToken721.sol";
 
 contract SmartToken721 is ERC721, ISmartToken721 {
 
-	string private constant VERSION = "DT721_1.02";
+	string private constant VERSION = "DT721_1.03";
     string private constant TYPE = "Smart721";
 
     address parent1;
@@ -71,8 +71,8 @@ contract SmartToken721 is ERC721, ISmartToken721 {
     }
 
     //MODIFIERS
-    modifier activeRegistrant() {
-        require (ISmartDirectory(smart_directory).isValidRegistrant(msg.sender),
+    modifier isValidRegistrant() {
+        require (ISmartDirectory(smart_directory).isValidRegistrant(registrant_address),
             "unknown or disabled registrant");
         _;
     }
@@ -113,7 +113,7 @@ contract SmartToken721 is ERC721, ISmartToken721 {
 
     // FUNCTIONS
 
-    function mint(address to) public activeRegistrant {
+    function mint(address to) public isValidRegistrant {
         require(nextToken.current() <= max_token, "Max token limit reached");
         _safeMint(to, nextToken.current());
         nextToken.increment();
@@ -123,7 +123,7 @@ contract SmartToken721 is ERC721, ISmartToken721 {
         address from,
         address to,
         uint256 tokenId
-    ) public activeRegistrant {
+    ) public isValidRegistrant {
         require(_isApprovedOrOwner(msg.sender, tokenId), "Caller is not owner nor approved");
         _transfer(from, to, tokenId);
     }
