@@ -18,8 +18,7 @@ import "@openzeppelin/contracts/utils/Context.sol";
 
 contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetadata {
 
-    string private constant VERSION = "DTERC20A_1.02";
-    //string private constant TYPE = "SmartERC20A";
+    string private constant VERSION = "DTERC20A_1.03";
 
     mapping(address => int256) private balances;
     mapping(address => mapping(address => uint256)) private allowances;
@@ -29,7 +28,6 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
     string private name;
     string private symbol;
     uint8 private tokenType; // 21: ERC20 classique, 22: ERC20A comptable
-    bool private allowNonZeroTotalBalance;
     address public parent1;
     address public parent2;
     address public smart_directory;
@@ -38,17 +36,15 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
     constructor(    string memory _name,
                     string memory _symbol,
                     uint8 _tokenType,
-                    bool _allowNonZeroTotalBalance,
                     address _parent1,
                     address _parent2,
                     address _smart_directory,
                     address _registrant_address
     ) {
-        require(_tokenType == 21 || _tokenType == 22, "Invalid token type. Must be 21 or 22");
+        require(_tokenType == 21 || _tokenType == 22, "Invalid token type. Must be ERC20(21) or ERC20A(22)");
         name = _name;
         symbol = _symbol;
         tokenType = _tokenType;
-        allowNonZeroTotalBalance = _allowNonZeroTotalBalance;
         registrant_address = _registrant_address;
         smart_directory = _smart_directory;
         parent1 = _parent1;
@@ -61,8 +57,8 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
     }
 
     //MODIFIERS
-    modifier activeRegistrant() {
-        require (ISmartDirectory(smart_directory).isValidRegistrant(msg.sender),
+    modifier isValidRegistrant() {
+        require (ISmartDirectory(smart_directory).isValidRegistrant(registrant_address),
             "unknown or disabled registrant");
         _;
     }
@@ -89,8 +85,12 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
         return VERSION;
     }
 
-    function get_type()  public view returns(uint8) {
-        return tokenType;
+    function get_type()  public view returns(string memory) {
+        if (tokenType == 21) {
+            return "ERC20";
+        } else {
+            return "ERC20A";
+        }
     }
 
     function get_parent1() public view returns(address) {
@@ -111,22 +111,22 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
 
     // FUNCTIONS
 
-    function balanceOf(address account) public view virtual override activeRegistrant returns (int256) {
+    function balanceOf(address account) public view virtual override isValidRegistrant returns (int256) {
         return balances[account];
     }
 
     // Requirements: `to` cannot be the zero address & the caller must have a balance of at least `amount`.
-    function transfer(address to, uint256 amount) public virtual override activeRegistrant returns (bool) {
+    function transfer(address to, uint256 amount) public virtual override isValidRegistrant returns (bool) {
         address owner = _msgSender();
         _transfer(owner, to, amount);
         return true;
     }
 
-    function allowance(address owner, address spender) public view virtual override activeRegistrant returns (uint256) {
+    function allowance(address owner, address spender) public view virtual override isValidRegistrant returns (uint256) {
         return allowances[owner][spender];
     }
 
-    function approve(address spender, uint256 amount) public virtual override activeRegistrant returns (bool) {
+    function approve(address spender, uint256 amount) public virtual override isValidRegistrant returns (bool) {
         address owner = _msgSender();
         _approve(owner, spender, amount);
         return true;
@@ -136,20 +136,20 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
         address from,
         address to,
         uint256 amount
-    ) public virtual override activeRegistrant returns (bool) {
+    ) public virtual override isValidRegistrant returns (bool) {
         address spender = _msgSender();
         _spendAllowance(from, spender, amount);
         _transfer(from, to, amount);
         return true;
     }
 
-    function increaseAllowance(address spender, uint256 addedValue) public virtual activeRegistrant returns (bool) {
+    function increaseAllowance(address spender, uint256 addedValue) public virtual isValidRegistrant returns (bool) {
         address owner = _msgSender();
         _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
     }
 
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual activeRegistrant returns (bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual isValidRegistrant returns (bool) {
         address owner = _msgSender();
         uint256 currentAllowance = allowance(owner, spender);
         require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
@@ -164,7 +164,7 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
         address from,
         address to,
         uint256 amount
-    ) internal virtual activeRegistrant {
+    ) internal virtual isValidRegistrant {
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
         require(amount < uint256(type(int256).max), "ERC20A: amount transferred too big");
@@ -196,7 +196,7 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
     }
 
     function _mint(address account, uint256 amount) internal virtual {
-        require (amount == 0 ||  allowNonZeroTotalBalance, "ERC20A has not been initialized to allow non zero balance");
+        require (amount == 0 ||  tokenType == 21, "ERC20A does not allow non zero balance");
         require(account != address(0), "ERC20: mint to the zero address");
 
         _beforeTokenTransfer(address(0), account, amount);
@@ -209,7 +209,7 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
     }
 
     function _burn(address account, uint256 amount) internal virtual {
-        require (allowNonZeroTotalBalance, "ERC20A has not been initialized to allow non zero balance");
+        require (tokenType == 21, "ERC20A does not allow non zero balance");
         require(account != address(0), "ERC20: burn from the zero address");
 
         _beforeTokenTransfer(account, address(0), amount);

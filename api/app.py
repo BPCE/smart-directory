@@ -135,7 +135,7 @@ def smart_directory_create_token_erc20a():
                                     'registrant_address',
                                     'name',
                                     'symbol',
-                                    'allow_non_zero_total_balance'
+                                    'token_type'
                                     ]
                         )
     except ValueError as e:
@@ -146,10 +146,16 @@ def smart_directory_create_token_erc20a():
         logging.info(route + " returns: " + return_json)
         return jsonify(response), return_code
 
+    token_type = 0;
+    if args['token_type'] == "ERC20A":
+        token_type = 22
+    elif args['token_type'] == "ERC20":
+        token_type = 21
+
     params=[
                 args['name'],
                 args['symbol'],
-                'True' == args['allow_non_zero_total_balance'],
+                token_type,
                 toChecksumAddress(args['parent_address1']),
                 toChecksumAddress(args['parent_address2']),
                 toChecksumAddress(args['smart_directory']),
@@ -170,17 +176,17 @@ def smart_directory_create_token_721():
 
     try:
         check_args(args, [
-                                    'chain_id',
-                                    'max_token',
-                                    'parent_address1',
-                                    'parent_address2',
-                                    'smart_directory',
-                                    'registrant_address',
-                                    'name',
-                                    'symbol',
-                                    'base_uri',
-                                    ]
-                        )
+                        'chain_id',
+                        'max_token',
+                        'parent_address1',
+                        'parent_address2',
+                        'smart_directory',
+                        'registrant_address',
+                        'name',
+                        'symbol',
+                        'base_uri',
+                        ]
+                    )
     except ValueError as e:
         return_code = 400
         response['message'] = str(e)
