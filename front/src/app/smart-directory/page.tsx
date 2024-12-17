@@ -1,9 +1,7 @@
-"use client"
+'use client'
 
-import { Home, Settings, Users, Package } from 'lucide-react'
-import Link from "next/link"
+import { useEffect } from 'react'
 
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -19,11 +17,27 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-export default function Dashboard() {
+import { useReadContract } from 'wagmi'
+import { abi } from '@/lib/abi/abi'
+
+import React from 'react'
+
+const SmartDirectory = () => {
+    const contractAddress = process.env.SMDIR_CONTRACT_ADDRESS as `0x${string}` | undefined
+    const result = useReadContract({
+        abi,
+    address: contractAddress,
+    functionName: 'getContractType',
+  })
+
+  useEffect(() => {
+    if (result) {
+        console.log('Result from contract:', result)
+    }
+}, [result])
+
   return (
-    
-      
-      <div className="flex flex-col">
+    <div className="flex flex-col">
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
           <Card className="flex-2">
             <CardHeader>
@@ -115,4 +129,6 @@ export default function Dashboard() {
       </div>
   )
 }
+
+export default SmartDirectory
 
