@@ -18,7 +18,7 @@ import "@openzeppelin/contracts/utils/Context.sol";
 
 contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetadata {
 
-    string private constant VERSION = "DTERC20A_1.03";
+    string private constant VERSION = "DTERC20A_1.04";
 
     mapping(address => int256) private balances;
     mapping(address => mapping(address => uint256)) private allowances;
