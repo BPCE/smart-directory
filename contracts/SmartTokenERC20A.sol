@@ -18,7 +18,9 @@ import "@openzeppelin/contracts/utils/Context.sol";
 
 contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetadata {
 
-    string private constant VERSION = "DTERC20A_1.04";
+    string private constant VERSION = "DTERC20A_1.05";
+    string private constant TYPE_ERC20 = "ERC20";
+    string private constant TYPE_ERC20A = "ERC20A";
 
     mapping(address => int256) private balances;
     mapping(address => mapping(address => uint256)) private allowances;
@@ -27,7 +29,7 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
 
     string private name;
     string private symbol;
-    uint8 private tokenType; // 21: ERC20 classique, 22: ERC20A comptable
+    uint8 private tokenType; // 21: ERC20 classique, 22: ERC20A comptable (peut avoir des balances négatives)
     address public parent1;
     address public parent2;
     address public smart_directory;
@@ -87,9 +89,9 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
 
     function get_type()  public view returns(string memory) {
         if (tokenType == 21) {
-            return "ERC20";
+            return TYPE_ERC20;
         } else {
-            return "ERC20A";
+            return TYPE_ERC20A;
         }
     }
 
