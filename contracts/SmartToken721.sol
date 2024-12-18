@@ -16,7 +16,7 @@ import {ISmartToken721} from "./ISmartToken721.sol";
 
 contract SmartToken721 is ERC721, ISmartToken721 {
 
-	string private constant VERSION = "DT721_1.03";
+	string private constant VERSION = "DT721_1.04";
     string private constant TYPE = "Smart721";
 
     address parent1;
@@ -72,8 +72,11 @@ contract SmartToken721 is ERC721, ISmartToken721 {
 
     //MODIFIERS
     modifier isValidRegistrant() {
-        require (ISmartDirectory(smart_directory).isValidRegistrant(registrant_address),
-            "unknown or disabled registrant");
+        if (registrant_address != address(0)) {
+            require (smart_directory != address(0), "smart_directory should be set");
+            require (ISmartDirectory(smart_directory).isValidRegistrant(registrant_address),
+                        "unknown or disabled registrant");
+        }
         _;
     }
 
