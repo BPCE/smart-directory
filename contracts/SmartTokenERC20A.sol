@@ -18,7 +18,7 @@ import "@openzeppelin/contracts/utils/Context.sol";
 
 contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetadata {
 
-    string private constant VERSION = "DTERC20A_1.05";
+    string private constant VERSION = "DTERC20A_1.06";
     string private constant TYPE_ERC20 = "ERC20";
     string private constant TYPE_ERC20A = "ERC20A";
 
@@ -60,8 +60,11 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
 
     //MODIFIERS
     modifier isValidRegistrant() {
-        require (ISmartDirectory(smart_directory).isValidRegistrant(registrant_address),
-            "unknown or disabled registrant");
+        if (registrant_address != address(0)) {
+            require (smart_directory != address(0), "smart_directory should be set");
+            require (ISmartDirectory(smart_directory).isValidRegistrant(registrant_address),
+                        "unknown or disabled registrant");
+        }
         _;
     }
 
