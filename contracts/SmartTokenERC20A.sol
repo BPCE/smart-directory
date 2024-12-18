@@ -18,25 +18,25 @@ import "@openzeppelin/contracts/utils/Context.sol";
 
 contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetadata {
 
-    string private constant VERSION = "DTERC20A_1.06";
+    string private constant VERSION = "DTERC20A_1.07";
     string private constant TYPE_ERC20 = "ERC20";
     string private constant TYPE_ERC20A = "ERC20A";
 
     mapping(address => int256) private balances;
     mapping(address => mapping(address => uint256)) private allowances;
 
-    int256 private totalSupply;
+    int256 private _totalSupply;
 
-    string private name;
-    string private symbol;
+    string private _name;
+    string private _symbol;
     uint8 private tokenType; // 21: ERC20 classique, 22: ERC20A comptable (peut avoir des balances négatives)
     address public parent1;
     address public parent2;
     address public smart_directory;
     address public registrant_address;
 
-    constructor(    string memory _name,
-                    string memory _symbol,
+    constructor(    string memory __name,
+                    string memory __symbol,
                     uint8 _tokenType,
                     address _parent1,
                     address _parent2,
@@ -44,8 +44,8 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
                     address _registrant_address
     ) {
         require(_tokenType == 21 || _tokenType == 22, "Invalid token type. Must be ERC20(21) or ERC20A(22)");
-        name = _name;
-        symbol = _symbol;
+        _name = __name;
+        _symbol = __symbol;
         tokenType = _tokenType;
         registrant_address = _registrant_address;
         smart_directory = _smart_directory;
@@ -53,8 +53,8 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
         parent2 = _parent2;
 
         if (tokenType == 21) { // ERC20 classique : crédit initial des parents
-            _mint(_parent1, 1_000_000 * (10 ** uint256(get_decimals())));
-            _mint(_parent2, 1_000_000 * (10 ** uint256(get_decimals())));
+            _mint(_parent1, 1_000_000 * (10 ** uint256(decimals())));
+            _mint(_parent2, 1_000_000 * (10 ** uint256(decimals())));
         }
     }
 
@@ -70,20 +70,20 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
 
     // GETTERS
 
-    function get_name() public view virtual returns (string memory) {
-        return name;
+    function name() public view override returns (string memory) {
+        return _name;
     }
 
-    function get_symbol() public view virtual returns (string memory) {
-        return symbol;
+    function symbol() public view override returns (string memory) {
+        return _symbol;
     }
 
-    function get_decimals() public view virtual returns (uint8) {
+    function decimals() public view virtual returns (uint8) {
         return 18;
     }
 
-    function get_totalSupply() public view virtual returns (int256) {
-        return totalSupply;
+    function totalSupply() public view virtual returns (int256) {
+        return _totalSupply;
     }
 
     function version() public view virtual returns(string memory) {
@@ -206,7 +206,7 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
 
         _beforeTokenTransfer(address(0), account, amount);
 
-        totalSupply += int256(amount);
+        _totalSupply += int256(amount);
         balances[account] += int256(amount);
         emit Transfer(address(0), account, amount);
 
@@ -223,7 +223,7 @@ contract SmartTokenERC20A is Context, ISmartTokenERC20A, ISmartTokenERC20AMetada
         unchecked {
             balances[account] = accountBalance - int256(amount);
         }
-        totalSupply -= int256(amount);
+        _totalSupply -= int256(amount);
 
         emit Transfer(account, address(0), amount);
 
