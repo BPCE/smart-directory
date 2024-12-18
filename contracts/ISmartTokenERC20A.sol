@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 interface ISmartTokenERC20A {
 
-    function get_totalSupply() external view returns (int256);
+    function totalSupply() external view returns (int256);
 
     function balanceOf(address account) external view returns (int256);
 
