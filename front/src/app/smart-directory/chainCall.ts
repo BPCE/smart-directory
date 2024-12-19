@@ -49,13 +49,28 @@ export const getAllReferences = async (SMDirAddress: `0x${string}`, registrantAd
 
 export const getReferenceStatus = async (SMDirAddress: `0x${string}`, referenceAddress: `0x${string}`) => {
     // Appel de la fonction getReferenceStatus
-    const referenceStatusTab = await client.readContract({
+    const ReferenceStatuslastIndex = await client.readContract({
         address: SMDirAddress,
         abi,
-        functionName: 'getReferenceStatus',
+        functionName: 'getReferenceLastStatusIndex',
         args: [referenceAddress],
     });
-    console.log('referenceStatus:', referenceStatusTab);
+    console.log('ReferenceStatuslastIndex:', ReferenceStatuslastIndex);
+    const referenceStatusTab = [];
+
+    for (let i = 1; i < ReferenceStatuslastIndex + BigInt(1); i++) {
+        // Appel de la fonction getReferenceStatusAtIndex
+        const referenceStatus = await client.readContract({
+            address: SMDirAddress,
+            abi,
+            functionName: 'getReferenceStatusAtIndex',
+            args: [referenceAddress, BigInt(i)],
+        });
+        console.log('referenceStatus:', referenceStatus);
+        referenceStatusTab.push(referenceStatus);
+    }
+    
+    console.log('referenceStatusTab:', referenceStatusTab);
 
     return referenceStatusTab;
     }
