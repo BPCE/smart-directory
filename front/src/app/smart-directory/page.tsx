@@ -30,7 +30,7 @@ const SmartDirectory = () => {
   const [registrantAddress, setRegistrantAddress] = useState<`0x${string}`>('0x0000000000000000000000000000000000000000')
   const [allReferences, setAllReferences] = useState<readonly [`0x${string}`, string][]>([])
   const [referenceAddress, setReferenceAddress] = useState<`0x${string}`>('0x0000000000000000000000000000000000000000')
-  const [allReferenceStatus, setAllReferenceStatus] = useState<readonly [string, bigint] | null>(null)
+  const [allReferenceStatus, setAllReferenceStatus] = useState<readonly (readonly [string, bigint])[] | null>(null)
 
   //-------functions----------
   const fetchRegistrants = async () => {
@@ -55,7 +55,7 @@ const SmartDirectory = () => {
       return
     }
     const allReferencesData = await getReferenceStatus(addressSMDIR, referenceAddress)
-    setAllReferenceStatus(allReferencesData);
+    setAllReferenceStatus(allReferencesData as readonly (readonly [string, bigint])[]);
   };
 
   const convertTimestampToParisTime = (timestamp: bigint) => {
@@ -189,17 +189,17 @@ const SmartDirectory = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Date</TableHead>
                   <TableHead>Commentary</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {allReferenceStatus && (
-                  <TableRow>
-                    <TableCell>{allReferenceStatus[0]}</TableCell>
-                    <TableCell>{convertTimestampToParisTime(allReferenceStatus[1])}</TableCell>
+                {allReferenceStatus?.map((referenceStatus: any, index: any) => (
+                  <TableRow key={index}>
+                    <TableCell>{convertTimestampToParisTime(referenceStatus[1])}</TableCell>
+                    <TableCell>{referenceStatus[0]}</TableCell>
                   </TableRow>
-                )}
+                ))}
               </TableBody>
             </Table>
           </CardContent>
