@@ -1,183 +1,316 @@
 
 ![](Specifications/images-md/8568f8162a2b000c5d6163458acc471637cebdd1.png)
+<!-- TOC -->
+* [smartDirectory (mission smart2)](#smartdirectory-mission-smart2)
+  * [Problématique : la multiplication des smartContracts](#problématique--la-multiplication-des-smartcontracts)
+  * [Le composant central de la solution proposée : le smartDirectory](#le-composant-central-de-la-solution-proposée--le-smartdirectory)
+  * [Cas d'usages](#cas-dusages)
+  * [Un composant auxiliaire : le tiers déployeur](#un-composant-auxiliaire--le-tiers-déployeur)
+  * [Avantages et points de vigilance de la solution](#avantages-et-points-de-vigilance-de-la-solution)
+    * [Les avantages](#les-avantages)
+    * [](#)
+    * [Les points de vigilance](#les-points-de-vigilance)
+    * [](#-1)
+  * [Les objectifs et ressources du projet](#les-objectifs-et-ressources-du-projet)
+    * [Les objectifs du projet sont :](#les-objectifs-du-projet-sont-)
+    * [Les ressources du projet](#les-ressources-du-projet)
+  * [Fonctionnement détaillé du smartDirectory](#fonctionnement-détaillé-du-smartdirectory)
+    * [Le mode administré (parentsAuthorized)](#le-mode-administré-parentsauthorized)
+    * [](#-2)
+    * [Le mode ouvert (selfDeclaration)](#le-mode-ouvert-selfdeclaration)
+  * [Les structures du smartDirectory](#les-structures-du-smartdirectory)
+    * [](#-3)
+    * [La table des références](#la-table-des-références)
+      * [](#-4)
+      * [.smartDirectoryReferenceEoaCreate](#smartdirectoryreferenceeoacreate)
+
+      * [.smartDirectoryReferenceStatusEoaUpdate](#smartdirectoryreferencestatuseoaupdate)
+      * [.smartDirectoryReferenceGet](#smartdirectoryreferenceget)
+
+      * [.smartDirectoryReferenceLastStatusGet](#smartdirectoryreferencelaststatusget)
+
+      * [](#-5)
+      * [.smartDirectoryReferenceStatusAtIndexGet](#smartdirectoryreferencestatusatindexget)
+
+      * [.smartDirectoryReferencesListsGet](#smartdirectoryreferenceslistsget)
+    * [](#-6)
+    * [La table des déclarants (registrants Table)](#la-table-des-déclarants-registrants-table)
+      * [](#-7)
+      * [](#-8)
+      * [.smartDirectoryRegistrantEoaCreate](#smartdirectoryregistranteoacreate)
+      * [.smartDirectoryRegistrantEoaDisable](#smartdirectoryregistranteoadisable)
+      * [![](Specifications/images-md/6ced95b6ab0a29597342571a98cab7d6c36c3917.png)](#-9)
+    * [](#-10)
+      * [.smartDirectoryRegistrantUriEoaWrite](#smartdirectoryregistranturieoawrite)
+      * [![](Specifications/images-md/a3de3a4c1a62e9a0d9aa03fcb5007ec717795575.png)](#-11)
+
+      * [.smartDirectoryRegistrantUriGet](#smartdirectoryregistranturiget)
+
+      * [](#-12)
+      * [](#-13)
+      * [.smartDirectoryRegistrantsDisabledListGet](#smartdirectoryregistrantsdisabledlistget)
+  * [###](#-14)
+      * [](#-15)
+      * [.smartDirectoryRegistrantLastIndexGet](#smartdirectoryregistrantlastindexget)
+  * [###](#-16)
+      * [.smartDirectoryRegistrantAtIndexGet](#smartdirectoryregistrantatindexget)
+      * [.smartDirectoryRegistrantIndexGet](#smartdirectoryregistrantindexget)
+      * [![](Specifications/images-md/58df0743d337391c91cc51b493291f67d284d589.png)](#-17)
+
+      * [.smartDirectoryReferencesCountGet](#smartdirectoryreferencescountget)
+
+  * [Création du smartDirectory](#création-du-smartdirectory)
+    * [Les variables d'en-tête](#les-variables-den-tête)
+    * [Les fonctions de management du SmartDirectory](#les-fonctions-de-management-du-smartdirectory)
+      * [](#-18)
+      * [.smartDirectoryActivationCodeEoaUpdate](#smartdirectoryactivationcodeeoaupdate)
+      * [.smartDirectoryHeadersGet](#smartdirectoryheadersget)
+    * [](#-19)
+    * [](#-20)
+    * [API de création d'un smartDirectory](#api-de-création-dun-smartdirectory)
+      * [/smart-directory/smartdirectorycreate?](#smart-directorysmartdirectorycreate)
+    * [Gestion du smartDirectory pour finaliser le déploiement](#gestion-du-smartdirectory-pour-finaliser-le-déploiement)
+    * [](#-21)
+    * [Diffusion et import de l'adresse du smartDirectory](#diffusion-et-import-de-ladresse-du-smartdirectory)
+  * [SmartTokens](#smarttokens)
+    * [](#-22)
+    * [Cas d'utilisation](#cas-dutilisation)
+    * [](#-23)
+    * [Paramétrage des smartTokens](#paramétragedes-smarttokens)
+    * [Déploiement pour tokenisation](#déploiement-pour-tokenisation)
+    * [API de création d'un smartToken non fongible (smart721)](#api-de-création-dun-smarttoken-non-fongible-smart721)
+      * [Le déploiement d'un smartToken non fongible se fait avec le recours à une API/smart721create?](#le-déploiement-dun-smarttoken-non-fongible-se-fait-avec-le-recours-à-une-apismart721create)
+    * [](#-24)
+    * [Lecture des variables du smart721](#lecture-des-variables-du-smart721)
+      * [.smartToken721GetType](#smarttoken721gettype)
+
+      * [](#-25)
+      * [.smartToken721GetParent1](#smarttoken721getparent1)
+
+      * [.smartToken721GetParent2](#smarttoken721getparent2)
+
+      * [.smartToken721GetMaxToken](#smarttoken721getmaxtoken)
+
+      * [.smartToken721GetSmartDirectoryAddress](#smarttoken721getsmartdirectoryaddress)
+
+      * [.smartToken721GetRegistrantAddress](#smarttoken721getregistrantaddress)
+
+      * [.blockchainERC721name](#blockchainerc721name)
+
+      * [.blockchainERC721symbol](#blockchainerc721symbol)
+
+      * [](#-26)
+      * [.smartToken721GetVersion](#smarttoken721getversion)
+
+    * [](#-27)
+    * [API de création d'un token fongible /smartErc20Acreate?](#api-de-création-dun-token-fongible-smarterc20acreate)
+    * [Lecture des variables du smartERC20A](#lecture-des-variables-du-smarterc20a)
+      * [](#-28)
+      * [.blockchainERC20ReadVariables](#blockchainerc20readvariables)
+
+      * [.smartTokenERC20AGetType](#smarttokenerc20agettype)
+
+      * [.smartTokenERC20AGetParent1](#smarttokenerc20agetparent1)
+    * [](#-29)
+      * [.smartTokenERC20AGetParent2](#smarttokenerc20agetparent2)
+
+      * [.smartTokenERC20AGetSmartDirectoryAddress](#smarttokenerc20agetsmartdirectoryaddress)
+
+      * [.smartTokenERC20AGetRegistrantAddress](#smarttokenerc20agetregistrantaddress)
+
+      * [.smartTokenERC20AGetVersion](#smarttokenerc20agetversion)
+
+  * [Plan de test](#plan-de-test)
+    * [](#-30)
+    * [SmartDirectory administré](#smartdirectory-administré)
+    * [SmartDirectory ouvert](#smartdirectory-ouvert)
+    * [SmartToken721](#smarttoken721)
+    * [SmartTokenErc20](#smarttokenerc20)
+  * [Bilan économique](#bilan-économique)
+* [App de démonstration du smartDirectory (alpha)](#app-de-démonstration-du-smartdirectory-alpha)
+    * [Périmètre de l'application](#périmètre-de-lapplication)
+    * [A propos d'App Inventor 2 (AI2)](#a-propos-dapp-inventor-2-ai2)
+    * [Code source et recompilation de l'application](#code-source-et-recompilation-de-lapplication)
+    * [Première ouverture de l'App](#première-ouverture-de-lapp)
+    * [Le menu principal](#le-menu-principal)
+  * [![](Specifications/images-md/1d0248c1abf3b57433aaca1b089bd07848acf2ec.png) Menus Administrateur](#menus-administrateur)
+    * [Deploy smartDirectory](#deploy-smartdirectory)
+    * [](#-31)
+    * [Manage smartDirectory](#manage-smartdirectory)
+  * [![](Specifications/images-md/8bf52a7105bc765e36484bbb5d881487e52c0035.png) Menus "Registrant"](#menus-registrant)
+    * [Import smartDirectory](#import-smartdirectory)
+    * [](#-32)
+    * [My RegistrantAddress](#my-registrantaddress)
+    * [](#-33)
+    * [Change Status Reference](#change-status-reference)
+  * [![](Specifications/images-md/d42bebf295f6f31902b1129faea8ee2e31a289e3.png) Menus Utilisateur](#menus-utilisateur)
+    * [Explore Ecosystems](#explore-ecosystems-)
+    * [Scan Address in Ecosystem](#scan-address-in-ecosystem)
+    * [My Tokens](#my-tokens)
+    * [Faucet / Explorer Amoy](#faucet--explorer-amoy)
+  * [![](Specifications/images-md/ceece640e1ff646eb7983db00969608545be1eeb.png) Menus smartTokens](#menus-smarttokens)
+    * [](#-34)
+    * [Deploy smart721](#deploy-smart721)
+    * [](#-35)
+    * [Deploy smart020](#deploy-smart020-)
+    * [](#-36)
+    * [Register smartToken](#register-smarttoken)
+    * [Transfer ERC20](#transfer-erc20)
+  * [⚙ Menu d'administration de l'APP](#menu-dadministration-de-lapp)
+    * [Documentation](#documentation)
+    * [](#-37)
+    * [Cost Log](#cost-log)
+    * [App Log](#app-log)
+  * [Compléments pour Citizen Developper](#compléments-pour-citizen-developper)
+    * [Mise à jour de l'App](#mise-à-jour-de-lapp)
+    * [Bonnes pratiques de survie dans le code](#bonnes-pratiques-de-survie-dans-le-code)
+    * [Interaction Blockchain](#interaction-blockchain)
+    * [Colorisation des adresses](#colorisation-des-adresses)
+    * [](#-38)
+  * [Le serveur de déploiement](#le-serveur-de-déploiement)
+  * [L'application web de consultation/supervision](#lapplication-web-de-consultationsupervision)
+<!-- TOC -->
 
 smartDirectory (mission smart2)
 ===============================
 
-Avec l'essor prévisible des smartContracts, notamment en raison de la
-tokenisation de l'économie et de l'account abstraction, il devient
-primordial de simplifier la création de listes de références. Ces
-listes, destinées à des usages publics ou privés, doivent pouvoir
-exister aussi bien à l'intérieur qu'à l'extérieur de la blockchain.
+**Avec l'essor prévisible des smartContracts, notamment en raison de la tokenisation de l'économie et de l'account 
+abstraction, il devient primordial de simplifier la création de listes de références. Ces listes, destinées à des usages
+publics ou privés, doivent pouvoir exister aussi bien à l'intérieur qu'à l'extérieur de la blockchain.**
 
 Problématique : la multiplication des smartContracts
 ----------------------------------------------------
 
-La vision autour des smartContracts a fortement évolué dans l'écosystème
-Blockchain, principalement Ethereum. Initialement ils étaient perçus
-comme des artefacts quasi-uniques dont l'utilisation est garantie par la
-connaissance de l'adresse du smartContract. Une telle sécurité
-d'utilisation nécessite que chaque utilisateur gère par ses propres
+La vision autour des smartContracts a fortement évolué dans l'écosystème Blockchain, principalement Ethereum. 
+Initialement ils étaient perçus comme des artefacts quasi-uniques dont l'utilisation est garantie par la connaissance de
+l'adresse du smartContract. Une telle sécurité d'utilisation nécessite que chaque utilisateur gère par ses propres
 moyens, la liste des adresses à laquelle il fait confiance.
 
-Cette approche pose un réel souci dès lors que le nombre de
-smartContracts utilisés par chaque utilisateur augmente. Par ailleurs,
-ceci oblige à mettre l'adresse des smartContracts en dur dans le code
-d'autres smartContracts dès lors que certains processus nécessitent une
-vérification on-chain impliquant plusieurs smartContracts.
+Cette approche pose un réel souci dès lors que le nombre de smartContracts utilisés par chaque utilisateur augmente. Par
+ailleurs, ceci oblige à mettre l'adresse des smartContracts en dur dans le code d'autres smartContracts dès lors que 
+certains processus nécessitent une vérification on-chain impliquant plusieurs smartContracts.
 
-Depuis 2 à 3 ans, deux nouvelles orientations sont considérées comme
-inévitables :
+Depuis 2 à 3 ans, deux nouvelles orientations sont considérées comme inévitables :
 
--   l'account abstraction, qui va permettre une meilleure interaction
-    utilisateur (paiement de GAS par un tiers, protection contre la
-    perte de clés privées),
--   la tokenisation de l'économie qui nécessite une représentation des
-    actifs du monde réel sous forme de token fongibles ou non fongibles.
-
+* l'account abstraction, qui va permettre une meilleure interaction utilisateur (paiement de GAS par un tiers, 
+protection contre la perte de clés privées),
+* la tokenisation de l'économie qui nécessite une représentation des actifs du monde réel sous forme de token fongibles 
+ou non fongibles.
+ 
 Ces deux orientations vont nécessiter :
 
--   la création de smartContracts en grands nombres pour les actifs et
-    les utilisateurs,
--   la création de smartContracts liés à la gestion des processus des
-    actifs, en nombre guère plus restreint, avec un besoin de contrôles
-    des smartContracts précédents dans toutes les étapes de leur propre
-    exécution.
+* la création de smartContracts en grands nombres pour les actifs et les utilisateurs,
+* la création de smartContracts liés à la gestion des processus des actifs, en nombre guère plus restreint, avec un 
+besoin de contrôles des smartContracts précédents dans toutes les étapes de leur propre exécution.
 
 En synthèse, nous identifions les besoins génériques suivants :
 
--   Une facilité de déploiement de nouveaux smartContracts.
--   Une capacité de contrôle de la validité de ces smartContracts par un
-    utilisateur externe à la blockchain.
--   Une capacité de contrôle de la validité de ces smartContracts par un
-    autre smartContract.
--   Une nécessité d'identifier des écosystèmes de smartContracts pour en
-    faire une analyse.
--   Une capacité de maintenir à jour ces écosystèmes.
+* Une facilité de déploiement de nouveaux smartContracts.
+* Une capacité de contrôle de la validité de ces smartContracts par un utilisateur externe à la blockchain.
+* Une capacité de contrôle de la validité de ces smartContracts par un autre smartContract.
+* Une nécessité d'identifier des écosystèmes de smartContracts pour en faire une analyse.
+* Une capacité de maintenir à jour ces écosystèmes.
 
-------------------------------------------------------------------------
+----------------------------------------------------------------
 
 Le composant central de la solution proposée : le smartDirectory
 ----------------------------------------------------------------
 
-Le smartDirectory est un smartContract qui va permettre de conserver de
-façon partagée sur la blockchain des  listes d'adresses, soit EOA soit
-smartContracts. Fonctionnellement, ces listes représentent les tables
-des matières des différents écosystèmes.
+Le smartDirectory est un smartContract qui va permettre de conserver de façon partagée sur la blockchain des listes 
+d'adresses, soit EOA soit smartContracts. Fonctionnellement, ces listes représentent les tables des matières des 
+différents écosystèmes.
 
-Une entité, le déclarant, munie d'un accès blockchain avec capacité de
-signature pourra écrire un ou plusieurs enregistrements dans le
-smartDirectory permettant la constitution de ces listes. Pour laisser de
-la  latitude aux utilisateurs, le fonctionnement du smartDirectory reste
-le plus simple possible avec principalement deux structures logiques :
-les déclarants et les adresses qu'ils déclarent (les référencements).
+Une entité, **le déclarant**, munie d'un accès blockchain avec capacité de signature pourra écrire un ou plusieurs 
+enregistrements dans le smartDirectory permettant la constitution de ces listes. Pour laisser de la latitude aux 
+utilisateurs, le fonctionnement du smartDirectory reste le plus simple possible avec principalement deux structures 
+logiques : les déclarants et les adresses qu'ils déclarent (les référencements).
 
-![](Specifications/images-md/83860bf130e6d7a9c1f647fc9a6eef51dd57f059.png)
+![SmartDirectory : une liste sécurisée accessible](Specifications/images-md/83860bf130e6d7a9c1f647fc9a6eef51dd57f059.png)
 
-------------------------------------------------------------------------
+----------------------------------------------------------------
 
 Cas d'usages
 ------------
 
-1. Usage de régulation par exemple un annuaire d'entités régulées: 
+**1. Usage de régulation** par exemple un annuaire d'entités régulées :
 
-Un organisme de contrôle, de régulation ou d'audit, veut faciliter
-l'identification par le public des entités régulées et des
-smartContracts déployés par ces dernières. L\'administrateur de
-l\'organe de contrôle déploie le smartDirectory, puis inscrit les
-déclarants au fur et à mesure qu'ils sont agréés. Chaque déclarant
-inscrit ensuite lui-même les adresses des contrats qu\'il déploie et
-maintient pour chacun un statut.
+Un organisme de contrôle, de régulation ou d'audit, veut faciliter l'identification par le public des entités régulées 
+et des smartContracts déployés par ces dernières. L'administrateur de l'organe de contrôle déploie le smartDirectory, 
+puis inscrit les déclarants au fur et à mesure qu'ils sont agréés. Chaque déclarant inscrit ensuite lui-même les 
+adresses des contrats qu\'il déploie et maintient pour chacun un statut.
 
-L'application de surveillance se met à jour automatiquement en allant
-lire la liste des adresses à surveiller sur le smartDirectory. Les
-utilisateurs grand public utilisent ces listes pour vérifier la validité
-des adresses sur lesquelles ils ont l'intention d\'opérer, on peut même
-penser que metamask, via une extension, puisse le consulter et afficher
-un symbole spécifique.
+L'application de surveillance se met à jour automatiquement en allant lire la liste des adresses à surveiller sur le 
+smartDirectory. Les utilisateurs grand public utilisent ces listes pour vérifier la validité des adresses sur lesquelles
+ils ont l'intention d\'opérer, on peut même penser que metamask, via une extension, puisse le consulter et afficher un 
+symbole spécifique.
 
-2. Usage privatif par exemple un annuaire de partenaires:
+**2. Usage privatif** par exemple un annuaire de partenaires :
 
-Une entreprise veut lister les adresses de ses partenaires commerciaux
-avec sécurité. L'entreprise ne référence que l'adresse du
-smartDirectory, son adresse de déclarant ainsi que le ou les codes
-projet nécessaires. Ses applications ou celles de partenaires peuvent
-donc lire la blockchain et avoir en permanence une liste à jour, sous
-forme d'une liste d'adresses de blockchain (EOA ou smartContracts).
+Une entreprise veut lister les adresses de ses partenaires commerciaux avec sécurité. L'entreprise ne référence que 
+l'adresse du smartDirectory, son adresse de déclarant ainsi que le ou les codes projet nécessaires. Ses applications ou 
+celles de partenaires peuvent donc lire la blockchain et avoir en permanence une liste à jour, sous forme d'une liste 
+d'adresses de blockchain (EOA ou smartContracts).
 
-3. Usage de restriction par exemple un token vérifiant une liste
-    blanche avant transfer
+**3. Usage de restriction** par exemple un token vérifiant une liste blanche avant transfert
 
-Par exemple Circle veut créer des stablecoins réservés aux institutions
-qu'il aura validé, Circle crée un smartDirectory et les y inscrit. Les
-smartcontracts de Circle ainsi que ceux des institutions peuvent
-consulter le smartDirectory et ne pas autoriser les transferts à
-l\'extérieur des adresses référencées. Ceci est équivalent à ce qui est
-implémenté dans AAVE ARC où la liste blanche est consultée par la
-méthode isInRole()
+Par exemple Circle veut créer des stablecoins réservés aux institutions qu'il aura validé, Circle crée un smartDirectory
+et les y inscrit. Les smartcontracts de Circle ainsi que ceux des institutions peuvent consulter le smartDirectory et ne
+pas autoriser les transferts à l'extérieur des adresses référencées. Ceci est équivalent à ce qui est implémenté dans 
+AAVE ARC où la liste blanche est consultée par la méthode isInRole()
 
-4.  Usage déclaratif par exemple un écosystème de smartContracts:
+**4. Usage déclaratif** par exemple un écosystème de smartContracts :
 
-Une entreprise veut indiquer l'écosystème de smartContracts qui lui
-permet d'assurer ses obligations de gestion de consentement,
-d'authentification par clés EOA. Ainsi ses partenaires digitaux peuvent
-concevoir leur propre App et par simple connaissance du code projet
-récupérer la liste des smartContracts et des informations nécessaires
-complémentaires avec l'URI d'API présente dans la liste des déclarants.
+Une entreprise veut indiquer l'écosystème de smartContracts qui lui permet d'assurer ses obligations de gestion de 
+consentement, d'authentification par clés EOA. Ainsi ses partenaires digitaux peuvent concevoir leur propre App et par 
+simple connaissance du code projet récupérer la liste des smartContracts et des informations nécessaires complémentaires
+avec l'URI d'API présente dans la liste des déclarants.
+
+----------------------------------------------------------------
 
 Un composant auxiliaire : le tiers déployeur
 --------------------------------------------
 
-Le smartDirectory permet de créer des listes d'adresses qui peuvent être
-lues tant par des acteurs externes que directement par d'autres
-smartContracts.
+Le smartDirectory permet de créer des listes d'adresses qui peuvent être lues tant par des acteurs externes que 
+directement par d'autres smartContracts.
 
-Pour les smartContract déjà existants, le déclarant devra réaliser les
-listes de manière déclarative.
+Pour les smartContract déjà existants, le déclarant devra réaliser les listes de manière déclarative.
 
-Pour les nouveaux smartContracts, il nous semble important de proposer
-un déploiement et un référencement "synchronisés" tant pour le confort
-de l'administrateur des déploiements que pour la conformité à des
-pratiques facilitant la supervision par les régulateurs, superviseurs et
-auditeurs.
+Pour les nouveaux smartContracts, il nous semble important de proposer un déploiement et un référencement "synchronisés"
+tant pour le confort de l'administrateur des déploiements que pour la conformité à des pratiques facilitant la 
+supervision par les régulateurs, superviseurs et auditeurs.
 
-Comme dit dans l'introduction, pour la création d'un écosystème
-important de tokenisation d'actifs du monde réel, il peut être
-nécessaire de déployer un grand nombre de smartContrats de type ERC20,
-ERC721 et assimilés.
+Comme dit dans l'introduction, pour la création d'un écosystème important de tokenisation d'actifs du monde réel, il 
+peut être nécessaire de déployer un grand nombre de smartContrats de type ERC20, ERC721 et assimilés.
 
-![](Specifications/images-md/bebf999da19d781ff973ad0680e3104a1c121de6.png)
+![Déploiement et déclaration de smartContracts](Specifications/images-md/bebf999da19d781ff973ad0680e3104a1c121de6.png)
 
 De façon synthétique, ce second composant consiste en :
 
-- un serveur comprenant un noeud de la blockchain et une liste de smartContracts réutilisables en provenance d'une 
-bibliothèque interne,
-- des API exposées par ce même serveur et permettant de demander le déploiement des smartContracts de la bibliothèque 
-avec des paramétrages propres en fonction de leur type.
+* un serveur comprenant un noeud de la blockchain et une liste de smartContracts réutilisables en provenance d'une bibliothèque interne,
+* des API exposées par ce même serveur et permettant de demander le déploiement des smartContracts de la bibliothèque avec des paramétrages propres en fonction de leur type.
 
-Le protocole d'échange avec ce composant est découpé en deux
-interactions :
+Le protocole d'échange avec ce composant est découpé en deux interactions :
 
-1. La demande de déploiement proprement dite par l'application cliente :
-   - exécution du déploiement sur la blockchain,
-   - et, en retour d'API, la transaction de déploiement.
+**1. La demande de déploiement proprement dite par l'application cliente :**
+* exécution du déploiement sur la blockchain,
+* et, en retour d'API, la transaction de déploiement.
 
-2. La validation du déploiement par l\'application cliente et référencement (le serveur a-t-il bien déployé ce qui a été
+**2. La validation du déploiement par l\'application cliente et référencement** (le serveur a-t-il bien déployé ce qui a été
 demandé!) :
-   - Vérification du minage effectif du déploiement.
-   - Vérification de la prise en compte des paramètres du smartContract.
-   - Une transaction de modification (validation) vers le smartContract
+* Vérification du minage effectif du déploiement.
+* Vérification de la prise en compte des paramètres du smartContract.
+* Une transaction de modification (validation) vers le smartContract.
 
-Cette mise en séquence est nécessaire car le déploiement se fait par un
-tiers (le serveur) et donc le consentement de l\'administrateur doit
-être enregistré. De plus, cette séquence permet de ne pas utiliser pour
-la validation les mêmes clés que celles du serveur, car autant le
-déploiement doit se faire par EOA, autant il peut être pratique, pour le
-compte de l\'application client, de pouvoir choisir de passer par un
-compte abstrait (account abstraction) au lieu d'une EOA.
+Cette mise en séquence est nécessaire car le déploiement se fait par un tiers (le serveur) et donc le consentement de 
+l'administrateur doit être enregistré. De plus, cette séquence permet de ne pas utiliser pour la validation les mêmes 
+clés que celles du serveur, car autant le déploiement doit se faire par EOA, autant il peut être pratique, pour le 
+compte de l\'application client, de pouvoir choisir de passer par un compte abstrait (account abstraction) au lieu d'une
+EOA.
 
-Une telle architecture est compatible avec un administrateur humain
-voulant valider tous les déploiements, par analogie à un système de contrôle de type "4 yeux".
+Une telle architecture est compatible avec un administrateur humain voulant valider tous les déploiements, par analogie 
+à un système de contrôle de type "4 yeux".
+
+----------------------------------------------------------------
 
 Avantages et points de vigilance de la solution
 -----------------------------------------------
@@ -191,78 +324,37 @@ L'avantage d'une telle architecture réside dans :
 3.  une capacité des smartContracts de processus de vérifier un groupe d'utilisateurs (représentés par des adresses) sans en connaître a priori la liste,
 4.  une facilité de déploiement des account abstraction smartContracts ce qui permet un enrôlement automatique d'un utilisateur.
 
-### 
-
 ### Les points de vigilance
 
 L'utilisation d'un smartDirectory implique cependant des points de vigilance complémentaires :
 
--   Assurer un niveau de sécurité et de résilience du système
-    d\'autorisation et de vérification des informations enregistrées.
+* **Assurer un niveau de sécurité et de résilience** du système d'autorisation et de vérification des informations enregistrées.
 
--   L'adresse du déclarant est importante mais bien moindre que celle de
-    l'administrateur. La validité et la permanence de l'adresse de
-    l'administrateur est essentielle et notre réponse passe par
-    l'utilisation d'un wallet hybride décrit plus loin (hors périmètre
-    de cette proposition). Ce wallet hybride peut être personnel ou
-    d'entreprise. De la même manière, un déclarant peut mettre en œuvre
-    un wallet hydride.
+  * L'adresse du déclarant est importante mais bien moindre que celle de l'administrateur. La validité et la permanence de l'adresse de l'administrateur est essentielle et notre réponse passe par l'utilisation d'un wallet hybride décrit plus loin (hors périmètre de cette proposition). Ce wallet hybride peut être personnel ou d'entreprise. De la même manière, un déclarant peut mettre en œuvre un wallet hydride.
+  * L'autre point réside dans la capacité de l'administrateur à enregistrer de nouveaux "déclarants" et de les désactiver le cas
+      échéant.
 
--   L'autre point réside dans la capacité de l'administrateur à
-    enregistrer de nouveaux "déclarants" et de les désactiver le cas
-    échéant.
 
--   Considérer l'utilisation d'un système de stockage décentralisé au
-    cas où il serait nécessaire de stocker des données plus importantes.
+* **Considérer l'utilisation d'un système de stockage décentralisé** au cas où il serait nécessaire de stocker des données plus importantes.
 
--   Le smartDirectory ne gère que des adresses et, de manière limitée,
-    des URI comme point d'entrée sur le Web2.
+  * Le smartDirectory ne gère que des adresses et, de manière limitée, des URI comme point d'entrée sur le Web2.
+  * En cas de nécessité de réaliser un écosystème plus large, il est possible de coupler un smartToken de type ERC721 qui va lister des fichiers identifiés en tant que NFT et gérer les autorisations d'accès vers le stockage :
+    * Les fichiers sont potentiellement sur IPFS mais de manière plus pragmatique dans un monde professionnel, sur un "conservateur de fichiers", c'est-à-dire un serveur de fichiers qui ne délivre des fichiers qu'en fonction des autorisations lues sur le NFT associé.
+    * De plus, l'authentification des requêtes vers le conservateur de fichiers se fait au travers du wallet hybride pour plus de sécurité
+        ainsi le conservateur de fichiers opère sans nécessité de lui adjoindre des fonctions d'administration.
+    
 
--   En cas de nécessité de réaliser un écosystème plus large, il est
-    possible de coupler un smartToken de type ERC721 qui va lister des
-    fichiers identifiés en tant que NFT et gérer les autorisations
-    d'accès vers le stockage :
+* Architecture et fonctionnement dans un **écosystème multichain** :
+  * A ce stade de la proposition, la gestion multichain se fait manuellement par l'administrateur au travers de la création de plusieurs smartDirectory.
+  * Évolution future : une deuxième étape pourrait aborder la faisabilité d'un smartToken d'une chaîne pour lire un smartDirectory d'une autre chaîne. L'ajout d'un paramètre "chainID" en plus de "contractVersion" et de "contractType" serait un minimum. L'utilisation des informations "on chain" par des smartcontracts nécessiterait une passerelle inter-chain.
 
--   Les fichiers sont potentiellement sur IPFS mais de manière plus
-    pragmatique dans un monde professionnel, sur un "conservateur de
-    fichiers", c'est-à-dire un serveur de fichiers qui ne délivre des
-    fichiers qu'en fonction des autorisations lues sur le NFT associé.
--   De plus, l\'authentification des requêtes vers le conservateur de
-    fichiers se fait au travers du wallet hybride pour plus de sécurité
-    ainsi le conservateur de fichiers opère sans nécessité de lui
-    adjoindre des fonctions d'administration.
 
--   Architecture et fonctionnement dans un écosystème multichain :
+* Évaluer l\'architecture de la solution pour un système de **blockchains permissionnées** (Consortium).
+  * La proposition s'accorde bien sur une architecture permissionnée car, même dans un cadre de consortium, il est nécessaire de permettre à ses membres d'exposer l\'état de leur smartcontracts (actif, inactif, version ...). L'utilisation des informations du smartDirectory par les smartcontracts permet de restreindre les accès à un sous-ensemble des membres.
 
--   A ce stade de la proposition, la gestion multichain se fait
-    manuellement par l'administrateur au travers de la création de
-    plusieurs smartDirectory.
 
--   Évolution future : une deuxième étape pourrait aborder la
-    faisabilité d'un smartToken d'une chaîne pour lire un smartDirectory
-    d'une autre chaîne. L'ajout d'un paramètre "chainID" en plus de
-    "contractVersion" et de "contractType" serait un minimum.
-    L'utilisation des informations "on chain" par des smartcontracts
-    nécessiterait une passerelle inter-chain.
-
--   Évaluer l\'architecture de la solution pour un système de
-    blockchains permissionnées (Consortium).
-
--   La proposition s'accorde bien sur une architecture permissionnée
-    car, même dans un cadre de consortium, il est nécessaire de
-    permettre à ses membres d'exposer l\'état de leur smartcontracts
-    (actif, inactif, version ...). L'utilisation des informations du
-    smartDirectory par les smartcontracts permet de restreindre les
-    accès à un sous-ensemble des membres.
-
--   Utilisation éventuelle d'un système d'autorisation
-    multipartite (DAO, Multisig).
-
--   Ceci est possible avec un wallet hydride. Nous pensons qu'il reste
-    préférable que les fonctions du système d'autorisation multipartite
-    restent externes et non intégrées au smartDirectory.
-
-### 
+* Utilisation éventuelle d'un système d'autorisation multipartite (DAO, Multisig).
+  * Ceci est possible avec un wallet hydride. Nous pensons qu'il reste préférable que les fonctions du système d'autorisation multipartite restent externes et non intégrées au smartDirectory.
 
 ------------------------------------------------------------------------
 
@@ -271,163 +363,56 @@ Les objectifs et ressources du projet
 
 ### Les objectifs du projet sont :
 
-1.  La réalisation en solidity du smartDirectory et son déploiement sur
-    une blockchain de test, par exemple polygon AMOY.
-2.  La réalisation d'une APP sur Android à des fins d'UI de
-    démonstration pour écrire ou consulter les informations contenues
-    dans un smart directory. Cette application a permis d'effectuer les
-    actions et contrôles du plan de test.
-3.  Réalisation d\'une application web d'affichage du contenu d'un
-    smartDirectory, liste des registrants, liste des références, historique des statuts.
-4.  La mise en place d'un serveur de déploiement avec 3 types de
-    smartContracts (smartDirectory, ERC20, ERC721) en déploiement par API.
+1.  La réalisation en solidity du smartDirectory et son déploiement sur une blockchain de test, par exemple polygon AMOY.
+2.  La réalisation d'une APP sur Android à des fins d'UI de démonstration pour écrire ou consulter les informations 
+contenues dans un smart directory. Cette application a permis d'effectuer les actions et contrôles du plan de test.
+3.  Réalisation d\'une application web d'affichage du contenu d'un smartDirectory, liste des registrants, liste des 
+références, historique des statuts.
+4.  La mise en place d'un serveur de déploiement avec 3 types de smartContracts (smartDirectory, ERC20, ERC721) en 
+déploiement par API.
 
-Synthèse des fonctionnalités proposées :
+**Synthèse des fonctionnalités proposées :**
 
-| Fonctionnalité                                                     | Description                                                                                                       |
-|--------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-| Identification et catalogage des smartContracts\*                  | En utilisant l'adresse du déclarant et le code projet il est possible de créer différents écosystèmes d'adresses. |
-| Création d\'une base de données consultable\*                      | Le smartContract "smartDirectory"                                                                                 |
-|                                                                    | enregistre les adresses des                                                                                       |
-|                                                                    | smartContracts et un code projet                                                                                  |
-|                                                                    | ainsi que l'adresse déclarante.                                                                                   |
-|                                                                    |                                                                                                                   |
-|                                                                    | Le smartDirectory expose des                                                                                      |
-|                                                                    | "getters" permettant la lecture                                                                                   |
-|                                                                    | directe de chaque  smartContract                                                                                  |
-|                                                                    | déclaré ou bien des listes.                                                                                       |
-| Développement d\'une interface utilisateur- déclarant\*            | L'interface déclarant permet :                                                                                    |
-|                                                                    | -   de choisir le type de                                                                                         |
-|                                                                    | smartContract à déployer,                                                                                         |
-|                                                                    | -   de choisir les paramètres par                                                                                 |
-|                                                                    | défaut pour chaque type,                                                                                          |
-|                                                                    | -   de remplacer les paramètres                                                                                   |
-|                                                                    | par défaut lors de la demande                                                                                     |
-|                                                                    | de création d'un                                                                                                  |
-|                                                                    | smartContract,                                                                                                    |
-|                                                                    | -   de valider par transaction                                                                                    |
-|                                                                    | blockchain toute création de                                                                                      |
-|                                                                    | smartContract,                                                                                                    |
-|                                                                    | -   de lister les smartContracts                                                                                  |
-|                                                                    | déclarés, c'est-à-dire                                                                                            |
-|                                                                    | enregistrés sur la                                                                                                |
-|                                                                    | smartDIrectory,                                                                                                   |
-| Développement d\'une interface  utilisateur- superviseur\*         | Cette interface superviseur permet :                                                                              |
-|                                                                    | -   de filtrer la liste des                                                                                       |
-|                                                                    | smartContracts déclarés par                                                                                       |
-|                                                                    | des libellés (projectID),                                                                                         |
-|                                                                    | -   de filtrer cette liste par                                                                                    |
-|                                                                    | version,                                                                                                          |
-|                                                                    | -   de filtrer cette liste par                                                                                    |
-|                                                                    | adresse de déclarant,                                                                                             |
-|                                                                    | -   d'exporter la liste des                                                                                       |
-|                                                                    | adresses ainsi sélectionnées.                                                                                     |
-| Intégration de la vérification  des versions et des mises à jour\* | Chaque smartContract intègre un                                                                                   |
-|                                                                    | numéro de version à l'origine. Ce                                                                                 |
-|                                                                    | numéro d'origine ne peut être                                                                                     |
-|                                                                    | modifié mais l'ajout de status                                                                                    |
-|                                                                    | horodatés et historisés permet                                                                                    |
-|                                                                    | les mises à jour le cas échéant.                                                                                  |
+| Fonctionnalité                                                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                  |
+|--------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Identification et catalogage des smartContracts\*                  | En utilisant l'adresse du déclarant et le code projet il est possible de créer différents écosystèmes d'adresses.                                                                                                                                                                                                                                                                                                            |
+| Création d'une base de données consultable\*                       | Le smartContract “smartDirectory” enregistre les adresses des smartContracts et un code projet ainsi que l’adresse déclarante.<br/>Le smartDirectory expose des “getters” permettant la lecture directe de chaque smartContract déclaré ou bien des listes.                                                                                                                                                                  |
+| Développement d'une interface utilisateur- déclarant\*             | L'interface déclarant permet :<br/>- de choisir le type de smartContract à déployer,<br/>- de choisir les paramètres par défaut pour chaque type,<br/>- de remplacer les paramètres par défaut lors de la demande de création d’un smartContract,<br/>- de valider par transaction blockchain toute création de smartContract,<br/>- de lister les smartContracts déclarés, c’est-à-dire enregistrés dans le smartDirectory. | 
+| Développement d\'une interface  utilisateur- superviseur\*         | Cette interface superviseur permet :<br/>- de filtrer la liste des smartContracts déclarés par des libellés (projectID),<br/>- de filtrer cette liste par version,<br/>- de filtrer cette liste par adresse de déclarant,<br/>- d'exporter la liste des adresses ainsi sélectionnées.                                                                                                                                        |
+| Intégration de la vérification  des versions et des mises à jour\* | Chaque smartContract intègre un numéro de version à l’origine. Ce numéro d’origine ne peut être modifié mais l’ajout de status horodatés et historisés permet les mises à jour le cas échéant.                                                                                                                                                                                                                               |
+\*_fonctionnalité identifiée dans le cahier des charges_
 
-
-\*fonctionnalité identifiée dans le cahier des charges
 
 Potentiellement on pourrait réaliser un EIP (Ethereum Improvement Proposal) qui propose une approche standard sur :
 
--   les interactions nécessaire au déploiement et à la déclaration d'un
-    smartContract (API et protocole),
--   l'accès au smartDirectory,
--   le paramétrage générique minimal que tout smartContract doit mettre
-    en oeuvre pour être déclarés et être vérifiable par d'autres
-    smartContracts,
--   des exemples.
+* les interactions nécessaire au déploiement et à la déclaration d'un smartContract (API et protocole),
+* l'accès au smartDirectory,
+* le paramétrage générique minimal que tout smartContract doit mettre en oeuvre pour être déclarés et être vérifiable 
+par d'autres smartContracts,
+* des exemples.
 
-### Les ressources du projet
+### Les ressources du projet 
 
-Ce projet tire parti de fonctionnalités déjà développées par l'équipe de
-R&D blockchain du Groupe BPCE et qui seront adaptées pour le projet par
-cette même équipe. Cette équipe existe depuis début 2018 et possède tous
-les éléments et outils de développement sur des blockchains EVM, en
-particulier, un serveur avec des API et un noeud d'accès sur plusieurs
-blockchains de test : Polygon-AMOY, ZAMADEV, EVM-XRPL.
+Ce projet tire parti de fonctionnalités déjà développées par l'équipe de R&D blockchain du Groupe BPCE et qui seront 
+adaptées pour le projet par cette même équipe. Cette équipe existe depuis début 2018 et possède tous les éléments et 
+outils de développement sur des blockchains EVM, en particulier, un serveur avec des API et un noeud d'accès sur 
+plusieurs blockchains de test : Polygon-AMOY, ZAMADEV, EVM-XRPL.
 
-Différents tests et proofs of concept, comprenant des applications sous
-Android, ont été réalisés avec des concepts similaires ce qui permettra
-de tenir les délais en incorporant des fonctions en partie déjà
-existantes. En particulier, un smartContract (le schemeDirectory) est
-utilisé pour la structure de confiance des smartWallets d'identité du
-projet Qaxh.io. Ce smartContract offre un service analogue mais dans un
-contexte privatif et avec des éléments de sécurité spécifiques.
+Différents tests et proofs of concept, comprenant des applications sous Android, ont été réalisés avec des concepts 
+similaires ce qui permettra de tenir les délais en incorporant des fonctions en partie déjà existantes. En particulier, 
+un smartContract (le schemeDirectory) est utilisé pour la structure de confiance des smartWallets d'identité du projet 
+Qaxh.io. Ce smartContract offre un service analogue mais dans un contexte privatif et avec des éléments de sécurité 
+spécifiques.
 
-Quatre personnes de l'équipe R&D blockchain vont participer au projet
-regroupant les expertises nécessaires : Solidity sur EVM, outils de
-développement, API python, node Ethereum, fonctionnel et interface
-smartphone.
+Quatre personnes de l'équipe R&D blockchain vont participer au projet regroupant les expertises nécessaires : Solidity 
+sur EVM, outils de développement, API python, node Ethereum, fonctionnel et interface smartphone.
 
-|   |   |
-|---|---|
-| José LUU   |   |
-|   |   |
-|   |   |
-
-
-+-----------------------------------+-----------------------------------+
-|                          | Tech lead du projet Qaxh.io       |
-|                                   | depuis 2017                       |
-|                                   |                                   |
-|                                   | co-auteur de l'article            |
-|                                   | \"Blockchain and the nature of    |
-|                                   | money\" dans \"Banque et          |
-|                                   | stratégie\" September 2016        |
-|                                   |                                   |
-|                                   | [https://papers.ssrn.com/sol3/    |
-|                                   | papers.cfm?abstract\_id=2939042]( |
-|                                   | https://www.google.com/url?q=http |
-|                                   | s://papers.ssrn.com/sol3/papers.c |
-|                                   | fm?abstract_id%3D2939042&sa=D&sou |
-|                                   | rce=editors&ust=1735324824754786& |
-|                                   | usg=AOvVaw2AJ5d0nSjua1kFALYESBT0) |
-|                                   |                                   |
-|                                   | Précédemment responsable du       |
-|                                   | logiciel de valorisation des      |
-|                                   | dérivés actions à Natixis.        |
-+-----------------------------------+-----------------------------------+
-| Hamza  MEKHANEG                   | Elève Ingénieur Alternant en      |
-|                                   | dernière année de Mastère de      |
-|                                   | l'Ingénierie de la Blockchain de  |
-|                                   | l'Ecole Supérieure de Génie       |
-|                                   | Informatique,                     |
-|                                   |                                   |
-|                                   | Lauréat de plusieurs Hackathon    |
-|                                   | (Hackathon Hackin'dau,  Hackathon |
-|                                   | HEC x Tezos, Hackathon ETH Global |
-|                                   | Istanbul)                         |
-+-----------------------------------+-----------------------------------+
-| Cyril VIGNET                      | Ingénieur, animateur de la        |
-|                                   | coordination blockchain du Groupe |
-|                                   | BPCE depuis 2015.                 |
-|                                   |                                   |
-|                                   | Co-leader du projet de R&D        |
-|                                   | Qaxh.io visant à concilier        |
-|                                   | utilisateur de banque de détail   |
-|                                   | et blockchain publique.           |
-|                                   |                                   |
-|                                   | Co-auteur de 10 brevets dans le   |
-|                                   | domaine de la blockchain          |
-|                                   |                                   |
-|                                   | Design et interface utilisateur   |
-+-----------------------------------+-----------------------------------+
-| Vincent GRIFFAULT                 | Directeur de projets              |
-|                                   | Transformation Digitale & Data    |
-|                                   | \@Caisse d'Epargne Rhône Alpes    |
-|                                   |                                   |
-|                                   | Certificate of Advanced Studies   |
-|                                   | Blockchain & DLT\@University of   |
-|                                   | Geneva                            |
-|                                   |                                   |
-|                                   | Contributeur du projet de R&D     |
-|                                   | Qaxh.io                           |
-+-----------------------------------+-----------------------------------+
+|                 |                                                                                                                                                                                                                                                                                                            |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|José LUU         | Tech lead du projet Qaxh.io depuis 2017.<br/>Co-auteur de l’article "Blockchain and the nature of money" dans "Banque et stratégie" September 2016<br/>https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2939042.<br/>Précédemment responsable du logiciel de valorisation des dérivés actions à Natixis.|
+|Hamza MEKHANEG   | Elève Ingénieur Alternant en dernière année de Mastère de l’Ingénierie de la Blockchain de l’Ecole Supérieure de Génie Informatique.<br/>Lauréat de plusieurs Hackathon (Hackathon Hackin’dau,  Hackathon HEC x Tezos, Hackathon ETH Global Istanbul).                                                     |
+|Cyril VIGNET     | Ingénieur, animateur de la coordination blockchain du Groupe BPCE depuis 2015.<br/>Co-leader du projet de R&D Qaxh.io visant à concilier utilisateur de banque de détail et blockchain publique.<br/>Co-auteur de 10 brevets dans le domaine de la blockchain.<br/>Design et interface utilisateur.        |
+|Vincent GRIFFAULT| Directeur de projets Transformation Digitale & Data @Caisse d’Epargne Rhône Alpes.<br/>Certificate of Advanced Studies Blockchain & DLT@University of Geneva.<br/>Contributeur du projet de R&D Qaxh.io.                                                                                                   |
 
 ------------------------------------------------------------------------
 
@@ -435,61 +420,50 @@ Fonctionnement détaillé du smartDirectory
 -----------------------------------------
 
 Le SmartDirectory est un smart contract (SmartDirectory.sol) associé à une bibliothèque solidity (SmartDirectoryLib.sol). 
-Ces 2 éléments permettent la gestion d'un répertoire décentralisé composé de références (adresses de smartContracts) et 
-de leurs émetteurs (registrants). Ce répertoire peut être déployé, activé, configuré et administré par des adresses 
+Ces 2 éléments permettent la gestion d'un répertoire décentralisé composé de **références** (adresses de smartContracts) et 
+de **leurs émetteurs (registrants)**. Ce répertoire peut être déployé, activé, configuré et administré par des adresses 
 spécifiques appelées "**parents**".
 
 L\'objectif principal est de :
 
--   Structurer et suivre des références associées à des projets
-    spécifiques.
--   Gérer les statuts des références pour suivre leurs évolutions dans
-    le temps.
--   Administrer des participants, en leur permettant d\'ajouter des
-    références ou non, en fonction du mode sélectionné au moment du
-    déploiement du SmartDirectory.
+* **Structurer et suivre des références** associées à des projets spécifiques.
+* **Gérer les statuts des références** pour suivre leurs évolutions dans le temps.
+* **Administrer des participants**, en leur permettant d\'ajouter des références ou non, en fonction du mode sélectionné au 
+moment du déploiement du SmartDirectory.
 
 Deux modes de gestion sont disponibles pour les administrateurs du SmartDirectory :
 
-1. parentsAuthorized (ou gestion administrée) :
-
-   - Contrôle strict : seules les adresses pré-enregistrées par les
-       "parents" (administrateurs) peuvent ajouter des références.
-   - Processus d\'inscription manuel: les administrateurs doivent
-         valider et ajouter les utilisateurs au répertoire.
+1. **_parentsAuthorized_** (ou gestion administrée) :
+   - **Contrôle strict** : seules les adresses pré-enregistrées par les "parents" (administrateurs) peuvent ajouter des références.
+   - **Processus d'inscription manuel** : les administrateurs doivent valider et ajouter les utilisateurs au répertoire.
 
 2. selfDeclaration (ou gestion ouverte) :
-
-   - Liberté d\'inscription : n\'importe quelle adresse peut s\'auto-enregistrer et ajouter des références.
-   - Inscription automatique : si une adresse non connue tente d\'ajouter une référence, elle est automatiquement enregistrée comme participant.
+   - **Liberté d'inscriptio**n : n'importe quelle adresse peut s'auto-enregistrer et ajouter des références.
+   - **Inscription automatique** : si une adresse non connue tente d'ajouter une référence, elle est automatiquement enregistrée comme participant.
 
 Ces deux modes permettent d\'adapter le smart contract aux besoins spécifiques :
+* **Contrôle strict** pour des fournisseurs de services et applications devant être vérifiées au préalable.
+* **Ouverture totale** pour des environnements collaboratifs.
 
--   Contrôle strict pour des fournisseurs de services et applications devant être vérifiées au préalable.
--   Ouverture totale pour des environnements collaboratifs.
-
-C'est le paramètre AdminCode, non modifiable à posteriori, qui permet de choisir entre "parentsAuthorized" ou 
-"selfDeclaration" lors du déploiement.
+C'est le paramètre **AdminCode**, non modifiable à posteriori, qui permet de choisir entre "_parentsAuthorized_" ou 
+"_selfDeclaration_" lors du déploiement.
 
 ### Le mode administré (parentsAuthorized)
 
-![](Specifications/images-md/e56c2c016b8a3fdcbc0a66808023bb498992c845.png)
+![Gestion administrée (parentsAuthorized)](Specifications/images-md/e56c2c016b8a3fdcbc0a66808023bb498992c845.png)
 
-Dans le cas de la gestion administré, l'administrateur peut indiquer 2
-adresses dites "**parent**".
+Dans le cas de la gestion administré, l'administrateur peut indiquer 2 adresses dites "**parent**".
 
-### 
 
 ### Le mode ouvert (selfDeclaration)
 
-![](Specifications/images-md/38d3c26d937daec76c5e1a93c4072e377950a477.png)
+![Gestion ouverte (selfDeclaration)](Specifications/images-md/38d3c26d937daec76c5e1a93c4072e377950a477.png)
 
 Les structures du smartDirectory
 --------------------------------
 
-![](Specifications/images-md/9672bacc9fa668b3770fa728807f8bd6d02a4d0f.png)
+![2 structures dans le smartDirectory](Specifications/images-md/9672bacc9fa668b3770fa728807f8bd6d02a4d0f.png)
 
-### 
 
 ### La table des références
 
@@ -497,67 +471,50 @@ Cette table contient toutes les adresses des smart contract (references):
 
 **Reference**
 
-* _registrantAddress (msg.sender)_ : adresse du déclarant (EOA ou
-    smartContract). Acteur externe identifié par son adresse et à même
-    d'enregistrer des "references".
-* _referenceAddress (address)_ : adresse du smartContract déclaré
-    (reference). Cette adresse peut aussi être une EOA.
-* _projectId (string)_ : une chaîne de caractères, identifiant du projet
-    lié à la référence.
-* _referenceType (string)_ : type de la référence.
-* _referenceVersion (string)_ : version de la référence.
-* _statusHistory_ : historique des statuts associés à la référence.
-    C'est une sous-liste (de premier index 1) qui peut être parcourue et
-    comprenant
+* **_registrantAddress (msg.sender)_** : adresse du déclarant (EOA ou smartContract). Acteur externe identifié par son 
+adresse et à même d'enregistrer des "references".
+* **_referenceAddress (address)_** : adresse du smartContract déclaré (reference). Cette adresse peut aussi être une EOA.
+* **_projectId (string)_** : une chaîne de caractères, identifiant du projet lié à la référence.
+* **_referenceType (string)_** : type de la référence.
+* **_referenceVersion (string)_** : version de la référence.
+* **_statusHistory_** : historique des statuts associés à la référence. C'est une sous-liste (de premier index 1) qui 
+peut être parcourue et comprenant
 
-**ReferenceStatus**
+  **ReferenceStatus**
 
-* _status (string)_: état actuel de la référence. C'est une chaîne de
-    caractères modifiable uniquement par le déclarant. La sémantique de
-    ce statut est libre mais une signification explicite est conseillée
-    (par ex: en production, en suspens, abandonné, etc...) ou une URI
-    d'explication.
-* _timeStamp (uint256)_: horodatage de l'écriture lors de la création ou du changement de statut.
-* _latestStatusIndex (uint256)_: index du dernier statut enregistré
-    pour la référence. Cette variable n'est pas représentée sur le
-    schéma ci-dessus (elle ne porte pas d'usage fonctionnel et est
-    utilisée en interne par le contrat afin d'optimiser le code pour les
-    fonctions "getters").
+    * **_status (string)_** : état actuel de la référence. C'est une chaîne de caractères modifiable uniquement par le
+      déclarant. La sémantique de ce statut est libre mais une signification explicite est conseillée(par ex: en
+      production, en suspens, abandonné, etc...) ou une URId'explication.
+    * **_timeStamp (uint256)_** : horodatage de l'écriture lors de la création ou du changement de statut.
+    * **_latestStatusIndex (uint256)_** : index du dernier statut enregistré pour la référence. Cette variable n'est pas
+      représentée sur le schéma ci-dessus (elle ne porte pas d'usage fonctionnel et est utilisée en interne par le contrat
+      afin d'optimiser le code pour les fonctions "getters").
 
-![](Specifications/images-md/e5b49c821073848a60a1357244492f15b0d9caad.png)
+![Fonctions sur la table des références](Specifications/images-md/e5b49c821073848a60a1357244492f15b0d9caad.png)
 
-#### 
 
-Note les méthodes comme ci-dessous en violet sont implémentées en java
-afin d\'être utilisables dans l'application android voir l'environment
-de développement "AppInventor" ci-après.
+Note les méthodes comme ci-dessous en violet sont implémentées en java afin d'être utilisables dans l'application 
+android voir "Environment de développement AppInventor" ci-après.
 
 #### .smartDirectoryReferenceEoaCreate
 
-Sortie : cette fonction permet la création d'un nouvel enregistrement et
-de son premier statut dans la table des références. La valeur de retour
-est un hash de la transaction pour vérifier le minage côté client.
+**Sortie** : cette fonction permet la création d'un nouvel enregistrement et de son premier statut dans la table des 
+références. La valeur de retour est un hash de la transaction pour vérifier le minage côté client.
 
-  --------- -------------------------------------------------------------------------------------
-  exemple   TransactionHash: 0xc93b48f1d1be00c522e15f4536306cc06815351bddd5501fe24294d050bdfb6a
-  --------- -------------------------------------------------------------------------------------
 
 **Paramètres en entrée :** smartDirectoryAddress, referenceAddress,
 projectId, referenceType, referenceVersion, status.
 
 ![](Specifications/images-md/59fae1bcdf7770353e4b11254414e15bc0634557.png)
 
--   L'adresse du déclarant n'est pas explicitement demandée dans les
-    paramètres car c'est l'adresse qui signe la transaction de création
--   l'horodatage (timestamp) est mis automatiquement lors de la création
-    de l'enregistrement.
--   Le statut (status) est une chaîne de caractère libre qui peut si
-    besoin être sous un "URI".
+* L'adresse du déclarant n'est pas explicitement demandée dans les paramètres car c'est l'adresse qui signe la 
+transaction de création.
+* l'horodatage (timestamp) est mis automatiquement lors de la création de l'enregistrement.
+* Le statut (status) est une chaîne de caractère libre qui peut si besoin être sous un "URI".
 
 **Conditions d'exécution :**
 
-Il existe 2 stratégies d'utilisation de cette fonction suivant le
-paramétrage du smartDirectory au moment de sa création :
+Il existe 2 stratégies d'utilisation de cette fonction suivant le paramétrage du smartDirectory au moment de sa création :
 
 Code Solidity:
 ```Solidity
@@ -567,210 +524,238 @@ enum AdminCode {
 }
 ```
 
-- Si l' "AdminCode" du SmartDirectory est "parentsAuthorized" (0) :
-    l\'appelant doit être un participant valide. Pour ce faire, un
-    enregistrement préalable du déclarant^[\[1\]](#ftnt1)^  par l'une ou
-    l'autre des adresses "parent" du smartDirectory a été effectué :
+* Si l' "AdminCode" du SmartDirectory est "parentsAuthorized" (0) :l'appelant doit être un participant valide. 
+Pour ce faire, un enregistrement préalable du déclarant par l'une ou l'autre des adresses "parent" du smartDirectory a 
+été effectué :
+  * Si le déclarant n'est pas présent lorsqu'il déclare une référence -\> rejet de la référence (revert).
+  * Si le déclarant est bien présent dans la table des déclarants lorsqu'il déclare une référence -\> ajout de la référence.
+  * L'index du déclarant doit être \> à 0 dans la table "registrants".
+      Si son index est = 0, cela signifie que les administrateurs du SmartDirectory (parentAddress1 ou 2) considèrent que le déclarant ne
+      remplit plus les conditions requises pour lui permettre de référencer de nouvelles adresses de smartContracts.
 
-```{=html}
-<!-- -->
-```
--   Si le déclarant n'est pas présent lorsqu'il déclare une référence
-    -\> rejet de la référence (revert).
--   Si le déclarant est bien présent dans la table des déclarants
-    lorsqu'il déclare une référence -\> ajout de la référence.
--   L'index du déclarant doit être \> à 0 dans la table "registrants".
-    Si son index est = 0, cela signifie que les administrateurs du
-    SmartDirectory (parentAddress1 ou 2) considèrent que le déclarant ne
-    remplit plus les conditions requises pour lui permettre de
-    référencer de nouvelles adresses de smartContracts.
 
--   Si l' "AdminCode" du SmartDirectory est "selfDeclaration" (1) :
-    enregistrement en simultané du déclarant et de la référence :
+* Si l' "AdminCode" du SmartDirectory est "selfDeclaration" (1) : enregistrement en simultané du déclarant et de la référence.
+  * Si le déclarant n'est pas présent -\> l\'appelant s\'auto-enregistre dans la table des déclarants et ajout de la référence.
+  * Si le déclarant est présent -\> ajout uniquement de la référence.
 
-```{=html}
-<!-- -->
-```
--   Si le déclarant n'est pas présent -\> l\'appelant s\'auto-enregistre
-    dans la table des déclarants et ajout de la référence.
--   Si le déclarant est présent -\> ajout uniquement de la référence.
 
--   Quel que soit l' "AdminCode", la référence n'est pas enregistrée si
-    elle a été préalablement déclarée par le déclarant.
+* Quel que soit l' "AdminCode", la référence n'est pas enregistrée si elle a été préalablement déclarée par le déclarant.
 
- 
 
-Code :
+**Code :**
 
 La fonction solidity appelée est "createReference" du smartContract
 "SmartDirectory.sol". Le code java exécuté à partir de l'application
 Android de démonstration est le suivant :
 
 ```Java
+@SimpleFunction(description = "create a new smartContract reference in the SmartDirectory")
+    public String smartDirectoryReferenceEoaCreate (String smartDirectoryAddress, String referenceAddress,
+                                                    String projectId, String referenceType, String referenceVersion,
+                                                    String status) {
 
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
+
+        String tx_hash;
+        try {
+            tx_hash = doTransaction(
+                    folderContract.createReference(
+                            referenceAddress,
+                            projectId,
+                            referenceType,
+                            referenceVersion,
+                            status
+                    ),
+                    "createReference");
+        } catch (Exception e) {
+            String message = "Error smartDirectoryReferenceEoaCreate: " + e.getMessage();
+            android.util.Log.d(LOG_TAG, message);
+            tx_hash = message;
+        }
+        return tx_hash;
+    }
 ```
-###
+--------- -------------------------------------------------------------------------------------
+Exemple    TransactionHash: 0xc93b48f1d1be00c522e15f4536306cc06815351bddd5501fe24294d050bdfb6a
+--------- -------------------------------------------------------------------------------------
+
 
 #### .smartDirectoryReferenceStatusEoaUpdate
 
-Sortie : cette fonction permet d'ajouter un nouveau statut et le
-timestamp associé dans la sous-liste statusHistory pour la
-referenceAddress passée en paramètre. Cette transaction d'update est
-signée par l'adresse du déclarant.
+**Sortie** : cette fonction permet d'ajouter un nouveau statut et le timestamp associé dans la sous-liste statusHistory 
+pour la referenceAddress passée en paramètre. Cette transaction d'update est signée par l'adresse du déclarant.
 
-Paramètres en entrée : smartDirectoryAddress, referenceAddress, status.
+**Paramètres en entrée** : smartDirectoryAddress, referenceAddress, status.
 
 ![](Specifications/images-md/387a3bcff49ab7eb8fbb3c885b96c6b2b0d7876d.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   La référence doit préalablement exister dans la table "reference".
--   Le déclarant doit exister dans la table "registrant" (mode
-    "selfDeclaration") ou doit être valide (index \> à 0 en mode
-    "parentsAuthorized").
+* La référence doit préalablement exister dans la table "reference".
+* Le déclarant doit exister dans la table "registrant" (mode "selfDeclaration") ou doit être valide (index \> à 0 en 
+mode "parentsAuthorized").
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "updateReferenceStatus" du
-smartContract "SmartDirectory.sol". Le code java exécuté à partir de
-l'application Android de démonstration est le suivant :
+La fonction solidity appelée est "updateReferenceStatus" du smartContract "SmartDirectory.sol". Le code java exécuté à 
+partir de l'application Android de démonstration est le suivant :
 
 ```Java
+    @SimpleFunction(description = "update status of a reference")
+    public String smartDirectoryReferenceStatusEoaUpdate (String smartDirectoryAddress, String referenceAddress,
+                                                          String status) {
 
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
+
+        String tx_hash;
+        try {
+            tx_hash = doTransaction(
+                    folderContract.updateReferenceStatus(referenceAddress, status),
+                    "updateReferenceStatus");
+        } catch (Exception e) {
+            String message = "Error smartDirectoryReferenceStatusEoaUpdate: " + e.getMessage();
+            android.util.Log.d(LOG_TAG, message);
+            tx_hash = message;
+        }
+        return tx_hash;
+
+    }
 ```
 
   --------- -------------------------------------------------------------------------------------
-  exemple   TransactionHash: 0xdb9688a22549627511cca990fe2ab0a35f53caa57dc6abf75042fa87e99ab0b6
+  Exemple   TransactionHash: 0xdb9688a22549627511cca990fe2ab0a35f53caa57dc6abf75042fa87e99ab0b6
   --------- -------------------------------------------------------------------------------------
+
 
 #### .smartDirectoryReferenceGet
 
-Sortie : cette fonction permet la lecture d'une "reference" en
-connaissant uniquement l'adresse du smartContract référencé
-(referenceAddress). C'est la fonction principale d'utilisation du
-smartDirectory.
+**Sortie** : cette fonction permet la lecture d'une "reference" en connaissant uniquement l'adresse du smartContract 
+référencé (referenceAddress). C'est la fonction principale d'utilisation du smartDirectory. Elle retourne un dictionnaire contenant les informations complètes sur une référence.:
 
-Elle retourne un dictionnaire contenant les informations complètes sur
-une référence.:
+* registrantAddress : l'adresse du déclarant.
+* registrantIndex : l'index du déclarant (si = à 0, le déclarant est désactivé et ne peut plus ajouter de référence).
+* projectId : l'identification du projet auquel appartient le smartContract référencé.
+* referenceType : le type de smartContract (champ libre à la main du déclarant).
+* referenceVersion : la version du smartContract (champ libre à la main du déclarant).
+* latestStatus : le dernier statut déclaré dans la sous-liste statusHistory.
+* latestTimeStamp : le timestamp associé au dernier statut déclaré dans la sous-liste statusHistory.
+* lastStatusIndex : l'index de ce dernier statut.
 
--   registrantAddress : l'adresse du déclarant.
--   registrantIndex : l'index du déclarant (si = à 0, le déclarant est
-    désactivé et ne peut plus ajouter de référence).
--   projectId : l'identification du projet auquel appartient le
-    smartContract référencé.
--   referenceType : le type de smartContract (champ libre à la main du
-    déclarant).
--   referenceVersion : la version du smartContract (champ libre à la
-    main du déclarant).
--   latestStatus : le dernier statut déclaré dans la sous-liste
-    statusHistory.
--   latestTimeStamp : le timestamp associé au dernier statut déclaré
-    dans la sous-liste statusHistory.
--   lastStatusIndex : l'index de ce dernier statut.
-
-Paramètres en entrée : smartDirectoryAddress,referenceAddress
+**Paramètres en entrée** : smartDirectoryAddress,referenceAddress
 
 ![](Specifications/images-md/85b0d5c10b465a0edc888189d06627b1a0e5b7d1.png)
 
-Conditions d'exécution :
+**Conditions d'exécution :**
 
--   Si la référence n'existe pas, le dictionnaire renvoyé comporte un
-    message d\'erreur.
+* Si la référence n'existe pas, le dictionnaire renvoyé comporte un message d\'erreur.
 
-+-----------------------------------+-----------------------------------+
-| paramètres                        | smartDirectoryAddress:0x2ca24f2   |
-|                                   | 531309c8918961333720ee55ae5aa77ae |
-|                                   |                                   |
-|                                   | referenceAddress:                 |
-|                                   | 0x5210354                         |
-|                                   | 4224a2ec194ca9673506b350d927057b4 |
-+-----------------------------------+-----------------------------------+
-| retour valide                     | {\"referenceAddress\":\"0x5       |
-|                                   | 2103544224a2ec194ca9673506b350d92 |
-|                                   | 7057b4\",\"lastTimestamp\":\"1734 |
-|                                   | 363453\",\"registrantIndex\":\"1\ |
-|                                   | ",\"referenceVersion\":\"EOA\",\" |
-|                                   | referenceType\":\"NA\",\"projectI |
-|                                   | d\":\"MYSELF\",\"lastStatusIndex\ |
-|                                   | ":\"1\",\"registrantAddress\":\"0 |
-|                                   | x52103544224a2ec194ca9673506b350d |
-|                                   | 927057b4\",\"lastStatus\":\"NA\"} |
-+-----------------------------------+-----------------------------------+
-| retour en erreur                  | {\"Error                          |
-|                                   | smartD                            |
-|                                   | irectoryReferenceGet\":\"Contract |
-|                                   | Call has been reverted by the EVM |
-|                                   | with the reason: \'exécution      |
-|                                   | reverted: unknown reference\'.\"} |
-+-----------------------------------+-----------------------------------+
+| paramètres                                                                                                                         | retour valide                                                                                                                                                                                                                                                                                                                           | retour en erreur                                                                                                                           |
+|------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| smartDirectoryAddress: 0x2ca24f2531309c8918961333720ee55ae5aa77ae<br/>referenceAddress: 0x52103544224a2ec194ca9673506b350d927057b4 | {"referenceAddress":"0x52103544224a2ec194ca9673506b350d927057b4",<br/>"lastTimestamp":"1734363453",<br/>"registrantIndex":"1",<br/>"referenceVersion":"EOA",<br/>"referenceType":"NA",<br/>"projectId":"MYSELF",<br/>"lastStatusIndex":"1",<br/>"registrantAddress":"0x52103544224a2ec194ca9673506b350d927057b4",<br/>"lastStatus":"NA"}                                        | {"Error smartDirectoryReferenceGet":<br/>"Contract Call has been reverted by the EVM with the reason: 'execution reverted: unknown reference'."} |
 
-.
 
-Code :
+**Code :**
 
-La fonction appelle les fonctions "getReference" et
-"getReferenceLastStatusIndex" du smartContract "SmartDirectory.sol". Le
-code java exécuté à partir de l'application Android de démonstration est
-le suivant :
+La fonction appelle les fonctions "getReference" et "getReferenceLastStatusIndex" du smartContract "SmartDirectory.sol".
+Le code java exécuté à partir de l'application Android de démonstration est le suivant :
 
 ```Java
+@SimpleFunction(description = "get smartContract reference details")
+    public Object smartDirectoryReferenceGet(String smartDirectoryAddress, String referenceAddress) {
 
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
+
+        Tuple8<String, BigInteger, String, String, String, String, String, BigInteger> reference;
+        BigInteger lastStatusIndex;
+        Map<String, String> result_dict = new HashMap<>();
+
+        try {
+            reference = folderContract.getReference(referenceAddress).send();
+            lastStatusIndex = folderContract.getReferenceLastStatusIndex(referenceAddress).send();
+
+            result_dict.put("registrantAddress", reference.component1());
+            result_dict.put("registrantIndex", reference.component2().toString());
+            result_dict.put("referenceAddress", reference.component3());
+            result_dict.put("projectId", reference.component4());
+            result_dict.put("referenceType", reference.component5());
+            result_dict.put("referenceVersion", reference.component6());
+            result_dict.put("lastStatus", reference.component7());
+            result_dict.put("lastTimestamp", reference.component8().toString());
+            result_dict.put("lastStatusIndex", lastStatusIndex.toString());
+        } catch (Exception e) {
+            result_dict.put("Error smartDirectoryReferenceGet", e.getMessage());
+        }
+        return result_dict;
+    }
 ```
-###
+
+
 #### .smartDirectoryReferenceLastStatusGet
 
-Sortie : La fonction renvoie le dernier statut ainsi que le dernier
-timestamp associé de l'adresse passée en paramètre. N.B. : la liste des
-statuts d'une référence est toujours initiée avec l'index 1 (l'index 0
-nest pas utilisé).
+**Sortie :** La fonction renvoie le dernier statut ainsi que le dernier timestamp associé de l'adresse passée en 
+paramètre. N.B. : la liste des statuts d'une référence est toujours initiée avec l'index 1 (l'index 0 nest pas utilisé).
 
-Paramètres en entrée : smartDirectoryAddress, referenceAddress 
+**Paramètres en entrée :** smartDirectoryAddress, referenceAddress 
 
 ![](Specifications/images-md/88faef8895a88e0cf1e8447065bcf855767aaaf6.png)
 
-Conditions d'exécution :
+**Conditions d'exécution :**
 
--   La "referenceAddress" doit préalablement exister dans la table
-    "reference".
+* La "referenceAddress" doit préalablement exister dans la table "reference".
 
-Code :
+**Code :**
 
-La fonction solidity appelée est "getReferenceStatus" du smartContract
-"SmartDirectory.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
+La fonction solidity appelée est "getReferenceStatus" du smartContract "SmartDirectory.sol". Le code java exécuté à 
+partir de l'application Android de démonstration est le suivant :
 
 ```Java
+    @SimpleFunction(description = "return reference status and timestamp at a given index")
+    public Object smartDirectoryReferenceLastStatusGet(String smartDirectoryAddress,
+                                                       String referenceAddress) {
 
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
+
+        Tuple2<String, BigInteger> results_raw;
+        Map<String, String> result_dict = new HashMap<>();
+
+        try {
+            results_raw = folderContract.getReferenceStatus(referenceAddress).send();
+            result_dict.put("status",  results_raw.component1());
+            result_dict.put("timestamp",   results_raw.component2().toString());
+        } catch (Exception e) {
+            result_dict.put("error",  "smartDirectoryReferenceLastStatusGet " + e.getMessage());
+        }
+        return result_dict;
+    }
 ```
-###
-#### 
+
 
 #### .smartDirectoryReferenceStatusAtIndexGet
 
-Sortie : cette fonction permet la lecture d'un index spécifique de la
-sous-liste statusHistory. La fonction retourne donc :
+**Sortie :** cette fonction permet la lecture d'un index spécifique de la sous-liste statusHistory. La fonction retourne
+donc :
 
--   le statut à l'index de la requête
--   le timestamp à l'index de la requête
+* le statut à l'index de la requête
+* le timestamp à l'index de la requête
 
-Paramètres en entrée : smartDirectoryAddress, referenceAddress,
-statusIndex 
+**Paramètres en entrée** : smartDirectoryAddress, referenceAddress, statusIndex 
 
 ![](Specifications/images-md/3e34adaf95b8573445107db751bbe780b30b7f8a.png)
 
-Conditions d'exécution :
+**Conditions d'exécution :**
 
--   La "referenceAddress" doit préalablement exister dans la table
-    "reference".
--   Le "statusIndex" est strictement supérieur à 0.
--   Le "statusIndex"  doit être inférieur ou égal à la valeur de
-    "latestStatusIndex" de  la table "reference".
+* La "referenceAddress" doit préalablement exister dans la table "reference".
+* Le "statusIndex" est strictement supérieur à 0.
+* Le "statusIndex" doit être inférieur ou égal à la valeur de "latestStatusIndex" de la table "reference".
 
-Code :
+**Code :**
 
-La fonction solidity appelée est "getReferenceStatusAtIndex" du
-smartContract "SmartDirectory.sol". Le code java exécuté à partir de
-l'application Android de démonstration est le suivant :
+La fonction solidity appelée est "getReferenceStatusAtIndex" du smartContract "SmartDirectory.sol". Le code java exécuté
+à partir de l'application Android de démonstration est le suivant :
 
 ```java
 @SimpleFunction(description = "return reference status and timestamp at a given index")
@@ -794,57 +779,71 @@ public Object smartDirectoryReferenceStatusAtIndexGet(String smartDirectoryAddre
 }
 ```
 
-|paramètres   |retour valide   |
-|---|---|
-|smartDirectoryAddress:0x2ca24f2531309c8918961333720ee55ae5aa77ae
-referenceAddress: 0x52103544224a2ec194ca9673506b350d927057b4   |{\"status\":\"NA\",\"timestamp\":\"1734363453\"}   |
+| paramètres                                                                                                                          | retour valide                                    |
+|-------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
+| smartDirectoryAddress:0x2ca24f2531309c8918961333720ee55ae5aa77ae; <br/>referenceAddress: 0x52103544224a2ec194ca9673506b350d927057b4 | {\"status\":\"NA\",\"timestamp\":\"1734363453\"} |
 
-###
+
 
 #### .smartDirectoryReferencesListsGet
 
-Sortie : cette fonction retourne deux listes synchronisée pour l'adresse
-de déclarant (registrantAddress) passée en paramètre :
+**Sortie :** cette fonction retourne deux listes synchronisée pour l'adresse de déclarant (registrantAddress) passée en 
+paramètre :
 
--   Liste 1 : liste des références enregistrées par l'adresse du
-    déclarant.
--   Liste 2 :  liste des codes projets associés à chacune des références
-    de la Liste 1.
+* Liste 1 : liste des références enregistrées par l'adresse du déclarant.
+* Liste 2 : liste des codes projets associés à chacune des références de la Liste 1.
 
-Comme à chaque reference déclarée (referenceAddress) correspond un code
-projet (projectId), ces deux listes ont la même taille et sont ordonnées
-pour que l'index de la liste des adresses déclarées corresponde à
-l'index du code projet.
+Comme à chaque reference déclarée (referenceAddress) correspond un code projet (projectId), ces deux listes ont la même
+taille et sont ordonnées pour que l'index de la liste des adresses déclarées corresponde à l'index du code projet.
 
-Paramètres en entrée : smartDirectoryAddress,registrantAddress 
+**Paramètres en entrée :** smartDirectoryAddress, registrantAddress 
 
 ![](Specifications/images-md/4d957444e84aafe713696bc4c0d88c6867116f63.png)
 
-Conditions d'exécution :
+**Conditions d'exécution :**
 
--   Le déclarant doit exister dans la table "registrant" (mode
-    "selfDeclaration") ou doit être valide (index \> à 0 en mode
-    "parentsAuthorized").
--   N.B. : lors de la construction de la liste, la fonction intègre un
-    contrôle de cohérence de l'appartenance de la "referenceAddress" à
-    la "registrantAddress".
+* Le déclarant doit exister dans la table "registrant" (mode "selfDeclaration") ou doit être valide (index \> à 0 en 
+mode "parentsAuthorized").
+* N.B. : lors de la construction de la liste, la fonction intègre un contrôle de cohérence de l'appartenance de la 
+"referenceAddress" à la "registrantAddress".
 
-Code :
+**Code :**
 
-La fonction solidity appelée est "getReferencesLists" du smartContract
-"SmartDirectory.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
+La fonction solidity appelée est "getReferencesLists" du smartContract "SmartDirectory.sol". Le code java exécuté à 
+partir de l'application Android de démonstration est le suivant : 
 ```Java
+    @SimpleFunction(description = "return a list of reference/projectId for a given registrant address")
+    public Object smartDirectoryReferencesListsGet(String smartDirectoryAddress,
+                                                   String registrantAddress) {
 
-```
-```Java
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
 
+        Tuple2<List<String>, List<String>> results_raw;
+        Map<String, List<String>> result_dict = new HashMap<String, List<String>>();
+
+        try {
+            results_raw = folderContract.getReferencesLists(registrantAddress).send();
+            List<String> listAddresses = new ArrayList<String>();
+            List<String> listProjetIDs = new ArrayList<String>();
+            for (int i = 0; i< results_raw.component1().size(); i++){
+                listAddresses.add(results_raw.component1().get(i));
+                listProjetIDs.add(results_raw.component2().get(i));
+            }
+            result_dict.put("referenceList", listAddresses);
+            result_dict.put("projectIdList", listProjetIDs);
+        } catch (Exception e) {
+            List<String> listErrors = new ArrayList<String>();
+            listErrors.add("smartDirectoryReferencesListsGet: " + e.getMessage());
+            result_dict.put("Error", listErrors);
+        }
+        return result_dict;
+    }
 ```
-###
+
 ------------------------------------------------------------------------
 
-### 
-
+//reprendre ici
 ### La table des déclarants (registrants Table)
 
 ![](Specifications/images-md/71cc3a7239d23ca70bfe2d7c10eeb78a194b9fd2.png)
@@ -881,24 +880,42 @@ Paramètres en entrée : smartDirectoryAddress, registrantAddress
 
 ![](Specifications/images-md/95c1977ff1c3f153db7b0acdbbf3a7d050d727dd.png)
 
-Conditions d'exécution :
+**Conditions d'exécution :**
 
--   Le SmartDirectory doit être dans un état activé
+* Le SmartDirectory doit être dans un état activé
     (ActivationCode.active). Cela empêche des modifications si le
     smartDirectory est déployé mais inactif.
--   Cette fonction n'est disponible que dans le mode "parentsAuthorized"
+* Cette fonction n'est disponible que dans le mode "parentsAuthorized"
     (AdminCode=0) : seuls les administrateurs (parentAddress1 ou 2)
     peuvent créer un registrant.
--   L\'adresse donnée (registrantAddress) ne doit pas déjà être
+* L\'adresse donnée (registrantAddress) ne doit pas déjà être
     enregistrée.
 
-Code :
+**Code :**
 
 La fonction solidity appelée est "createRegistrant" du smartContract
 "SmartDirectory.sol". Le code java exécuté à partir de l'application
 Android de démonstration est le suivant :
 ```Java
+    @SimpleFunction(description = "create a registrant address in registrants data structure, only parents")
+public String smartDirectoryRegistrantEoaCreate(String smartDirectoryAddress, String registrantAddress) {
 
+    SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+            new CustomGasProvider());
+
+    String tx_hash;
+    try {
+        tx_hash = doTransaction(
+                folderContract.createRegistrant(registrantAddress),
+                "createRegistrant");
+    } catch (Exception e) {
+        String message = "Error smartDirectoryRegistrantEoaCreate: " + e.getMessage();
+        android.util.Log.d(LOG_TAG, message);
+        tx_hash = message;
+    }
+    return tx_hash;
+
+}
 ```
 
   --------- -------------------------------------------------------------------------------------
@@ -908,102 +925,146 @@ Android de démonstration est le suivant :
 
 #### .smartDirectoryRegistrantEoaDisable
 
-Sortie : cette fonction permet de désactiver un déclarant, charge au
+**Sortie :** cette fonction permet de désactiver un déclarant, charge au
 vérificateur de voir s'il continue de faire confiance aux références
 même si le déclarant n'est plus autorisé. La désactivation d'un
 déclarant se traduit par la mise à 0 de l'index associé à son adresse
 dans la table des déclarants (et non par l'effacement de son adresse
 dans la table) :
 
-Index  = 0 =\> déclarant enregistré mais invalidé (ne peut plus
-créer de référence).
+* Index = 0 =\> déclarant enregistré mais invalidé (ne peut plus créer de référence).
+* Index \>= 1 =\> déclarant enregistré et validé (peut créer des références).
 
-Index  \>= 1 =\> déclarant enregistré et validé (peut créer des
-références).
-
-Paramètres en entrée : smartDirectoryAddress,registrantAddress 
+**Paramètres en entrée :** smartDirectoryAddress,registrantAddress 
 
 #### ![](Specifications/images-md/6ced95b6ab0a29597342571a98cab7d6c36c3917.png)
 
-Conditions d'exécution :
+**Conditions d'exécution :**
 
 L'usage de cette fonction est conditionné :
 
--   Le SmartDirectory doit être dans un état activé
-    (ActivationCode.active).
--   L'index de l'adresse donnée en paramètre est \> à 0 et inférieur à
+* Le SmartDirectory doit être dans un état activé (ActivationCode.active).
+* L'index de l'adresse donnée en paramètre est \> à 0 et inférieur à
     la valeur maximale des indices de la table "registrants" (check
     interne à la fonction).
--   Cette fonction n'est disponible que dans le mode "parentAuthorized"
+* Cette fonction n'est disponible que dans le mode "parentAuthorized"
     (AdminCode=0) : seuls les administrateurs (parentAddress1 ou 2)
     peuvent l'utiliser et invalider un déclarant (registrant).
 
-Code :
+**Code :**
 
 La fonction solidity appelée est "disableRegistrant" du smartContract
 "SmartDirectory.sol". Le code java exécuté à partir de l'application
 Android de démonstration est le suivant :
 ```Java
+    @SimpleFunction(description = "del a registrant address in registrants data structure, only parents")
+    public String smartDirectoryRegistrantEoaDisable(String smartDirectoryAddress, String registrantAddress) {
 
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
+
+        String tx_hash;
+        try {
+            tx_hash = doTransaction(
+                    folderContract.disableRegistrant(registrantAddress),
+                    "delRegistrant");
+        } catch (Exception e) {
+            String message = "Error smartDirectoryRegistrantEoaDel: " + e.getMessage();
+            android.util.Log.d(LOG_TAG, message);
+            tx_hash = message;
+        }
+        return tx_hash;
+
+    }
 ```
 ### 
 
 #### .smartDirectoryRegistrantUriEoaWrite
 
-Sortie : une fois son adresse enregistrée dans la table "registrants",
+**Sortie :** une fois son adresse enregistrée dans la table "registrants",
 le déclarant peut directement créer/modifier son Uri. Cette fonction
 permet la mise à jour de la chaîne de caractère de la table des
 déclarants. La transaction doit être signée par le déclarant (msg.sender
 = registrantAddress, donc l'adresse du déclarant n'est pas dans les
 paramètres).
 
-Paramètres en entrée : smartDirectoryAddress, registrantUri 
+**Paramètres en entrée :** smartDirectoryAddress, registrantUri 
 
 #### ![](Specifications/images-md/a3de3a4c1a62e9a0d9aa03fcb5007ec717795575.png)
 
-Conditions d'exécution :
+**Conditions d'exécution :**
 
--   Le déclarant doit exister dans la table "registrant" (mode
+* Le déclarant doit exister dans la table "registrant" (mode
     "selfDeclaration") ou doit être valide (index \> à 0 en mode
     "parentsAuthorized").
 
-Code :
+**Code :**
 
 La fonction solidity appelée est "updateRegistrantUri" du smartContract
 "SmartDirectory.sol". Le code java exécuté à partir de l'application
 Android de démonstration est le suivant :
 ```Java
+    @SimpleFunction(description = "update uri associated to a registrant")
+    public String smartDirectoryRegistrantUriEoaWrite(String smartDirectoryAddress, String registrantUri) {
 
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
+
+        String tx_hash;
+        try {
+            tx_hash = doTransaction(
+                    folderContract.updateRegistrantUri(registrantUri),
+                    "updateRegistrantUri");
+        } catch (Exception e) {
+            String message = "Error smartDirectoryRegistrantUriEoaWrite: " + e.getMessage();
+            android.util.Log.d(LOG_TAG, message);
+            tx_hash = message;
+        }
+        return tx_hash;
+
+    }
 ```
 ###
 #### .smartDirectoryRegistrantUriGet
 
-Sortie : cette fonction renvoie l'URI de la table des déclarants pour
-l'addresse du déclarant donnée en paramètre. La fonction retourne un
+**Sortie :** cette fonction renvoie l'URI de la table des déclarants pour
+l'addresse du déclarant donnée en paramètre. La fonction retourne un
 dictionnaire :
 
--   dictionnaire vide si l'adresse demandée n'existe pas dans la table
--    {"registrant\_uri" : "\<string\>"} si l'adresse est dans la table
+* dictionnaire vide si l'adresse demandée n'existe pas dans la table
+* {"registrant\_uri" : "\<string\>"} si l'adresse est dans la table
 
-Paramètres en entrée : smartDirectoryAddress,registrantAddress
-
-   
+Paramètres en entrée : smartDirectoryAddress,registrantAddress
 
 ![](Specifications/images-md/120369a626b70b0439e72581f944036066e6c905.png)
 
-Conditions d'exécution :
+**Conditions d'exécution :**
 
 -   Le déclarant doit exister dans la table "registrant" (mode
     "selfDeclaration") ou doit être valide (index \> à 0 en mode
     "parentsAuthorized").
 
-Code :
+**Code :**
 
 La fonction solidity appelée est "getRegistrantUri" du smartContract
 "SmartDirectory.sol". Le code java exécuté à partir de l'application
 Android de démonstration est le suivant :
 ```Java
+    public String smartDirectoryRegistrantUriGet(String smartDirectoryAddress, String registrantAddress) {
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
 
+        String result;
+        try {
+            result = folderContract.getRegistrantUri(registrantAddress).send();
+        } catch (Exception e) {
+            String message = "Error smartDirectoryRegistrantUriGet: " + e.getMessage();
+            android.util.Log.e(LOG_TAG, message);
+            result = message;
+        }
+        return result;
+
+    }
 ```
 ###
 #### 
@@ -1035,7 +1096,24 @@ La fonction solidity appelée est "getDisabledRegistrants" du
 smartContract "SmartDirectory.sol". Le code java exécuté à partir de
 l'application Android de démonstration est le suivant :
 ```Java
+    @SimpleFunction(description = "get disabledRegistrants list")
+    public Object smartDirectoryRegistrantsDisabledListGet(String smartDirectoryAddress) {
 
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
+
+        Map<String, List<String>> result_dict = new HashMap<>();
+
+        try {
+            List<String> results_raw = folderContract.getDisabledRegistrants().send();
+            result_dict.put("disabledRegistrants", results_raw);
+        } catch (Exception e) {
+            List<String> listErrors = new ArrayList<>();
+            listErrors.add("smartDirectoryRegistrantsDisabledListGet: " + e.getMessage());
+            result_dict.put("Error", listErrors);
+        }
+        return result_dict;
+    }
 ```
 ###
 ------------------------------------------------------------------------
@@ -1061,12 +1139,28 @@ La fonction solidity appelée est "getRegistrantLastIndex" du
 smartContract "SmartDirectory.sol". Le code java exécuté à partir de
 l'application Android de démonstration est le suivant :
 ```Java
+    @SimpleFunction(description = "get the last index of the declared registrants")
+    public int smartDirectoryRegistrantLastIndexGet(String smartDirectoryAddress) {
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
 
+        BigInteger result;
+        int resultInt;
+
+        try {
+            result = folderContract.getRegistrantLastIndex().send();
+            resultInt = result.intValue();
+        } catch (Exception e) {
+            android.util.Log.e(LOG_TAG, "Exception: smartDirectoryRegistrantLastIndexGet" + e.getMessage());
+            resultInt = -1;
+        }
+        return resultInt;
+    }
 ```
 ###
 ------------------------------------------------------------------------
 
-.smartDirectoryRegistrantAtIndexGet
+#### .smartDirectoryRegistrantAtIndexGet
 
 Sortie : cette fonction permet de lire l'adresse d'un déclarant en
 donnant son index.
@@ -1088,7 +1182,27 @@ La fonction solidity appelée est "getRegistrantAtIndex" du smartContract
 "SmartDirectory.sol". Le code java exécuté à partir de l'application
 Android de démonstration est le suivant :
 ```Java
+    @SimpleFunction(description = "return registrant address and uri at the given index")
+    public Object smartDirectoryRegistrantAtIndexGet(String smartDirectoryAddress, String index) {
 
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
+
+        Tuple2<String, String> results_raw;
+
+        Map<String, String> result_dict = new HashMap<String, String>();
+
+        try {
+            results_raw = folderContract.getRegistrantAtIndex(new BigInteger(index)).send();
+            result_dict.put("registrantAddress", results_raw.component1());
+            result_dict.put("registrant_uri", results_raw.component2());
+        } catch (Exception e) {
+            String message = "Error smartDirectoryRegistrantAtIndexGet: " + e.getMessage();
+            android.util.Log.e(LOG_TAG, message);
+            result_dict.put("error", message);
+        }
+        return result_dict;
+    }
 ```
 
 +-----------------------------------+-----------------------------------+
@@ -1127,7 +1241,20 @@ La fonction solidity appelée est "getRegistrantIndex" du smartContract
 "SmartDirectory.sol". Le code java exécuté à partir de l'application
 Android de démonstration est le suivant :
 ```Java
-
+    @SimpleFunction(description = "return registrant index given its address")
+    public int smartDirectoryRegistrantIndexGet(String smartDirectoryAddress, String registrantAddress) {
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                                                            new CustomGasProvider());
+        int result=0;
+        try {
+            result = folderContract.getRegistrantIndex(registrantAddress).send().intValue();
+            return result;
+        } catch (Exception e) {
+            String message = "Error smartDirectoryRegistrantIndexGet: " + e.getMessage();
+            android.util.Log.e(LOG_TAG, message);
+        }
+        return result;
+    }
 ```
 ###
 #### .smartDirectoryReferencesCountGet
@@ -1151,7 +1278,26 @@ smartContract "SmartDirectory.sol". Le code java exécuté à partir de
 l'application Android de démonstration est le suivant :
 
 ```Java
+    @SimpleFunction(description = "get registrant references count")
+    public int smartDirectoryReferencesCountGet(String smartDirectoryAddress, String registrantAddress) {
 
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
+
+        BigInteger result;
+        int resultInt;
+
+        try {
+            result = folderContract.getRegistrantReferencesCount(registrantAddress).send();
+            resultInt = result.intValue();
+        } catch (Exception e) {
+            String message = "Error smartDirectoryReferencesCountGet: " + e.getMessage();
+            android.util.Log.d(LOG_TAG, message);
+            resultInt = -1;
+        }
+        return resultInt;
+
+    }
 ```
 ###
 
@@ -1248,7 +1394,16 @@ smartContract "SmartDirectory.sol". Le code java exécuté à partir de
 l'application Android de démonstration est le suivant :
 
 ```Java
+    @SimpleFunction(description = "Set smartDirectory's activation code")
+    public String smartDirectoryActivationCodeEoaUpdate(String smartDirectoryAddress, int activationCode) {
+        SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
+                new CustomGasProvider());
 
+        return doTransaction(
+                folderContract.setActivationCode(BigInteger.valueOf(activationCode)),
+                "setSmartDirectoryActivationCode");
+
+    }
 ```
   --------- -------------------------------------------------------------------------------------
   exemple   TransactionHash: 0x2f407597f3004c89dcac5a643ac51980eb6301aa5f9bb10d6a4ac0c99f919ae6
@@ -1291,7 +1446,22 @@ fonction "smartDirectoryHeadersGet". Le code java exécuté à partir de
 l'application Android de démonstration est le suivant :
 
 ```Java
+    @SimpleFunction(description = "get information about the deployed SmartDirectory")
+    private Map<String, String> smartDirectoryCreateVariablesMap(String smartDirectoryAddress) {
+        final Map<String, String> variables = new HashMap<String, String>() {
+            {
+                put("parentAddress1", smartDirectoryGetParent1(smartDirectoryAddress));
+                put("parentAddress2", smartDirectoryGetParent2(smartDirectoryAddress));
+                put("contractVersion", smartDirectoryGetContractVersion(smartDirectoryAddress));
+                put("contractType", smartDirectoryGetContractType(smartDirectoryAddress));
+                put("activationCode", smartDirectoryGetActivationCode(smartDirectoryAddress));
+                put("contractUri", smartDirectoryGetContractUri(smartDirectoryAddress));
+                put("adminCode", smartDirectoryGetAdminCode(smartDirectoryAddress));
+            };
+        };
 
+        return variables;
+    }
 ```
 
   ----------- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1529,7 +1699,7 @@ variables :
 
        
 
-### Déploiement pour tokenisation 
+### Déploiement pour tokenisation
 
 Nous allons limiter la tokenisation au déploiement de tokens non
 fongibles et de token comptable (token fongible pouvant être négatif).
@@ -1651,7 +1821,20 @@ La fonction solidity appelée est "get\_type" du smartContract
 "SmartToken721.sol". Le code java exécuté à partir de l'application
 Android de démonstration est le suivant :
 ```Java
-
+    @SimpleFunction(description = "Type is defined within the token source code")
+    public String smartToken721GetType(String tokenContractAddress) {
+        SmartToken721 smartToken721 = SmartToken721.load(tokenContractAddress, web3, transactionManager,
+            new CustomGasProvider());
+        String type;
+        try {
+            type = smartToken721.get_type().send();
+        } catch (Exception e) {
+            String message = "Error when calling get_type (SmartToken721): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            return message;
+        }
+        return  type;
+    }
 ```
 ###
 #### 
@@ -1676,7 +1859,20 @@ La fonction solidity appelée est "get\_parent1" du smartContract
 Android de démonstration est le suivant :
 
 ```Java
-
+    @SimpleFunction(description = "Parent1 is defined at token creation and allows some alterations")
+    public String smartToken721GetParent1(String tokenContractAddress) {
+        SmartToken721 smartToken721 = SmartToken721.load(tokenContractAddress, web3, transactionManager,
+            new CustomGasProvider());
+        String parent;
+        try {
+            parent = smartToken721.get_parent1().send();
+        } catch (Exception e) {
+            String message = "Error when calling get_parent1 (SmartToken721): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            return message;
+        }
+        return  parent;
+    }
 ```
 ###
 #### .smartToken721GetParent2
@@ -1699,7 +1895,20 @@ La fonction solidity appelée est "get\_parent2" du smartContract
 Android de démonstration est le suivant :
 
 ```Java
-
+    @SimpleFunction(description = "Parent2 is defined at token creation and allows some alterations")
+public String smartToken721GetParent2(String tokenContractAddress) {
+    SmartToken721 smartToken721 = SmartToken721.load(tokenContractAddress, web3, transactionManager,
+            new CustomGasProvider());
+    String parent;
+    try {
+        parent = smartToken721.get_parent2().send();
+    } catch (Exception e) {
+        String message = "Error when calling get_parent2 (SmartToken721): " + e.getMessage();
+        android.util.Log.d(LOG_TAG,  message);
+        return message;
+    }
+    return  parent;
+}
 ```
 ###
 #### .smartToken721GetMaxToken
@@ -1722,10 +1931,24 @@ La fonction solidity appelée est "get\_max\_token" du smartContract
 Android de démonstration est le suivant :
 
 ```Java
-
+    @SimpleFunction(description = "Returns the max_token value.")
+    public String smartToken721GetMaxToken(String tokenContractAddress) {
+        SmartToken721 smartToken721 = SmartToken721.load(tokenContractAddress, web3, transactionManager,
+            new CustomGasProvider());
+        BigInteger maxToken;
+        try {
+            maxToken = smartToken721.get_max_token().send();
+        } catch (Exception e) {
+            String message = "Error when calling get_max_token (SmartToken721): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            return message;
+        }
+        //TODO convert
+        return  maxToken.toString();
+    }
 ```
 ###
-#### .smartToken721GetSmartDIrectoryAddress
+#### .smartToken721GetSmartDirectoryAddress
 
 Sortie : cette fonction retourne retourne l'adresse du SmartDirectory
 associée au token.
@@ -1745,7 +1968,20 @@ smartContract "SmartToken721.sol". Le code java exécuté à partir de
 l'application Android de démonstration est le suivant :
 
 ```Java
-
+    @SimpleFunction(description = "Returns the smart directory address.")
+    public String smartToken721GetSmartDirectoryAddress(String tokenContractAddress) {
+        SmartToken721 smartToken721 = SmartToken721.load(tokenContractAddress, web3, transactionManager,
+            new CustomGasProvider());
+        String smartDirectoryAddress;
+        try {
+            smartDirectoryAddress = smartToken721.get_smart_directory().send();
+        } catch (Exception e) {
+            String message = "Error when calling get_smart_directory (SmartToken721): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            return message;
+        }
+        return  smartDirectoryAddress;
+    }
 ```
 ###
 
@@ -1769,10 +2005,22 @@ smartContract "SmartToken721.sol". Le code java exécuté à partir de
 l'application Android de démonstration est le suivant :
 
 ```Java
-
+    @SimpleFunction(description = "Returns the registrant address.")
+    public String smartToken721GetRegistrantAddress(String tokenContractAddress) {
+        SmartToken721 smartToken721 = SmartToken721.load(tokenContractAddress, web3, transactionManager,
+            new CustomGasProvider());
+        String registrantAddress;
+        try {
+            registrantAddress = smartToken721.get_registrant_address().send();
+        } catch (Exception e) {
+            String message = "Error when calling get_registrant_address (SmartToken721): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            return message;
+        }
+        return  registrantAddress;
+    }
 ```
 ###
-#### 
 
 #### .blockchainERC721name
 
@@ -1792,7 +2040,15 @@ Code :
 Le code java exécuté à partir de l'application Android de démonstration
 est le suivant :
 ```Java
-
+    @SimpleFunction(description = "Get contract name")
+    public String blockchainERC721name(String contractAddress) {
+        final Function function = new Function("name",
+                Collections.<Type>emptyList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
+        List<Utf8String> lst = callViewFunction(contractAddress, function);
+        return lst.get(0).getValue().toString();
+    }
 ```
 ###
 #### .blockchainERC721symbol
@@ -1814,7 +2070,15 @@ Le code java exécuté à partir de l'application Android de démonstration
 est le suivant :
 
 ```Java
-
+    @SimpleFunction(description = "Get contract symbol")
+    public String blockchainERC721symbol(String contractAddress) {
+        final Function function = new Function("symbol",
+                Collections.<Type>emptyList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
+        List<Utf8String> lst = callViewFunction(contractAddress, function);
+        return lst.get(0).getValue().toString();
+    }
 ```
 ###
 #### 
@@ -1841,7 +2105,20 @@ La fonction solidity appelée est "version" du smartContract
 Android de démonstration est le suivant :
 
 ```Java
-
+    @SimpleFunction(description = "Version refers to the token source code")
+    public String smartToken721GetVersion(String tokenContractAddress) {
+        SmartToken721 smartToken721 = SmartToken721.load(tokenContractAddress, web3, transactionManager,
+            new CustomGasProvider());
+        String version;
+        try {
+            version = smartToken721.version().send();
+        } catch (Exception e) {
+            String message = "Error when calling version (SmartToken721): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            return message;
+        }
+        return  version;
+    }
 ```
 ###
 
@@ -1975,7 +2252,37 @@ Le code java exécuté à partir de l'application Android de démonstration
 est le suivant :
 
 ```Java
+    @SimpleFunction(description = "Get Name, Symbol and decimal of an ERC20")
+    public List<String> blockchainERC20ReadVariables(String ERC20) {
 
+        List<String> result = new ArrayList<String>();
+
+        Function get_name = new Function(
+                "name",
+                Collections.<Type>emptyList(),
+                Collections.<TypeReference<?>>singletonList(new TypeReference<Utf8String>() {
+                }));
+        List<Utf8String> lst_n = callViewFunction(ERC20, get_name);
+        result.add(lst_n.get(0).toString());
+
+        Function get_symbol = new Function(
+                "symbol",
+                Collections.<Type>emptyList(),
+                Collections.<TypeReference<?>>singletonList(new TypeReference<Utf8String>() {
+                }));
+        List<Utf8String> lst_s = callViewFunction(ERC20, get_symbol);
+        result.add(lst_s.get(0).toString());
+
+        Function get_decimals = new Function(
+                "decimals",
+                Collections.<Type>emptyList(),
+                Collections.<TypeReference<?>>singletonList(new TypeReference<Uint256>() {
+                }));
+        List<Uint256> lst_d = callViewFunction(ERC20, get_decimals);
+        result.add(lst_d.get(0).getValue().toString());
+
+        return result;
+    }
 ```
 ###
 #### .smartTokenERC20AGetType
@@ -2003,7 +2310,20 @@ La fonction solidity appelée est "get\_type" du smartContract
 Android de démonstration est le suivant :
 
 ```Java
-
+    @SimpleFunction(description = "tokenType is defined at deployment time")
+    public String smartTokenERC20AGetType(String tokenContractAddress) {
+        SmartTokenERC20A smartTokenERC20A = SmartTokenERC20A.load(tokenContractAddress, web3, transactionManager,
+                new CustomGasProvider());
+        String result;
+        try {
+            result = smartTokenERC20A.get_type().send();
+        } catch (Exception e) {
+            String message = "Error when calling get_type (SmartTokenERC20A): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            result = message;
+        }
+        return  result;
+    }
 ```
 ###
 #### .smartTokenERC20AGetParent1
@@ -2026,10 +2346,22 @@ La fonction solidity appelée est "get\_parent1" du smartContract
 Android de démonstration est le suivant :
 
 ```Java
-
+    @SimpleFunction(description = "Parent1 is defined at token creation and allows some alterations")
+    public String smartTokenERC20AGetParent1(String tokenContractAddress) {
+        SmartTokenERC20A smartTokenERC20A = SmartTokenERC20A.load(tokenContractAddress, web3, transactionManager,
+                new CustomGasProvider());
+        String parent;
+        try {
+            parent = smartTokenERC20A.get_parent1().send();
+        } catch (Exception e) {
+            String message = "Error when calling get_parent1 (SmartTokenERC20A): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            return message;
+        }
+        return  parent;
+    }
 ```
-###
-#### 
+### 
 
 #### .smartTokenERC20AGetParent2
 
@@ -2052,7 +2384,20 @@ La fonction solidity appelée est "get\_parent2" du smartContract
 "SmartTokenERC20A.sol". Le code java exécuté à partir de l'application
 Android de démonstration est le suivant :
 ```Java
-
+    @SimpleFunction(description = "Parent2 is defined at token creation and allows some alterations")
+    public String smartTokenERC20AGetParent2(String tokenContractAddress) {
+        SmartTokenERC20A smartTokenERC20A = SmartTokenERC20A.load(tokenContractAddress, web3, transactionManager,
+                new CustomGasProvider());
+        String parent;
+        try {
+            parent = smartTokenERC20A.get_parent2().send();
+        } catch (Exception e) {
+            String message = "Error when calling get_parent2 (SmartTokenERC20A): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            return message;
+        }
+        return  parent;
+    }
 ```
 ###
 
@@ -2074,7 +2419,20 @@ Code :
 La fonction solidity appelée est "get\_smart\_directory" du
 smartContract "SmartTokenERC20A.sol" :
 ```Java
-
+    @SimpleFunction(description = "SmartDirectoryAddress is defined at creation time")
+    public String smartTokenERC20AGetSmartDirectoryAddress(String tokenContractAddress) {
+        SmartTokenERC20A smartTokenERC20A = SmartTokenERC20A.load(tokenContractAddress, web3, transactionManager,
+                new CustomGasProvider());
+        String address;
+        try {
+            address = smartTokenERC20A.get_smart_directory().send();
+        } catch (Exception e) {
+            String message = "Error when calling get_smart_directory (SmartTokenERC20A): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            return message;
+        }
+        return address;
+    }
 ```
 ###
 
@@ -2098,7 +2456,20 @@ La fonction solidity appelée est "get\_registrant" du smartContract
 Android de démonstration est le suivant :
 
 ```Java
-
+    @SimpleFunction(description = "RegistrantAddress is defined at token creation time")
+    public String smartTokenERC20AGetRegistrantAddress(String tokenContractAddress) {
+        SmartTokenERC20A smartTokenERC20A = SmartTokenERC20A.load(tokenContractAddress, web3, transactionManager,
+                new CustomGasProvider());
+        String address;
+        try {
+            address = smartTokenERC20A.get_registrant_address().send();
+        } catch (Exception e) {
+            String message = "Error when calling get_registrant_address (SmartTokenERC20A): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            return message;
+        }
+        return address;
+    }
 ```
 ###
 #### .smartTokenERC20AGetVersion
@@ -2122,7 +2493,19 @@ La fonction solidity appelée est "version" du smartContract
 Android de démonstration est le suivant :
 
 ```Java
-
+    public String smartTokenERC20AGetVersion(String tokenContractAddress) {
+        SmartTokenERC20A smartTokenERC20A = SmartTokenERC20A.load(tokenContractAddress, web3, transactionManager,
+                new CustomGasProvider());
+        String version;
+        try {
+            version = smartTokenERC20A.version().send();
+        } catch (Exception e) {
+            String message = "Error when calling version (SmartTokenERC20A): " + e.getMessage();
+            android.util.Log.d(LOG_TAG,  message);
+            return message;
+        }
+        return  version;
+    }
 ```
 ###
 
