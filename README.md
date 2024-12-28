@@ -8,120 +8,66 @@
   * [Un composant auxiliaire : le tiers déployeur](#un-composant-auxiliaire--le-tiers-déployeur)
   * [Avantages et points de vigilance de la solution](#avantages-et-points-de-vigilance-de-la-solution)
     * [Les avantages](#les-avantages)
-    * [](#)
     * [Les points de vigilance](#les-points-de-vigilance)
-    * [](#-1)
   * [Les objectifs et ressources du projet](#les-objectifs-et-ressources-du-projet)
-    * [Les objectifs du projet sont :](#les-objectifs-du-projet-sont-)
-    * [Les ressources du projet](#les-ressources-du-projet)
+    * [Objectifs :](#objectifs-)
+    * [Ressources :](#ressources-)
   * [Fonctionnement détaillé du smartDirectory](#fonctionnement-détaillé-du-smartdirectory)
     * [Le mode administré (parentsAuthorized)](#le-mode-administré-parentsauthorized)
-    * [](#-2)
     * [Le mode ouvert (selfDeclaration)](#le-mode-ouvert-selfdeclaration)
   * [Les structures du smartDirectory](#les-structures-du-smartdirectory)
-    * [](#-3)
     * [La table des références](#la-table-des-références)
-      * [](#-4)
       * [.smartDirectoryReferenceEoaCreate](#smartdirectoryreferenceeoacreate)
-
       * [.smartDirectoryReferenceStatusEoaUpdate](#smartdirectoryreferencestatuseoaupdate)
       * [.smartDirectoryReferenceGet](#smartdirectoryreferenceget)
-
       * [.smartDirectoryReferenceLastStatusGet](#smartdirectoryreferencelaststatusget)
-
-      * [](#-5)
       * [.smartDirectoryReferenceStatusAtIndexGet](#smartdirectoryreferencestatusatindexget)
-
       * [.smartDirectoryReferencesListsGet](#smartdirectoryreferenceslistsget)
-    * [](#-6)
     * [La table des déclarants (registrants Table)](#la-table-des-déclarants-registrants-table)
-      * [](#-7)
-      * [](#-8)
       * [.smartDirectoryRegistrantEoaCreate](#smartdirectoryregistranteoacreate)
       * [.smartDirectoryRegistrantEoaDisable](#smartdirectoryregistranteoadisable)
-      * [![](Specifications/images-md/6ced95b6ab0a29597342571a98cab7d6c36c3917.png)](#-9)
-    * [](#-10)
       * [.smartDirectoryRegistrantUriEoaWrite](#smartdirectoryregistranturieoawrite)
-      * [![](Specifications/images-md/a3de3a4c1a62e9a0d9aa03fcb5007ec717795575.png)](#-11)
-
       * [.smartDirectoryRegistrantUriGet](#smartdirectoryregistranturiget)
-
-      * [](#-12)
-      * [](#-13)
       * [.smartDirectoryRegistrantsDisabledListGet](#smartdirectoryregistrantsdisabledlistget)
-  * [###](#-14)
-      * [](#-15)
       * [.smartDirectoryRegistrantLastIndexGet](#smartdirectoryregistrantlastindexget)
-  * [###](#-16)
       * [.smartDirectoryRegistrantAtIndexGet](#smartdirectoryregistrantatindexget)
       * [.smartDirectoryRegistrantIndexGet](#smartdirectoryregistrantindexget)
-      * [![](Specifications/images-md/58df0743d337391c91cc51b493291f67d284d589.png)](#-17)
-
       * [.smartDirectoryReferencesCountGet](#smartdirectoryreferencescountget)
-
   * [Création du smartDirectory](#création-du-smartdirectory)
     * [Les variables d'en-tête](#les-variables-den-tête)
     * [Les fonctions de management du SmartDirectory](#les-fonctions-de-management-du-smartdirectory)
-      * [](#-18)
       * [.smartDirectoryActivationCodeEoaUpdate](#smartdirectoryactivationcodeeoaupdate)
       * [.smartDirectoryHeadersGet](#smartdirectoryheadersget)
-    * [](#-19)
-    * [](#-20)
     * [API de création d'un smartDirectory](#api-de-création-dun-smartdirectory)
       * [/smart-directory/smartdirectorycreate?](#smart-directorysmartdirectorycreate)
     * [Gestion du smartDirectory pour finaliser le déploiement](#gestion-du-smartdirectory-pour-finaliser-le-déploiement)
-    * [](#-21)
     * [Diffusion et import de l'adresse du smartDirectory](#diffusion-et-import-de-ladresse-du-smartdirectory)
   * [SmartTokens](#smarttokens)
-    * [](#-22)
     * [Cas d'utilisation](#cas-dutilisation)
-    * [](#-23)
     * [Paramétrage des smartTokens](#paramétragedes-smarttokens)
     * [Déploiement pour tokenisation](#déploiement-pour-tokenisation)
     * [API de création d'un smartToken non fongible (smart721)](#api-de-création-dun-smarttoken-non-fongible-smart721)
       * [Le déploiement d'un smartToken non fongible se fait avec le recours à une API/smart721create?](#le-déploiement-dun-smarttoken-non-fongible-se-fait-avec-le-recours-à-une-apismart721create)
-    * [](#-24)
     * [Lecture des variables du smart721](#lecture-des-variables-du-smart721)
       * [.smartToken721GetType](#smarttoken721gettype)
-
-      * [](#-25)
       * [.smartToken721GetParent1](#smarttoken721getparent1)
-
       * [.smartToken721GetParent2](#smarttoken721getparent2)
-
       * [.smartToken721GetMaxToken](#smarttoken721getmaxtoken)
-
       * [.smartToken721GetSmartDirectoryAddress](#smarttoken721getsmartdirectoryaddress)
-
       * [.smartToken721GetRegistrantAddress](#smarttoken721getregistrantaddress)
-
       * [.blockchainERC721name](#blockchainerc721name)
-
       * [.blockchainERC721symbol](#blockchainerc721symbol)
-
-      * [](#-26)
       * [.smartToken721GetVersion](#smarttoken721getversion)
-
-    * [](#-27)
     * [API de création d'un token fongible /smartErc20Acreate?](#api-de-création-dun-token-fongible-smarterc20acreate)
     * [Lecture des variables du smartERC20A](#lecture-des-variables-du-smarterc20a)
-      * [](#-28)
       * [.blockchainERC20ReadVariables](#blockchainerc20readvariables)
-
       * [.smartTokenERC20AGetType](#smarttokenerc20agettype)
-
       * [.smartTokenERC20AGetParent1](#smarttokenerc20agetparent1)
-    * [](#-29)
       * [.smartTokenERC20AGetParent2](#smarttokenerc20agetparent2)
-
       * [.smartTokenERC20AGetSmartDirectoryAddress](#smarttokenerc20agetsmartdirectoryaddress)
-
       * [.smartTokenERC20AGetRegistrantAddress](#smarttokenerc20agetregistrantaddress)
-
       * [.smartTokenERC20AGetVersion](#smarttokenerc20agetversion)
-
   * [Plan de test](#plan-de-test)
-    * [](#-30)
     * [SmartDirectory administré](#smartdirectory-administré)
     * [SmartDirectory ouvert](#smartdirectory-ouvert)
     * [SmartToken721](#smarttoken721)
@@ -133,32 +79,25 @@
     * [Code source et recompilation de l'application](#code-source-et-recompilation-de-lapplication)
     * [Première ouverture de l'App](#première-ouverture-de-lapp)
     * [Le menu principal](#le-menu-principal)
-  * [![](Specifications/images-md/1d0248c1abf3b57433aaca1b089bd07848acf2ec.png) Menus Administrateur](#menus-administrateur)
+  * [Menus Administrateur](#menus-administrateur)
     * [Deploy smartDirectory](#deploy-smartdirectory)
-    * [](#-31)
     * [Manage smartDirectory](#manage-smartdirectory)
-  * [![](Specifications/images-md/8bf52a7105bc765e36484bbb5d881487e52c0035.png) Menus "Registrant"](#menus-registrant)
+  * [Menus "Registrant"](#menus-registrant)
     * [Import smartDirectory](#import-smartdirectory)
-    * [](#-32)
     * [My RegistrantAddress](#my-registrantaddress)
-    * [](#-33)
     * [Change Status Reference](#change-status-reference)
-  * [![](Specifications/images-md/d42bebf295f6f31902b1129faea8ee2e31a289e3.png) Menus Utilisateur](#menus-utilisateur)
+  * [Menus Utilisateur](#menus-utilisateur)
     * [Explore Ecosystems](#explore-ecosystems-)
     * [Scan Address in Ecosystem](#scan-address-in-ecosystem)
     * [My Tokens](#my-tokens)
     * [Faucet / Explorer Amoy](#faucet--explorer-amoy)
-  * [![](Specifications/images-md/ceece640e1ff646eb7983db00969608545be1eeb.png) Menus smartTokens](#menus-smarttokens)
-    * [](#-34)
+  * [Menus smartTokens](#menus-smarttokens)
     * [Deploy smart721](#deploy-smart721)
-    * [](#-35)
     * [Deploy smart020](#deploy-smart020-)
-    * [](#-36)
     * [Register smartToken](#register-smarttoken)
     * [Transfer ERC20](#transfer-erc20)
-  * [⚙ Menu d'administration de l'APP](#menu-dadministration-de-lapp)
+  * [Menu d'administration de l'APP](#menu-dadministration-de-lapp)
     * [Documentation](#documentation)
-    * [](#-37)
     * [Cost Log](#cost-log)
     * [App Log](#app-log)
   * [Compléments pour Citizen Developper](#compléments-pour-citizen-developper)
@@ -166,7 +105,6 @@
     * [Bonnes pratiques de survie dans le code](#bonnes-pratiques-de-survie-dans-le-code)
     * [Interaction Blockchain](#interaction-blockchain)
     * [Colorisation des adresses](#colorisation-des-adresses)
-    * [](#-38)
   * [Le serveur de déploiement](#le-serveur-de-déploiement)
   * [L'application web de consultation/supervision](#lapplication-web-de-consultationsupervision)
 <!-- TOC -->
@@ -361,7 +299,7 @@ L'utilisation d'un smartDirectory implique cependant des points de vigilance com
 Les objectifs et ressources du projet
 -------------------------------------
 
-### Les objectifs du projet sont :
+### Objectifs :
 
 1.  La réalisation en solidity du smartDirectory et son déploiement sur une blockchain de test, par exemple polygon AMOY.
 2.  La réalisation d'une APP sur Android à des fins d'UI de démonstration pour écrire ou consulter les informations 
@@ -391,7 +329,7 @@ Potentiellement on pourrait réaliser un EIP (Ethereum Improvement Proposal) qui
 par d'autres smartContracts,
 * des exemples.
 
-### Les ressources du projet 
+### Ressources :
 
 Ce projet tire parti de fonctionnalités déjà développées par l'équipe de R&D blockchain du Groupe BPCE et qui seront 
 adaptées pour le projet par cette même équipe. Cette équipe existe depuis début 2018 et possède tous les éléments et 
@@ -853,49 +791,39 @@ pour chaque nouveau déclarant soit le cas échéant à chaque nouvelle
 création de record dans la table des référencement, ceci en fonction de
 la stratégie d'utilisation : voir les conditions d'exécution de la
 fonction .smartDirectoryReferenceEoaCreate pour la présentation des deux
-modes de fonctionnement du SmartDirectory via l'utilisation de l'
-"AdminCode".
+modes de fonctionnement du SmartDirectory via l'utilisation de l'"AdminCode".
 
 Cette table des déclarants est constituée de 3 éléments :
 
 1.  l'adresse d'un déclarant,
-2.  une chaîne de caractère à la disposition du déclarant afin d'y
-    déposer une URI d'information. Cette chaîne de caractère est mise à
-    jour dans un deuxième temps par le déclarant.
-3.  Un index, représentant le n°d'ordre de l'enregistrement du déclarant
-    dans la table.
+2.  une chaîne de caractère à la disposition du déclarant afin d'y déposer une URI d'information. Cette chaîne de 
+caractère est mise à jour dans un deuxième temps par le déclarant.
+3.  Un index, représentant le n°d'ordre de l'enregistrement du déclarant dans la table.
 
-#### 
 
 ------------------------------------------------------------------------
 
-#### 
 
 #### .smartDirectoryRegistrantEoaCreate
 
-Sortie : cette fonction permet la création d'un nouveau déclarant par
-une adresse parent.
+**Sortie** : cette fonction permet la création d'un nouveau déclarant par une adresse parent.
 
-Paramètres en entrée : smartDirectoryAddress, registrantAddress 
+**Paramètres en entrée** : smartDirectoryAddress, registrantAddress 
 
 ![](Specifications/images-md/95c1977ff1c3f153db7b0acdbbf3a7d050d727dd.png)
 
 **Conditions d'exécution :**
 
-* Le SmartDirectory doit être dans un état activé
-    (ActivationCode.active). Cela empêche des modifications si le
-    smartDirectory est déployé mais inactif.
-* Cette fonction n'est disponible que dans le mode "parentsAuthorized"
-    (AdminCode=0) : seuls les administrateurs (parentAddress1 ou 2)
-    peuvent créer un registrant.
-* L\'adresse donnée (registrantAddress) ne doit pas déjà être
-    enregistrée.
+* Le SmartDirectory doit être dans un état activé (ActivationCode.active). Cela empêche des modifications si le
+smartDirectory est déployé mais inactif.
+* Cette fonction n'est disponible que dans le mode "parentsAuthorized" (AdminCode=0) : seuls les administrateurs 
+(parentAddress1 ou 2) peuvent créer un registrant.
+* L'adresse donnée (registrantAddress) ne doit pas déjà être enregistrée.
 
 **Code :**
 
-La fonction solidity appelée est "createRegistrant" du smartContract
-"SmartDirectory.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
+La fonction solidity appelée est "createRegistrant" du smartContract "SmartDirectory.sol". Le code java exécuté à partir
+de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "create a registrant address in registrants data structure, only parents")
 public String smartDirectoryRegistrantEoaCreate(String smartDirectoryAddress, String registrantAddress) {
@@ -937,7 +865,7 @@ dans la table) :
 
 **Paramètres en entrée :** smartDirectoryAddress,registrantAddress 
 
-#### ![](Specifications/images-md/6ced95b6ab0a29597342571a98cab7d6c36c3917.png)
+![](Specifications/images-md/6ced95b6ab0a29597342571a98cab7d6c36c3917.png)
 
 **Conditions d'exécution :**
 
@@ -977,7 +905,7 @@ Android de démonstration est le suivant :
 
     }
 ```
-### 
+
 
 #### .smartDirectoryRegistrantUriEoaWrite
 
@@ -989,8 +917,8 @@ déclarants. La transaction doit être signée par le déclarant (msg.sender
 paramètres).
 
 **Paramètres en entrée :** smartDirectoryAddress, registrantUri 
-
-#### ![](Specifications/images-md/a3de3a4c1a62e9a0d9aa03fcb5007ec717795575.png)
+ 
+![](Specifications/images-md/a3de3a4c1a62e9a0d9aa03fcb5007ec717795575.png)
 
 **Conditions d'exécution :**
 
@@ -1024,7 +952,8 @@ Android de démonstration est le suivant :
 
     }
 ```
-###
+
+
 #### .smartDirectoryRegistrantUriGet
 
 **Sortie :** cette fonction renvoie l'URI de la table des déclarants pour
@@ -1066,12 +995,10 @@ Android de démonstration est le suivant :
 
     }
 ```
-###
-#### 
+
 
 ------------------------------------------------------------------------
 
-#### 
 
 #### .smartDirectoryRegistrantsDisabledListGet
 
@@ -1115,10 +1042,8 @@ l'application Android de démonstration est le suivant :
         return result_dict;
     }
 ```
-###
 ------------------------------------------------------------------------
 
-#### 
 
 #### .smartDirectoryRegistrantLastIndexGet
 
@@ -1157,7 +1082,7 @@ l'application Android de démonstration est le suivant :
         return resultInt;
     }
 ```
-###
+
 ------------------------------------------------------------------------
 
 #### .smartDirectoryRegistrantAtIndexGet
@@ -1166,8 +1091,6 @@ Sortie : cette fonction permet de lire l'adresse d'un déclarant en
 donnant son index.
 
 Paramètres en entrée : smartDirectoryAddress,index
-
-
 
 ![](Specifications/images-md/9edbc1492aac95da5f1effb96fa5454ccdb441b6.png)
 
@@ -1229,7 +1152,7 @@ des références) :
 
 **Paramètres en entrée :** smartDirectoryAddress,registrantAddress 
 
-#### ![](Specifications/images-md/58df0743d337391c91cc51b493291f67d284d589.png)
+![](Specifications/images-md/58df0743d337391c91cc51b493291f67d284d589.png)
 
 **Conditions d'exécution :**
 
@@ -1256,7 +1179,8 @@ Android de démonstration est le suivant :
         return result;
     }
 ```
-###
+
+
 #### .smartDirectoryReferencesCountGet
 
 Sortie : Cette fonction retourne la taille de la liste des références
@@ -1299,7 +1223,7 @@ l'application Android de démonstration est le suivant :
 
     }
 ```
-###
+
 
 ------------------------------------------------------------------------
 
@@ -1368,7 +1292,6 @@ la librairie "SmartDirectoryLib.sol" :
 
 Ces fonctions permettent d\'accéder aux paramètres du SmartDirectory :
 
-#### 
 
 #### .smartDirectoryActivationCodeEoaUpdate
 
@@ -1469,11 +1392,9 @@ l'application Android de démonstration est le suivant :
   exemple     {\"parentAddress2\":\"0x88d65f27e269b4f92ce2ccf124eae8648635a67a\",\"contractUri\":\"https:\\/\\/[docs.google.com](https://www.google.com/url?q=http://docs.google.com&sa=D&source=editors&ust=1735324824851686&usg=AOvVaw0DZyUqYQwEm9W5wleDCM1Q)\\/document\\/d\\/1wPvoksIErxEp9Ai45ywboklO2XrIgIba7xQ4swaSMWc\\/edit?usp=sharing\",\"contractType\":\"42\",\"adminCode\":\"0\",\"activationCode\":\"1\",\"parentAddress1\":\"0x52103544224a2ec194ca9673506b350d927057b4\",\"contractVersion\":\"SD 1.09SDL 1.17\"}
   ----------- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-### 
 
 ------------------------------------------------------------------------
 
-### 
 
 ### API de création d'un smartDirectory
 
@@ -1561,7 +1482,6 @@ déploiement est correct en analysant le statut de la transaction de déploiemen
 | Récupérer le tx\_hash de la transaction précédente et attendre le minage.                                                  |                                                                                     |
 | Si le minage est ok, informer l\'utilisateur de l'APP, sinon  l'entrée dans la base de données peut être effacée.          |                                                                                     |
 
-### 
 
 ### Diffusion et import de l'adresse du smartDirectory
 
@@ -1602,7 +1522,6 @@ aux exigences du métier.
 
 ------------------------------------------------------------------------
 
-### 
 
 ### Cas d'utilisation
 
@@ -1646,7 +1565,6 @@ aux exigences du métier.
 
 ------------------------------------------------------------------------
 
-### 
 
 ### Paramétrage des smartTokens
 
@@ -1697,7 +1615,6 @@ variables :
 
 ![](Specifications/images-md/b1ce7f6d0cffd8f3c4368bdc3e11d5c72ae67474.png)
 
-       
 
 ### Déploiement pour tokenisation
 
@@ -1789,7 +1706,6 @@ en POST.
 ```
 -   200 Success
 
-### 
 
 ### Lecture des variables du smart721
 
@@ -1806,8 +1722,6 @@ Sortie : cette fonction retourne le type de token. En l\'occurrence :
 "Smart721".
 
 Paramètres en entrée : tokenContractAddress
-
-
 
 ![](Specifications/images-md/2df212b3a84eec9fb27d0883a62408702eb29a4e.png)
 
@@ -1836,8 +1750,7 @@ Android de démonstration est le suivant :
         return  type;
     }
 ```
-###
-#### 
+
 
 #### .smartToken721GetParent1
 
@@ -1874,7 +1787,7 @@ Android de démonstration est le suivant :
         return  parent;
     }
 ```
-###
+
 #### .smartToken721GetParent2
 
 Sortie : cette fonction retourne l'adresse "parent2" de l\'émetteur du
@@ -1910,7 +1823,8 @@ public String smartToken721GetParent2(String tokenContractAddress) {
     return  parent;
 }
 ```
-###
+
+
 #### .smartToken721GetMaxToken
 
 Sortie : cette fonction retourne le nombre maximum de token qu'il est
@@ -1947,7 +1861,8 @@ Android de démonstration est le suivant :
         return  maxToken.toString();
     }
 ```
-###
+
+
 #### .smartToken721GetSmartDirectoryAddress
 
 Sortie : cette fonction retourne retourne l'adresse du SmartDirectory
@@ -1983,7 +1898,7 @@ l'application Android de démonstration est le suivant :
         return  smartDirectoryAddress;
     }
 ```
-###
+
 
 #### .smartToken721GetRegistrantAddress
 
@@ -2020,7 +1935,7 @@ l'application Android de démonstration est le suivant :
         return  registrantAddress;
     }
 ```
-###
+
 
 #### .blockchainERC721name
 
@@ -2050,7 +1965,8 @@ est le suivant :
         return lst.get(0).getValue().toString();
     }
 ```
-###
+
+
 #### .blockchainERC721symbol
 
 Sortie : cette fonction retourne le symbole du token SmartToken721 via
@@ -2080,8 +1996,7 @@ est le suivant :
         return lst.get(0).getValue().toString();
     }
 ```
-###
-#### 
+
 
 #### .smartToken721GetVersion
 
@@ -2089,8 +2004,6 @@ Sortie : cette fonction retourne la version du smart contract du
 SmartToken721.
 
 Paramètres en entrée : tokenContractAddress,
-
-
 
 ![](Specifications/images-md/e12df53d7769cd283dc0971fe78f0280c60a448c.png)
 
@@ -2120,11 +2033,9 @@ Android de démonstration est le suivant :
         return  version;
     }
 ```
-###
 
 ------------------------------------------------------------------------
 
-### 
 
 ### API de création d'un token fongible /smartErc20Acreate?
 
@@ -2229,7 +2140,6 @@ Exemple, en utilisant le serveur de test
 Les fonctions listées ci-dessous permettent de retourner les différentes
 variables du token :
 
-#### 
 
 #### .blockchainERC20ReadVariables
 
@@ -2284,7 +2194,8 @@ est le suivant :
         return result;
     }
 ```
-###
+
+
 #### .smartTokenERC20AGetType
 
 Sortie : cette fonction retourne le type de SmartTokenERC20A déployé. Le
@@ -2325,7 +2236,8 @@ Android de démonstration est le suivant :
         return  result;
     }
 ```
-###
+
+
 #### .smartTokenERC20AGetParent1
 
 Sortie : cette fonction retourne la "parentAddresss" 1 de l\'émetteur du
@@ -2361,7 +2273,7 @@ Android de démonstration est le suivant :
         return  parent;
     }
 ```
-### 
+
 
 #### .smartTokenERC20AGetParent2
 
@@ -2399,7 +2311,7 @@ Android de démonstration est le suivant :
         return  parent;
     }
 ```
-###
+
 
 #### .smartTokenERC20AGetSmartDirectoryAddress
 
@@ -2434,7 +2346,7 @@ smartContract "SmartTokenERC20A.sol" :
         return address;
     }
 ```
-###
+
 
 #### .smartTokenERC20AGetRegistrantAddress
 
@@ -2471,7 +2383,8 @@ Android de démonstration est le suivant :
         return address;
     }
 ```
-###
+
+
 #### .smartTokenERC20AGetVersion
 
 Sortie : cette fonction retourne la version du smart contract du
@@ -2479,8 +2392,7 @@ SmartTokenERC20A.
 
 Paramètres en entrée : tokenContractAddress
 
-![](Specifications/images-md/105eac945ad3abe40545bba470f18f9ad85832d0.png) 
- 
+![](Specifications/images-md/105eac945ad3abe40545bba470f18f9ad85832d0.png)
 
 Conditions d'exécution :
 
@@ -2507,12 +2419,11 @@ Android de démonstration est le suivant :
         return  version;
     }
 ```
-###
+
 
 Plan de test
 ------------
 
-### 
 
 ### SmartDirectory administré
 
@@ -2748,7 +2659,9 @@ En complément l'APP permet :
 -   une log des coûts permettant de reconstituer un bilan économique,
 -   un accès à la documentation.
 
-![](Specifications/images-md/1d0248c1abf3b57433aaca1b089bd07848acf2ec.png) Menus Administrateur
+![](Specifications/images-md/1d0248c1abf3b57433aaca1b089bd07848acf2ec.png)
+
+Menus Administrateur
 -----------------------------------------------------------------------------------------------
 
 ![](Specifications/images-md/6f791265678b6c686feb8ae81725839dad98b53c.png)
@@ -2765,7 +2678,6 @@ transaction et propose l'activation du smartDirectory.
 
 ------------------------------------------------------------------------
 
-### 
 
 ### Manage smartDirectory
 
@@ -2779,7 +2691,9 @@ smartDirectory.
 
 ------------------------------------------------------------------------
 
-![](Specifications/images-md/8bf52a7105bc765e36484bbb5d881487e52c0035.png) Menus "Registrant"
+![](Specifications/images-md/8bf52a7105bc765e36484bbb5d881487e52c0035.png)
+
+Menus "Registrant"
 ---------------------------------------------------------------------------------------------
 
 ![](Specifications/images-md/4b2a006adee1ae68495507426789d0881bdc6eff.png)
@@ -2794,7 +2708,6 @@ smartDirectory sinon comme une EOA.
 
 ------------------------------------------------------------------------
 
-### 
 
 ### My RegistrantAddress
 
@@ -2808,7 +2721,6 @@ déjà enregistré dans un smartDirectory.
 
 ------------------------------------------------------------------------
 
-### 
 
 ### Change Status Reference
 
@@ -2819,7 +2731,9 @@ permet la mise à jour du statut de chaque référence.
 
 ------------------------------------------------------------------------
 
-![](Specifications/images-md/d42bebf295f6f31902b1129faea8ee2e31a289e3.png) Menus Utilisateur
+![](Specifications/images-md/d42bebf295f6f31902b1129faea8ee2e31a289e3.png)
+
+Menus Utilisateur
 --------------------------------------------------------------------------------------------
 
 ![](Specifications/images-md/7f1b94b8281737f9bc7acd43a2cb792bcb2d2eac.png)
@@ -2860,7 +2774,9 @@ l'application.
 Deux boutons permettent respectivement de filtrer les adresses ou les
 transactions.
 
-![](Specifications/images-md/ceece640e1ff646eb7983db00969608545be1eeb.png) Menus smartTokens
+![](Specifications/images-md/ceece640e1ff646eb7983db00969608545be1eeb.png)
+
+Menus smartTokens
 --------------------------------------------------------------------------------------------
 
 ![](Specifications/images-md/8c3da6985f7ace1a7563312cbeed7c430c29c200.png)
@@ -2872,7 +2788,6 @@ L'onglet "Manage NFT" n'est pas actif car incomplet.
 
 ------------------------------------------------------------------------
 
-### 
 
 ### Deploy smart721
 
@@ -2886,7 +2801,6 @@ un avec un contrôle de smartDirectory et de "registrant".
 
 ------------------------------------------------------------------------
 
-### 
 
 ### Deploy smart020 
 
@@ -2901,7 +2815,6 @@ de l'écran de déclaration en retour de l'API du serveur.
 
 ------------------------------------------------------------------------
 
-### 
 
 ### Register smartToken
 
@@ -2920,7 +2833,7 @@ déclarer une référence :
 
 ------------------------------------------------------------------------
 
-⚙ Menu d'administration de l'APP
+Menu d'administration de l'APP
 --------------------------------
 
 ![](Specifications/images-md/5f9b288ab2b63d40a8ff880210e4808fa618c73e.png)
@@ -2934,7 +2847,6 @@ fenêtre externe.
 
 ------------------------------------------------------------------------
 
-### 
 
 ### Cost Log
 
@@ -2987,11 +2899,8 @@ utilisateur non développeur.
 
 Pour mettre à jour l'application, il est nécessaire d'utiliser le
 fichier .aia disponible sur le GitHub. Pour éditer ce fichier, il n'est
-pas possible d'utiliser directement l'éditeur du
-[MIT](https://www.google.com/url?q=https://accounts.google.com/o/oauth2/v2/auth?response_type%3Dcode%26client_id%3D835377224499-p6kuf1tm823g8vmvkpl7urs5r0gfasns.apps.googleusercontent.com%26scope%3Dopenid%2520email%26redirect_uri%3Dhttps://login.appinventor.mit.edu/return%26state%3D350364e7-160f-4915-b42b-436cafc71ee4%26nonce%3D82fc5d15-4066-4004-8be6-4fac1b389f11%26&sa=D&source=editors&ust=1735324824974382&usg=AOvVaw2O4nAHoFJQyYWnHzhNTGUo) qui
-présente des limites dans l'acceptation de taille de fichier. Il est
-donc nécessaire d'utiliser [l'éditeur du projet
-Qaxh.io](https://www.google.com/url?q=http://qaxh2020.qaxh.io:8888/login/&sa=D&source=editors&ust=1735324824974939&usg=AOvVaw0V6XlWJ35_YbLT0za4jsGs) 
+pas possible d'utiliser directement l'éditeur du [MIT](https://www.google.com/url?q=https://accounts.google.com/o/oauth2/v2/auth?response_type%3Dcode%26client_id%3D835377224499-p6kuf1tm823g8vmvkpl7urs5r0gfasns.apps.googleusercontent.com%26scope%3Dopenid%2520email%26redirect_uri%3Dhttps://login.appinventor.mit.edu/return%26state%3D350364e7-160f-4915-b42b-436cafc71ee4%26nonce%3D82fc5d15-4066-4004-8be6-4fac1b389f11%26&sa=D&source=editors&ust=1735324824974382&usg=AOvVaw2O4nAHoFJQyYWnHzhNTGUo) qui présente des limites dans l'acceptation de taille de fichier. Il est
+donc nécessaire d'utiliser [l'éditeur du projetQaxh.io](https://www.google.com/url?q=http://qaxh2020.qaxh.io:8888/login/&sa=D&source=editors&ust=1735324824974939&usg=AOvVaw0V6XlWJ35_YbLT0za4jsGs)
 
 Toute l'application "smartDirectory" se trouve sur le "screen7". Le
 "screen1" est repris du projet Qaxh.io avec désactivation des fonctions
@@ -3069,7 +2978,6 @@ La clarté se calcule suivant la formule : R\*0.3+G\*0.59+B\*0.11
 
 ------------------------------------------------------------------------
 
-### 
 
 Le serveur de déploiement
 -------------------------
@@ -3169,7 +3077,6 @@ dossier pour le déployer.
 
 <div>
 
-   
 
 </div>
 
@@ -3177,6 +3084,6 @@ dossier pour le déployer.
 
 <div>
 
-[\[1\]](#ftnt_ref1) La déclaration est réservée aux adresses Parents
+[\[1\]](#ftnt_ref1)La déclaration est réservée aux adresses Parents
 
 </div>
