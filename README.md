@@ -781,17 +781,15 @@ partir de l'application Android de démonstration est le suivant :
 
 ------------------------------------------------------------------------
 
-//reprendre ici
+
 ### La table des déclarants (registrants Table)
 
 ![](Specifications/images-md/71cc3a7239d23ca70bfe2d7c10eeb78a194b9fd2.png)
 
-Une table des déclarants est créée et mise à jour soit explicitement
-pour chaque nouveau déclarant soit le cas échéant à chaque nouvelle
-création de record dans la table des référencement, ceci en fonction de
-la stratégie d'utilisation : voir les conditions d'exécution de la
-fonction .smartDirectoryReferenceEoaCreate pour la présentation des deux
-modes de fonctionnement du SmartDirectory via l'utilisation de l'"AdminCode".
+Une table des déclarants est créée et mise à jour soit explicitement pour chaque nouveau déclarant soit le cas échéant à
+chaque nouvelle création de record dans la table des référencement, ceci en fonction de la stratégie d'utilisation : 
+voir les conditions d'exécution de la fonction .smartDirectoryReferenceEoaCreate pour la présentation des deux modes 
+de fonctionnement du SmartDirectory via l'utilisation de l'"**AdminCode**".
 
 Cette table des déclarants est constituée de 3 éléments :
 
@@ -808,7 +806,7 @@ caractère est mise à jour dans un deuxième temps par le déclarant.
 
 **Sortie** : cette fonction permet la création d'un nouveau déclarant par une adresse parent.
 
-**Paramètres en entrée** : smartDirectoryAddress, registrantAddress 
+**Paramètres en entrée** : smartDirectoryAddress, registrantAddress 
 
 ![](Specifications/images-md/95c1977ff1c3f153db7b0acdbbf3a7d050d727dd.png)
 
@@ -853,17 +851,15 @@ public String smartDirectoryRegistrantEoaCreate(String smartDirectoryAddress, St
 
 #### .smartDirectoryRegistrantEoaDisable
 
-**Sortie :** cette fonction permet de désactiver un déclarant, charge au
-vérificateur de voir s'il continue de faire confiance aux références
-même si le déclarant n'est plus autorisé. La désactivation d'un
-déclarant se traduit par la mise à 0 de l'index associé à son adresse
-dans la table des déclarants (et non par l'effacement de son adresse
-dans la table) :
+**Sortie :** cette fonction permet de désactiver un déclarant, charge au vérificateur de voir s'il continue de faire 
+confiance aux références même si le déclarant n'est plus autorisé. La désactivation d'un déclarant se traduit par la 
+mise à 0 de l'index associé à son adresse dans la table des déclarants (et non par l'effacement de son adresse dans la 
+table) :
 
 * Index = 0 =\> déclarant enregistré mais invalidé (ne peut plus créer de référence).
 * Index \>= 1 =\> déclarant enregistré et validé (peut créer des références).
 
-**Paramètres en entrée :** smartDirectoryAddress,registrantAddress 
+**Paramètres en entrée :** smartDirectoryAddress, registrantAddress 
 
 ![](Specifications/images-md/6ced95b6ab0a29597342571a98cab7d6c36c3917.png)
 
@@ -872,18 +868,15 @@ dans la table) :
 L'usage de cette fonction est conditionné :
 
 * Le SmartDirectory doit être dans un état activé (ActivationCode.active).
-* L'index de l'adresse donnée en paramètre est \> à 0 et inférieur à
-    la valeur maximale des indices de la table "registrants" (check
-    interne à la fonction).
-* Cette fonction n'est disponible que dans le mode "parentAuthorized"
-    (AdminCode=0) : seuls les administrateurs (parentAddress1 ou 2)
-    peuvent l'utiliser et invalider un déclarant (registrant).
+* L'index de l'adresse donnée en paramètre est \> à 0 et inférieur à la valeur maximale des indices de la table 
+"registrants" (check interne à la fonction).
+* Cette fonction n'est disponible que dans le mode "parentAuthorized" (AdminCode=0) : seuls les administrateurs 
+(parentAddress1 ou 2) peuvent l'utiliser et invalider un déclarant (registrant).
 
 **Code :**
 
-La fonction solidity appelée est "disableRegistrant" du smartContract
-"SmartDirectory.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
+La fonction solidity appelée est "disableRegistrant" du smartContract "SmartDirectory.sol". Le code java exécuté à 
+partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "del a registrant address in registrants data structure, only parents")
     public String smartDirectoryRegistrantEoaDisable(String smartDirectoryAddress, String registrantAddress) {
@@ -909,12 +902,9 @@ Android de démonstration est le suivant :
 
 #### .smartDirectoryRegistrantUriEoaWrite
 
-**Sortie :** une fois son adresse enregistrée dans la table "registrants",
-le déclarant peut directement créer/modifier son Uri. Cette fonction
-permet la mise à jour de la chaîne de caractère de la table des
-déclarants. La transaction doit être signée par le déclarant (msg.sender
-= registrantAddress, donc l'adresse du déclarant n'est pas dans les
-paramètres).
+**Sortie :** une fois son adresse enregistrée dans la table "registrants", le déclarant peut directement créer/modifier 
+son Uri. Cette fonction permet la mise à jour de la chaîne de caractère de la table des déclarants. La transaction doit 
+être signée par le déclarant (msg.sender = registrantAddress, donc l'adresse du déclarant n'est pas dans les paramètres).
 
 **Paramètres en entrée :** smartDirectoryAddress, registrantUri 
  
@@ -922,15 +912,13 @@ paramètres).
 
 **Conditions d'exécution :**
 
-* Le déclarant doit exister dans la table "registrant" (mode
-    "selfDeclaration") ou doit être valide (index \> à 0 en mode
-    "parentsAuthorized").
+* Le déclarant doit exister dans la table "registrant" (mode "selfDeclaration") ou doit être valide (index \> à 0 en 
+mode "parentsAuthorized").
 
 **Code :**
 
-La fonction solidity appelée est "updateRegistrantUri" du smartContract
-"SmartDirectory.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
+La fonction solidity appelée est "updateRegistrantUri" du smartContract "SmartDirectory.sol". Le code java exécuté à 
+partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "update uri associated to a registrant")
     public String smartDirectoryRegistrantUriEoaWrite(String smartDirectoryAddress, String registrantUri) {
@@ -956,28 +944,25 @@ Android de démonstration est le suivant :
 
 #### .smartDirectoryRegistrantUriGet
 
-**Sortie :** cette fonction renvoie l'URI de la table des déclarants pour
-l'addresse du déclarant donnée en paramètre. La fonction retourne un
-dictionnaire :
+**Sortie :** cette fonction renvoie l'URI de la table des déclarants pour l'adresse du déclarant donnée en paramètre. 
+La fonction retourne un dictionnaire :
 
-* dictionnaire vide si l'adresse demandée n'existe pas dans la table
-* {"registrant\_uri" : "\<string\>"} si l'adresse est dans la table
+* dictionnaire vide si l'adresse demandée n'existe pas dans la table.
+* {"registrant\_uri" : "\<string\>"} si l'adresse est dans la table.
 
-Paramètres en entrée : smartDirectoryAddress,registrantAddress
+**Paramètres en entrée** : smartDirectoryAddress,registrantAddress
 
 ![](Specifications/images-md/120369a626b70b0439e72581f944036066e6c905.png)
 
 **Conditions d'exécution :**
 
--   Le déclarant doit exister dans la table "registrant" (mode
-    "selfDeclaration") ou doit être valide (index \> à 0 en mode
-    "parentsAuthorized").
+* Le déclarant doit exister dans la table "registrant" (mode "selfDeclaration") ou doit être valide (index \> à 0 en 
+mode "parentsAuthorized").
 
 **Code :**
 
-La fonction solidity appelée est "getRegistrantUri" du smartContract
-"SmartDirectory.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
+La fonction solidity appelée est "getRegistrantUri" du smartContract "SmartDirectory.sol". Le code java exécuté à partir
+de l'application Android de démonstration est le suivant :
 ```Java
     public String smartDirectoryRegistrantUriGet(String smartDirectoryAddress, String registrantAddress) {
         SmartDirectory folderContract = SmartDirectory.load(smartDirectoryAddress, web3, transactionManager,
@@ -997,31 +982,24 @@ Android de démonstration est le suivant :
 ```
 
 
-------------------------------------------------------------------------
-
-
 #### .smartDirectoryRegistrantsDisabledListGet
 
-Sortie : cette fonction retourne la liste des déclarants ayant le statut
-"désactivé".Quand le SmartDirectory est déployé en mode administré
-("parentsAuthorized"), un déclarant considéré comme n'étant plus
-légitime pour enregistrer de nouvelles références peut-être désactivé
-(disabled). Cf. "smartDirectoryRegistrantEoaDisable" ci-dessus.
+**Sortie** : cette fonction retourne la liste des déclarants ayant le statut "désactivé".Quand le SmartDirectory est 
+déployé en mode administré ("parentsAuthorized"), un déclarant considéré comme n'étant plus légitime pour enregistrer 
+de nouvelles références peut-être désactivé (disabled). Cf. "smartDirectoryRegistrantEoaDisable" ci-dessus.
 
-Paramètres en entrée : smartDirectoryAddress  
+**Paramètres en entrée** : smartDirectoryAddress 
 
 ![](Specifications/images-md/6ed7806eae168541c16b6805d89ecc12d1600c53.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   La liste retournée n'est peuplée que des adresses de déclarant dont
-    l'index est égal à 0 dans la table "registrants".
+* La liste retournée n'est peuplée que des adresses de déclarant dont l'index est égal à 0 dans la table "registrants".
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "getDisabledRegistrants" du
-smartContract "SmartDirectory.sol". Le code java exécuté à partir de
-l'application Android de démonstration est le suivant :
+La fonction solidity appelée est "getDisabledRegistrants" du smartContract "SmartDirectory.sol". Le code java exécuté à 
+partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "get disabledRegistrants list")
     public Object smartDirectoryRegistrantsDisabledListGet(String smartDirectoryAddress) {
@@ -1042,27 +1020,23 @@ l'application Android de démonstration est le suivant :
         return result_dict;
     }
 ```
-------------------------------------------------------------------------
 
 
 #### .smartDirectoryRegistrantLastIndexGet
 
-Sortie : cette fonction permet de connaître le dernier index de la liste
-des déclarants.
+**Sortie** : cette fonction permet de connaître le dernier index de la liste des déclarants.
 
-Paramètres en entrée : smartDirectoryAddress 
+**Paramètres en entrée** : smartDirectoryAddress 
 
 ![](Specifications/images-md/0b1b74a27d8a08d800bd891c78d9d416c4b8ae46.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
+* Néant.
 
--   Néant.
+**Code** :
 
-Code :
-
-La fonction solidity appelée est "getRegistrantLastIndex" du
-smartContract "SmartDirectory.sol". Le code java exécuté à partir de
-l'application Android de démonstration est le suivant :
+La fonction solidity appelée est "getRegistrantLastIndex" du smartContract "SmartDirectory.sol". Le code java exécuté à 
+partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "get the last index of the declared registrants")
     public int smartDirectoryRegistrantLastIndexGet(String smartDirectoryAddress) {
@@ -1083,27 +1057,24 @@ l'application Android de démonstration est le suivant :
     }
 ```
 
-------------------------------------------------------------------------
 
 #### .smartDirectoryRegistrantAtIndexGet
 
-Sortie : cette fonction permet de lire l'adresse d'un déclarant en
-donnant son index.
+**Sortie** : cette fonction permet de lire l'adresse d'un déclarant en donnant son index.
 
-Paramètres en entrée : smartDirectoryAddress,index
+**Paramètres en entrée** : smartDirectoryAddress, index
 
 ![](Specifications/images-md/9edbc1492aac95da5f1effb96fa5454ccdb441b6.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   L'index passé en paramètre doit être supérieur à 0 et inférieur ou
-    égal à la valeur maximale des indices de la table "registrants".
+* L'index passé en paramètre doit être supérieur à 0 et inférieur ou égal à la valeur maximale des indices de la table 
+"registrants".
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "getRegistrantAtIndex" du smartContract
-"SmartDirectory.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
+La fonction solidity appelée est "getRegistrantAtIndex" du smartContract "SmartDirectory.sol". Le code java exécuté à 
+partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "return registrant address and uri at the given index")
     public Object smartDirectoryRegistrantAtIndexGet(String smartDirectoryAddress, String index) {
@@ -1127,42 +1098,30 @@ Android de démonstration est le suivant :
         return result_dict;
     }
 ```
+| Exemple                                                                                                                                                                                                                                |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| smartDirectoryAddress:0x623a73351159c85cdb0d3cd8665ab13dbf42f4f2<br/>lastRegistrantIndex: 1<br/>registrantAtIndex : {\"registrant\_uri\":\"👋 hello world\",\"<br/>registrantAddress\":\"0x52103544224a2ec194ca9673506b350d927057b4\"} |
 
-+-----------------------------------+-----------------------------------+
-| exemple                           | smartDirectoryAddress:0x623a733   |
-|                                   | 51159c85cdb0d3cd8665ab13dbf42f4f2 |
-|                                   |                                   |
-|                                   | lastRegistrantIndex: 1            |
-|                                   |                                   |
-|                                   | registrantAtIndex :               |
-|                                   | {\"registrant\_uri\":\"👋 hello    |
-|                                   | world\",\"r                       |
-|                                   | egistrantAddress\":\"0x5210354422 |
-|                                   | 4a2ec194ca9673506b350d927057b4\"} |
-+-----------------------------------+-----------------------------------+
 
 #### .smartDirectoryRegistrantIndexGet
 
-**Sortie :** cette fonction permet de connaître l'index d'un déclarant.
- Elle permet aussi de savoir si une adresse valide (autorisée à créer
-des références) :
+**Sortie :** cette fonction permet de connaître l'index d'un déclarant. Elle permet aussi de savoir si une adresse 
+valide (autorisée à créer des références) :
 
--   Si le retour de cette fonction est "0" (zéro), l'adresse du
-    déclarant n'est pas valide.
+* Si le retour de cette fonction est "0" (zéro), l'adresse du déclarant n'est pas valide.
 
-**Paramètres en entrée :** smartDirectoryAddress,registrantAddress 
+**Paramètres en entrée :**smartDirectoryAddress, registrantAddress 
 
 ![](Specifications/images-md/58df0743d337391c91cc51b493291f67d284d589.png)
 
 **Conditions d'exécution :**
 
--   Néant.
+* Néant.
 
 **Code :**
 
-La fonction solidity appelée est "getRegistrantIndex" du smartContract
-"SmartDirectory.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
+La fonction solidity appelée est "getRegistrantIndex" du smartContract "SmartDirectory.sol". Le code java exécuté à 
+partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "return registrant index given its address")
     public int smartDirectoryRegistrantIndexGet(String smartDirectoryAddress, String registrantAddress) {
@@ -1183,7 +1142,7 @@ Android de démonstration est le suivant :
 
 #### .smartDirectoryReferencesCountGet
 
-Sortie : Cette fonction retourne la taille de la liste des références
+**Sortie** : Cette fonction retourne la taille de la liste des références
 d'un déclarant sous la forme d'un nombre entier. Cela peut être utile
 pour modifier l'UX de l'utilisateur en cas de taille importante.
 
@@ -1191,16 +1150,14 @@ Paramètres en entrée : smartDirectoryAddress, registrantAddress,
 
 ![](Specifications/images-md/eebcc6a14946f445fc62716dc9cf2e38df56f556.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "getRegistrantReferencesCount" du
-smartContract "SmartDirectory.sol". Le code java exécuté à partir de
-l'application Android de démonstration est le suivant :
-
+La fonction solidity appelée est "getRegistrantReferencesCount" du smartContract "SmartDirectory.sol". Le code java 
+exécuté à partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "get registrant references count")
     public int smartDirectoryReferencesCountGet(String smartDirectoryAddress, String registrantAddress) {
@@ -1230,63 +1187,37 @@ l'application Android de démonstration est le suivant :
 Création du smartDirectory
 ----------------------------
 
-Le smartDirectory est un smartContract qui met en œuvre des paramètres
-afin d'en faciliter la gestion dans les cas d'usage privatifs.
+Le smartDirectory est un smartContract qui met en œuvre des paramètres afin d'en faciliter la gestion dans les cas 
+d'usage privatifs.
 
 ### Les variables d'en-tête
 
 ![](Specifications/images-md/a2ef2699ade317001518455231288500a9d296ca.png)
 
-Ces variables ainsi que les structures de stockage des déclarants
-("registrants") et des adresses référencées ("references") sont
-contenues dans une structure globale "SmartDirectoryStorage" portée par
-la librairie "SmartDirectoryLib.sol" :
+Ces variables ainsi que les structures de stockage des déclarants ("registrants") et des adresses référencées 
+("references") sont contenues dans une structure globale "SmartDirectoryStorage" portée par la librairie 
+"SmartDirectoryLib.sol" :
 
--   parents\[2\] : liste des 2 adresses des créateurs du SmartDirectory
-    (adresses demandées lors de la requête API de création du contrat).
-    Elles doivent être différentes et ne pas être \`address(0)\`.
--   contractVersion : version du contrat pour identifier les évolutions
-    sûrement nécessaire
--   contractType : numéro arbitrairement fixé à "42" permettant de
-    reconnaître en "machine readable" que c'est un smartDirectory.
--   activationCode : statut d\'activation du contrat mis à jour
-    exclusivement par une des deux adresses Parent pour indiquer la
-    validité du smartDirectory :
+* parents[2\] : liste des 2 adresses des créateurs du SmartDirectory (adresses demandées lors de la requête API de création du contrat). Elles doivent être différentes et ne pas être \`address(0)\`.
+* contractVersion : version du contrat pour identifier les évolutions sûrement nécessaire
+* contractType : numéro arbitrairement fixé à "42" permettant de reconnaître en "machine readable" que c'est un smartDirectory.
+* activationCode : statut d\'activation du contrat mis à jour exclusivement par une des deux adresses Parent pour indiquer la validité du smartDirectory :
+  * "0" ou "pending" =\> en cours de création, pas encore validé. Aucune référencement ne peut être enregistré.
+  * "1" ou "active" =\> smartDirectory validé par une parentAddress : toutes les fonctions sont accessibles.
+  * "2" ou "closed" =\> smartDirectory clôturé par une parentAddress :aucune transaction ni mise à jour ne peut se faire.
+* contractUri : URI décrivant le contrat. String non modifiable à l'usage du créateur du smartDirectory
+* adminCode : entier inscrit au déploiement et non modifiable :
+  * "0" ou "parentsAuthorized" : seuls les participants enregistrés au préalable par les parents peuvent créer des références.
+  * "1" ou "selfDeclaration" : toute adresse peut être déclarant (accès d'autodéclaration) et ajouter des références.
+* registrants : Liste des adresses des déclarants.
+* registrantData : Mapping des données des déclarants.
+* referenceData : Mapping des données des références enregistrées par les déclarants.
 
-```{=html}
-<!-- -->
-```
--   "0" ou "pending" =\> en cours de création, pas encore validé. Aucune
-    référencement ne peut être enregistré
--   "1" ou "active" =\> smartDirectory validé par une parentAddress :
-    toutes les fonctions sont accessibles
--   "2" ou "closed" =\> smartDirectory clôturé par une parentAddress :
-    aucune transaction ni mise à jour ne peut se faire
+|                        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| exemple (requête POST) | [https://smart-directory.qaxh.io/smart-directory/smartdirectorycreate?parent\_address1=0x52103544224a2ec194ca9673506b350D927057B4&parent\_address2=0x88D65F27e269b4f92CE2Ccf124eAE8648635a67A&contract\_uri=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F1wPvoksIErxEp9Ai45ywboklO2XrIgIba7xQ4swaSMWc%2Fedit%3Fusp%3Dsharing&admin\_code=0&chain\_id=80002](https://www.google.com/url?q=https://smart-directory.qaxh.io/smart-directory/smartdirectorycreate?parent_address1%3D0x52103544224a2ec194ca9673506b350D927057B4%26parent_address2%3D0x88D65F27e269b4f92CE2Ccf124eAE8648635a67A%26contract_uri%3Dhttps%253A%252F%252Fdocs.google.com%252Fdocument%252Fd%252F1wPvoksIErxEp9Ai45ywboklO2XrIgIba7xQ4swaSMWc%252Fedit%253Fusp%253Dsharing%26admin_code%3D0%26chain_id%3D80002&sa=D&source=editors&ust=1735324824838691&usg=AOvVaw05qH-8sB_kH_ELbDHqfd0g) |
+| exemple (retour API)   | responsecode: 200 responsecontent: { \"name\": \"\", \"return\_code\": 200, \"tx\_hash\": \"0x599fd3dbac60c4cef66e8626e61bfe0d902ca6d8eef103a4340216b6e8bdb6c6\" }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
-```{=html}
-<!-- -->
-```
--   contractUri : URI décrivant le contrat. String non modifiable à
-    l'usage du créateur du smartDirectory
--   adminCode : entier inscrit au déploiement et non modifiable :
-
-```{=html}
-<!-- -->
-```
--   "0" ou "parentsAuthorized" : seuls les participants enregistrés au
-    préalable par les parents peuvent créer des références.
--   "1" ou "selfDeclaration" : toute adresse peut être déclarant (accès
-    d'autodéclaration) et ajouter des références.
-
--    registrants : Liste des adresses des déclarants.  
--    registrantData : Mapping des données des déclarants.  
--    referenceData : Mapping des données des références enregistrées par
-    les déclarants.
-
-  ------------------------ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  exemple (requête POST)   [https://smart-directory.qaxh.io/smart-directory/smartdirectorycreate?parent\_address1=0x52103544224a2ec194ca9673506b350D927057B4&parent\_address2=0x88D65F27e269b4f92CE2Ccf124eAE8648635a67A&contract\_uri=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F1wPvoksIErxEp9Ai45ywboklO2XrIgIba7xQ4swaSMWc%2Fedit%3Fusp%3Dsharing&admin\_code=0&chain\_id=80002](https://www.google.com/url?q=https://smart-directory.qaxh.io/smart-directory/smartdirectorycreate?parent_address1%3D0x52103544224a2ec194ca9673506b350D927057B4%26parent_address2%3D0x88D65F27e269b4f92CE2Ccf124eAE8648635a67A%26contract_uri%3Dhttps%253A%252F%252Fdocs.google.com%252Fdocument%252Fd%252F1wPvoksIErxEp9Ai45ywboklO2XrIgIba7xQ4swaSMWc%252Fedit%253Fusp%253Dsharing%26admin_code%3D0%26chain_id%3D80002&sa=D&source=editors&ust=1735324824838691&usg=AOvVaw05qH-8sB_kH_ELbDHqfd0g)
-  exemple (retour API)     responsecode: 200 responsecontent: { \"name\": \"\", \"return\_code\": 200, \"tx\_hash\": \"0x599fd3dbac60c4cef66e8626e61bfe0d902ca6d8eef103a4340216b6e8bdb6c6\" }
-  ------------------------ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Les fonctions de management du SmartDirectory
 
@@ -1295,27 +1226,22 @@ Ces fonctions permettent d\'accéder aux paramètres du SmartDirectory :
 
 #### .smartDirectoryActivationCodeEoaUpdate
 
-Sortie : cette fonction permet de changer le statut d'activation
-("activationCode") du smartDirectory de "0" vers "1" (ou "2" le cas
-échéant). Le retour de cette fonction est le tx\_Hash de la transaction
-de mise à jour.
+**Sortie** : cette fonction permet de changer le statut d'activation ("activationCode") du smartDirectory de "0" vers 
+"1" (ou "2" le cas échéant). Le retour de cette fonction est le tx\_Hash de la transaction de mise à jour.
 
-Paramètres en entrée : smartDirectoryAddress,activationCode
+**Paramètres en entrée** : smartDirectoryAddress,activationCode
 
 ![](Specifications/images-md/bca832676f356277f344679ea4d401f9ad7a65f6.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--     L\'appelant doit être un parent.  
--     Le statut de déploiement du SmartDirectory doit être "pending" ou
-    "active".  
+* L'appelant doit être un parent.
+* Le statut de déploiement du SmartDirectory doit être "pending" ou "active".
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "setSmartDirectoryActivationCode" du
-smartContract "SmartDirectory.sol". Le code java exécuté à partir de
-l'application Android de démonstration est le suivant :
-
+La fonction solidity appelée est "setSmartDirectoryActivationCode" du smartContract "SmartDirectory.sol". Le code java 
+exécuté à partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Set smartDirectory's activation code")
     public String smartDirectoryActivationCodeEoaUpdate(String smartDirectoryAddress, int activationCode) {
@@ -1328,46 +1254,40 @@ l'application Android de démonstration est le suivant :
 
     }
 ```
-  --------- -------------------------------------------------------------------------------------
-  exemple   TransactionHash: 0x2f407597f3004c89dcac5a643ac51980eb6301aa5f9bb10d6a4ac0c99f919ae6
-  --------- -------------------------------------------------------------------------------------
+
+|         |                                                                                     |
+|---------|-------------------------------------------------------------------------------------|
+| exemple | TransactionHash: 0x2f407597f3004c89dcac5a643ac51980eb6301aa5f9bb10d6a4ac0c99f919ae6 |
+
 
 #### .smartDirectoryHeadersGet
 
-Sortie : cette fonction permet la lecture des variables contenues dans
-les en-têtes sous forme d'un dictionnaire.
+**Sortie** : cette fonction permet la lecture des variables contenues dans les en-têtes sous forme d'un dictionnaire.
 
-Paramètres en entrée : smartDirectoryAddress
+**Paramètres en entrée** : smartDirectoryAddress
 
 ![](Specifications/images-md/f0162b74a75a8ea09f982884e15a517e03a2656d.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-Le dictionnaire retourné est constitué de plusieurs appels aux getters
-solidity dédiés à chaque variables du SmartDirectory :
+Le dictionnaire retourné est constitué de plusieurs appels aux getters solidity dédiés à chaque variables du 
+SmartDirectory :
 
--   smartDirectoryGetParent1 appelle la fonction solidity "getParent1".
--   smartDirectoryGetParent2 appelle la fonction solidity "getParent2".
--   smartDirectoryGetContractVersion appelle la fonction solidity
-    "getContractVersion".
--   smartDirectoryGetContractType appelle la fonction solidity
-    "getContractType".
--   smartDirectoryGetActivationCode appelle la fonction solidity
-    "getActivationCode".
--   smartDirectoryGetContractUri appelle la fonction solidity
-    "getContractUri".
--   smartDirectoryGetAdminCode  appelle la fonction solidity
-    "getAdminCode".
+* smartDirectoryGetParent1 appelle la fonction solidity "getParent1".
+* smartDirectoryGetParent2 appelle la fonction solidity "getParent2".
+* smartDirectoryGetContractVersion appelle la fonction solidity "getContractVersion".
+* smartDirectoryGetContractType appelle la fonction solidity "getContractType".
+* smartDirectoryGetActivationCode appelle la fonction solidity "getActivationCode".
+* smartDirectoryGetContractUri appelle la fonction solidity "getContractUri".
+* smartDirectoryGetAdminCode appelle la fonction solidity "getAdminCode".
 
-L'ensemble des retours de ces appels est ensuite assemblé dans le
-dictionnaire "smartDirectoryCreateVariablesMap" lui-même invoqué par la
-fonction "smartDirectoryHeadersGet". Le code java exécuté à partir de
-l'application Android de démonstration est le suivant :
-
+L'ensemble des retours de ces appels est ensuite assemblé dans le dictionnaire "smartDirectoryCreateVariablesMap" 
+lui-même invoqué par la fonction "smartDirectoryHeadersGet". Le code java exécuté à partir de l'application Android de 
+démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "get information about the deployed SmartDirectory")
     private Map<String, String> smartDirectoryCreateVariablesMap(String smartDirectoryAddress) {
@@ -1386,11 +1306,10 @@ l'application Android de démonstration est le suivant :
         return variables;
     }
 ```
-
-  ----------- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  paramètre   smartDirectoryAddress:0x599dc64f7a235663e50f5a002df393cb2672c702
-  exemple     {\"parentAddress2\":\"0x88d65f27e269b4f92ce2ccf124eae8648635a67a\",\"contractUri\":\"https:\\/\\/[docs.google.com](https://www.google.com/url?q=http://docs.google.com&sa=D&source=editors&ust=1735324824851686&usg=AOvVaw0DZyUqYQwEm9W5wleDCM1Q)\\/document\\/d\\/1wPvoksIErxEp9Ai45ywboklO2XrIgIba7xQ4swaSMWc\\/edit?usp=sharing\",\"contractType\":\"42\",\"adminCode\":\"0\",\"activationCode\":\"1\",\"parentAddress1\":\"0x52103544224a2ec194ca9673506b350d927057b4\",\"contractVersion\":\"SD 1.09SDL 1.17\"}
-  ----------- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| paramètre | smartDirectoryAddress:0x599dc64f7a235663e50f5a002df393cb2672c702                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| exemple   | {\"parentAddress2\":\"0x88d65f27e269b4f92ce2ccf124eae8648635a67a\",\"contractUri\":\"https:\\/\\/[docs.google.com](https://www.google.com/url?q=http://docs.google.com&sa=D&source=editors&ust=1735324824851686&usg=AOvVaw0DZyUqYQwEm9W5wleDCM1Q)\\/document\\/d\\/1wPvoksIErxEp9Ai45ywboklO2XrIgIba7xQ4swaSMWc\\/edit?usp=sharing\",\"contractType\":\"42\",\"adminCode\":\"0\",\"activationCode\":\"1\",\"parentAddress1\":\"0x52103544224a2ec194ca9673506b350d927057b4\",\"contractVersion\":\"SD 1.09SDL 1.17\"} |
 
 
 ------------------------------------------------------------------------
@@ -1398,8 +1317,7 @@ l'application Android de démonstration est le suivant :
 
 ### API de création d'un smartDirectory
 
-Cet API permet à un utilisateur de créer un smartDirectory facilement
-sans connaissance préalable de la Blockchain :
+Cet API permet à un utilisateur de créer un smartDirectory facilement sans connaissance préalable de la Blockchain :
 
 #### /smart-directory/smartdirectorycreate?
 
@@ -1436,14 +1354,11 @@ sans connaissance préalable de la Blockchain :
 |                                   | 2\>&chain\_Id=\<chainId\>         |
 +-----------------------------------+-----------------------------------+
 
-Les autres paramètres nécessaires sont gérés directement par le serveur
-de déploiement :
+Les autres paramètres nécessaires sont gérés directement par le serveur de déploiement :
 
--   contractVersion : version du code du contrat pour identifier les
-    évolutions,
--   contractType : numéro arbitrairement fixé à "42" permettant de
-    reconnaître en "machine readable" que c'est un smartDirectory,
--   activationCode : mis à "0" ou "pending" lors du déploiement.
+* contractVersion : version du code du contrat pour identifier les évolutions,
+* contractType : numéro arbitrairement fixé à "42" permettant de reconnaître en "machine readable" que c'est un smartDirectory,
+* activationCode : mis à "0" ou "pending" lors du déploiement.
 
 +-----------------------------------------------------------------------+
 | Responses:                                                            |
@@ -1465,8 +1380,8 @@ de déploiement :
 | -   405 -\> déploiement en échec                                      |
 +-----------------------------------------------------------------------+
 
-La réponse du serveur peut se faire avant la confirmation du déploiement. C'est à l'entité qui a invoqué l'API de s'assurer que le
-déploiement est correct en analysant le statut de la transaction de déploiement (tx\_hash) dans la réponse.
+La réponse du serveur peut se faire avant la confirmation du déploiement. C'est à l'entité qui a invoqué l'API de 
+s'assurer que ledéploiement est correct en analysant le statut de la transaction de déploiement (tx\_hash) dans la réponse.
 
 ### Gestion du smartDirectory pour finaliser le déploiement
 
@@ -1504,19 +1419,15 @@ déploiement est correct en analysant le statut de la transaction de déploiemen
 SmartTokens
 -----------
 
-Le concept du smartToken introduit la possibilité pour un token
-(fongible, non fongible, autres) de consulter un smartDirectory afin de
-filtrer les adresses qui lui envoient des ordres (transfert, mintage,
-...) pour ne retenir que celles qui sont dans ce smartDirectory.
+Le concept du smartToken introduit la possibilité pour un token (fongible, non fongible, autres) de consulter un 
+smartDirectory afin de filtrer les adresses qui lui envoient des ordres (transfert, mintage, ...) pour ne retenir que 
+celles qui sont dans ce smartDirectory.
 
-Cette approche permet de réaliser des écosystèmes avec des contrôles
-d\'accès. En effet, il suffit de positionner dans le smartContract une
-adresse de smartDirectory et éventuellement une adresse de déclarant
-pour réaliser ce filtrage. Si la liste des références évolue, le
-smartToken n'a pas besoin d'être modifié.
+Cette approche permet de réaliser des écosystèmes avec des contrôles d\'accès. En effet, il suffit de positionner dans 
+le smartContract une adresse de smartDirectory et éventuellement une adresse de déclarant pour réaliser ce filtrage. 
+Si la liste des références évolue, le smartToken n'a pas besoin d'être modifié.
 
-Il revient au développeur du smartToken de positionner les filtres liés
-aux exigences du métier.
+Il revient au développeur du smartToken de positionner les filtres liés aux exigences du métier.
 
 ![](Specifications/images-md/b4d1b90d8ac740d01b7773659e24beeaa073dab3.png)
 
@@ -1525,11 +1436,7 @@ aux exigences du métier.
 
 ### Cas d'utilisation
 
--   Token fongible multi-émetteurs :
-
-```{=html}
-<!-- -->
-```
+* Token fongible multi-émetteurs :
 -   Chaque émetteur (un établissement de monnaie électronique, dans le
     monde régulé) sera autorisé en tant que référence dans un
     smartDirectory par une autorité de régulation, Cette dernière
@@ -1538,11 +1445,8 @@ aux exigences du métier.
     émetteur que s'il est dans la liste, charge à l'émetteur de
     respecter le cantonnement des fonds associé à ce mintage.
 
--   Token fongible à KYC préalable :
+* Token fongible à KYC préalable :
 
-```{=html}
-<!-- -->
-```
 -   En complément (ou indépendamment), il est possible d'avoir un second
     smartDirectory dans lequel les émetteurs sont des déclarants, à
     charge pour ces derniers d'indiquer les adresses (références) des
@@ -1554,9 +1458,6 @@ aux exigences du métier.
 
 -   Notifications des AirDrops
 
-```{=html}
-<!-- -->
-```
 -   Un smartDirectory est utilisé pour référencer des tokens qui offrent
     des airDrops.
 -   L'app de l'utilisateur va lire ce smartDirectory, filtrer les
@@ -1578,20 +1479,11 @@ de son usage :
 
 -   smart\_directory
 
-```{=html}
-<!-- -->
-```
 -   =0x000000 ...
 -   = adresse de smartDirectory valide \<smartDirectoryAddress\>
 
-```{=html}
-<!-- -->
-```
 -   registrant\_address
 
-```{=html}
-<!-- -->
-```
 -   =0x000000...
 -   =\<registrant\_address\> , adresse EOA ou smartContract
 
@@ -1634,52 +1526,36 @@ smartDirectory :
 -   VARIABLE permettant la vérification de la chaîne utilisée par le
     serveur
 
-```{=html}
-<!-- -->
-```
 -   chain\_id= number of the chain to be used for deployment
 
 -   VARIABLES du nftFolder (collection de NFT)
 
-```{=html}
-<!-- -->
-```
+
 -   max\_token : maximum number of tokens in this nftFolder. if equal to
     "0", the number of tokens has no limit
 -   parent\_address1 : (habituellement nommée "owner")
 
-```{=html}
-<!-- -->
-```
+
 -   0X..., first parentAddress of the folder. usually the EOA address of
     the user requesting the creation of the smart721
 -   or 0x0000000 .
 
-```{=html}
-<!-- -->
-```
--   parent\_address2 :  ("owner" secondaire)
 
-```{=html}
-<!-- -->
-```
+-   parent\_address2 :  ("owner" secondaire)
+-->
+
 -   0X..., second parentAddress of the folder. usually the EOA of
     another device the user requesting the creation of the smart721
 -   or 0x0000000....folder
 
 -   VARIABLES liées au smartToken
 
-```{=html}
-<!-- -->
-```
 -   smart\_directory
 -   registrant\_address
 
 -   VARIABLES de l'ERC721 de base
 
-```{=html}
-<!-- -->
-```
+
 -   name : nom de l'ERC721
 -   symbol : symbole de l'ERC721
 -   base\_uri: URI du serveur de téléchargement des fichiers (mis dans
@@ -1701,9 +1577,7 @@ en POST.
 
 -   Return code
 
-```{=html}
-<!-- -->
-```
+
 -   200 Success
 
 
