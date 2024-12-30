@@ -28,20 +28,6 @@ const Navbar = () => {
                 <Users className="h-4 w-4" />
                 SmartDirectory
               </Link>
-              <Link
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900"
-                href="#"
-              >
-                <Package className="h-4 w-4" />
-                Products
-              </Link>
-              <Link
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900"
-                href="#"
-              >
-                <Settings className="h-4 w-4" />
-                Settings
-              </Link>
             </nav>
           </div>
         </div>
