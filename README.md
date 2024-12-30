@@ -10,13 +10,13 @@
     * [Les avantages](#les-avantages)
     * [Les points de vigilance](#les-points-de-vigilance)
   * [Les objectifs et ressources du projet](#les-objectifs-et-ressources-du-projet)
-    * [Objectifs :](#objectifs-)
-    * [Ressources :](#ressources-)
+    * [Objectifs](#objectifs)
+    * [Ressources](#ressources)
   * [Fonctionnement détaillé du smartDirectory](#fonctionnement-détaillé-du-smartdirectory)
     * [Le mode administré (parentsAuthorized)](#le-mode-administré-parentsauthorized)
     * [Le mode ouvert (selfDeclaration)](#le-mode-ouvert-selfdeclaration)
   * [Les structures du smartDirectory](#les-structures-du-smartdirectory)
-    * [La table des références](#la-table-des-références)
+    * [La table des références (references Table)](#la-table-des-références-references-table)
       * [.smartDirectoryReferenceEoaCreate](#smartdirectoryreferenceeoacreate)
       * [.smartDirectoryReferenceStatusEoaUpdate](#smartdirectoryreferencestatuseoaupdate)
       * [.smartDirectoryReferenceGet](#smartdirectoryreferenceget)
@@ -39,15 +39,13 @@
       * [.smartDirectoryActivationCodeEoaUpdate](#smartdirectoryactivationcodeeoaupdate)
       * [.smartDirectoryHeadersGet](#smartdirectoryheadersget)
     * [API de création d'un smartDirectory](#api-de-création-dun-smartdirectory)
-      * [/smart-directory/smartdirectorycreate?](#smart-directorysmartdirectorycreate)
     * [Gestion du smartDirectory pour finaliser le déploiement](#gestion-du-smartdirectory-pour-finaliser-le-déploiement)
     * [Diffusion et import de l'adresse du smartDirectory](#diffusion-et-import-de-ladresse-du-smartdirectory)
   * [SmartTokens](#smarttokens)
     * [Cas d'utilisation](#cas-dutilisation)
-    * [Paramétrage des smartTokens](#paramétragedes-smarttokens)
+    * [Paramétrage des smartTokens](#paramétrage-des-smarttokens)
     * [Déploiement pour tokenisation](#déploiement-pour-tokenisation)
     * [API de création d'un smartToken non fongible (smart721)](#api-de-création-dun-smarttoken-non-fongible-smart721)
-      * [Le déploiement d'un smartToken non fongible se fait avec le recours à une API/smart721create?](#le-déploiement-dun-smarttoken-non-fongible-se-fait-avec-le-recours-à-une-apismart721create)
     * [Lecture des variables du smart721](#lecture-des-variables-du-smart721)
       * [.smartToken721GetType](#smarttoken721gettype)
       * [.smartToken721GetParent1](#smarttoken721getparent1)
@@ -58,7 +56,7 @@
       * [.blockchainERC721name](#blockchainerc721name)
       * [.blockchainERC721symbol](#blockchainerc721symbol)
       * [.smartToken721GetVersion](#smarttoken721getversion)
-    * [API de création d'un token fongible /smartErc20Acreate?](#api-de-création-dun-token-fongible-smarterc20acreate)
+    * [API de création d'un token fongible (smartErc20A)](#api-de-création-dun-token-fongible-smarterc20a)
     * [Lecture des variables du smartERC20A](#lecture-des-variables-du-smarterc20a)
       * [.blockchainERC20ReadVariables](#blockchainerc20readvariables)
       * [.smartTokenERC20AGetType](#smarttokenerc20agettype)
@@ -299,7 +297,7 @@ L'utilisation d'un smartDirectory implique cependant des points de vigilance com
 Les objectifs et ressources du projet
 -------------------------------------
 
-### Objectifs :
+### Objectifs
 
 1.  La réalisation en solidity du smartDirectory et son déploiement sur une blockchain de test, par exemple polygon AMOY.
 2.  La réalisation d'une APP sur Android à des fins d'UI de démonstration pour écrire ou consulter les informations 
@@ -329,7 +327,7 @@ Potentiellement on pourrait réaliser un EIP (Ethereum Improvement Proposal) qui
 par d'autres smartContracts,
 * des exemples.
 
-### Ressources :
+### Ressources
 
 Ce projet tire parti de fonctionnalités déjà développées par l'équipe de R&D blockchain du Groupe BPCE et qui seront 
 adaptées pour le projet par cette même équipe. Cette équipe existe depuis début 2018 et possède tous les éléments et 
@@ -403,7 +401,7 @@ Les structures du smartDirectory
 ![2 structures dans le smartDirectory](Specifications/images-md/9672bacc9fa668b3770fa728807f8bd6d02a4d0f.png)
 
 
-### La table des références
+### La table des références (references Table)
 
 Cette table contient toutes les adresses des smart contract (references):
 
@@ -440,8 +438,7 @@ android voir "Environment de développement AppInventor" ci-après.
 références. La valeur de retour est un hash de la transaction pour vérifier le minage côté client.
 
 
-**Paramètres en entrée :** smartDirectoryAddress, referenceAddress,
-projectId, referenceType, referenceVersion, status.
+**Paramètres en entrée :** smartDirectoryAddress, referenceAddress, projectId, referenceType, referenceVersion, status.
 
 ![](Specifications/images-md/59fae1bcdf7770353e4b11254414e15bc0634557.png)
 
@@ -1098,9 +1095,9 @@ partir de l'application Android de démonstration est le suivant :
         return result_dict;
     }
 ```
-| Exemple                                                                                                                                                                                                                                |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| smartDirectoryAddress:0x623a73351159c85cdb0d3cd8665ab13dbf42f4f2<br/>lastRegistrantIndex: 1<br/>registrantAtIndex : {\"registrant\_uri\":\"👋 hello world\",\"<br/>registrantAddress\":\"0x52103544224a2ec194ca9673506b350d927057b4\"} |
+| Exemple                                                                                                                                                                                                                           |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| smartDirectoryAddress:0x623a73351159c85cdb0d3cd8665ab13dbf42f4f2<br/>lastRegistrantIndex: 1<br/>registrantAtIndex : {\"registrant\_uri\":\"👋 hello world\",\"registrantAddress\":\"0x52103544224a2ec194ca9673506b350d927057b4\"} |
 
 
 #### .smartDirectoryRegistrantIndexGet
@@ -1305,6 +1302,13 @@ démonstration est le suivant :
 
         return variables;
     }
+
+    @SimpleFunction(description = "get all variables of smartDirectory in a dictionary")
+    public Object smartDirectoryHeadersGet(String smartDirectoryAddress) {
+
+    return smartDirectoryCreateVariablesMap(smartDirectoryAddress);
+    }
+
 ```
 |           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 |-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -1319,40 +1323,17 @@ démonstration est le suivant :
 
 Cet API permet à un utilisateur de créer un smartDirectory facilement sans connaissance préalable de la Blockchain :
 
-#### /smart-directory/smartdirectorycreate?
+**/smart-directory/smartdirectorycreate?**
 
-+-----------------------------------------------------------------------+
-| API endpoint: POST /smart-directory/smartdirectorycreate              |
-|                                                                       |
-| This API is used to create a smartDirectory smartContract             |
-|                                                                       |
-| Request Body:                                                         |
-+-----------------------------------------------------------------------+
-| {                                                                     |
-|                                                                       |
-| "parent\_address1": "0x..",                                           |
-|                                                                       |
-| "parent\_address2": "0x..",                                           |
-|                                                                       |
-| "contract\_uri": "uri attaché au smartContract",                      |
-|                                                                       |
-| "admin\_code": " 1",                                                  |
-|                                                                       |
-| "chain\_id": "80002",                                                 |
-|                                                                       |
-| }                                                                     |
-+-----------------------------------------------------------------------+
+|                                                                                                                                           |
+|-------------------------------------------------------------------------------------------------------------------------------------------|
+| API endpoint: POST /smart-directory/smartdirectorycreate<br/>This API is used to create a smartDirectory smartContract<br/>Request Body : |
+| {<br/>  “parent_address1”: “0x..”,<br/> “parent_address2”: “0x..”,<br/> “contract_uri”: “uri attaché au smartContract”,<br/>  “admin_code”: “ 1”,<br/> “chain_id”: “80002”,<br/>}|
 
-+-----------------------------------+-----------------------------------+
-| exemple                           | \"https                           |
-|                                   | ://smart-directory.qaxh.io/smart- |
-|                                   | directory/smartdirectorycreate?pa |
-|                                   | rent\_address1=\<parentAddress1"& |
-|                                   | parent\_ad                        |
-|                                   | dress2=\<parentAddress2\>&contrac |
-|                                   | t\_uri=\<string\>&mint\_code=\<1, |
-|                                   | 2\>&chain\_Id=\<chainId\>         |
-+-----------------------------------+-----------------------------------+
+|         |                                                                                                                                                                                                    |
+|---------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Exemple | "https://smart-directory.qaxh.io/smart-directory/smartdirectorycreate?parent_address1=<parentAddress1”& parent_address2=<parentAddress2>&contract_uri=<string>&mint_code=<1, 2>&chain_Id=<chainId> |
+
 
 Les autres paramètres nécessaires sont gérés directement par le serveur de déploiement :
 
@@ -1360,59 +1341,47 @@ Les autres paramètres nécessaires sont gérés directement par le serveur de d
 * contractType : numéro arbitrairement fixé à "42" permettant de reconnaître en "machine readable" que c'est un smartDirectory,
 * activationCode : mis à "0" ou "pending" lors du déploiement.
 
-+-----------------------------------------------------------------------+
-| Responses:                                                            |
-|                                                                       |
-| Success - 200:                                                        |
-+-----------------------------------------------------------------------+
-| {                                                                     |
-|                                                                       |
-| "return\_code": 200,                                                  |
-|                                                                       |
-| "tx\_hash": "0x....",                                                 |
-|                                                                       |
-| }                                                                     |
-+-----------------------------------------------------------------------+
-| Failures:                                                             |
-|                                                                       |
-| -   500 -\> mauvais argument dans le call d'API                       |
-| -   400 -\> timer déclenché pendant la déploiement                    |
-| -   405 -\> déploiement en échec                                      |
-+-----------------------------------------------------------------------+
+
+|                                                                                                                                                              |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Responses:<br/>Success - 200:                                                                                                                                |
+| {<br/>  “return_code”: 200, <br/> “tx_hash”: “0x….”, <br/>}                                                                                                  |
+| Failures: {<br/>-   500 -\> mauvais argument dans le call d'API <br/>-   400 -\> timer déclenché pendant la déploiement<br/>-   405 -\> déploiement en échec |
+
 
 La réponse du serveur peut se faire avant la confirmation du déploiement. C'est à l'entité qui a invoqué l'API de 
-s'assurer que ledéploiement est correct en analysant le statut de la transaction de déploiement (tx\_hash) dans la réponse.
+s'assurer que le déploiement est correct en analysant le statut de la transaction de déploiement (tx\_hash) dans 
+la réponse.
+
 
 ### Gestion du smartDirectory pour finaliser le déploiement
 
-| Etapes                                                                                                                     | Commentaires                                                                        |
-|----------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| Sur l'APP, remplir les différents éléments de l'API.                                                                       |                                                                                     |
-| Valider l'envoi de l'API.                                                                                                  |                                                                                     |
-| En retour de l'API, attendre la fin du minage du smartDirectory.                                                           | Sur la base du tx\_hash reçu                                                        |
-| Enregistrer l'adresse du smartDirectory dans la base de données de l'APP.                                                  |                                                                                     |
-| Après fin du déploiement, lire les éléments du smartDirectory et les comparer aux éléments demandés et aux spécifications. | #### .smartDirectoryHeadersGet (smartDirectoryAddress)                              |
-| Si tous les contrôles sont ok, proposer à l'utilisateur de valider l'activation du smartDirectory (écran APP).             |                                                                                     |
-| Signer la transaction d'activation du smartDirectory (nécessite du GAS).                                                   | #### .smartDirectoryActivationCodeEoaUpdate (smartDirectoryAddress, activationCode) |
-| Récupérer le tx\_hash de la transaction précédente et attendre le minage.                                                  |                                                                                     |
-| Si le minage est ok, informer l\'utilisateur de l'APP, sinon  l'entrée dans la base de données peut être effacée.          |                                                                                     |
+| Etapes                                                                                                                     | Commentaires                                                                   |
+|----------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| Sur l'APP, remplir les différents éléments de l'API.                                                                       |                                                                                |
+| Valider l'envoi de l'API.                                                                                                  |                                                                                |
+| En retour de l'API, attendre la fin du minage du smartDirectory.                                                           | Sur la base du tx\_hash reçu                                                   |
+| Enregistrer l'adresse du smartDirectory dans la base de données de l'APP.                                                  |                                                                                |
+| Après fin du déploiement, lire les éléments du smartDirectory et les comparer aux éléments demandés et aux spécifications. | .smartDirectoryHeadersGet (smartDirectoryAddress)                              |
+| Si tous les contrôles sont ok, proposer à l'utilisateur de valider l'activation du smartDirectory (écran APP).             |                                                                                |
+| Signer la transaction d'activation du smartDirectory (nécessite du GAS).                                                   | .smartDirectoryActivationCodeEoaUpdate (smartDirectoryAddress, activationCode) |
+| Récupérer le tx\_hash de la transaction précédente et attendre le minage.                                                  |                                                                                |
+| Si le minage est ok, informer l\'utilisateur de l'APP, sinon  l'entrée dans la base de données peut être effacée.          |                                                                                |
 
 
 ### Diffusion et import de l'adresse du smartDirectory
 
-  ------------------------------------------------------------------------------------------------------------------------------------------------------- --------------
-  Etapes                                                                                                                                                  Commentaires
-  Sur l'APP, proposer la liste des smartDirectory.                                                                                                        
-  Après sélection par l'utilisateur afficher l'adresse du smartDirectory dont un QRcode ethereum:\<adresse du smartDirectory\>@\<chain\_Id\> (EIP 681).   
-  L'écran de détail doit prévoir un bouton "partager" qui permet l'envoi du QRcode et de l'adresse en chaîne de caractères vers un email, whatsapp,\...   
-  ------------------------------------------------------------------------------------------------------------------------------------------------------- --------------
+| Etapes                                                                                                                                                 | Commentaires    |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------|
+| Sur l'APP, proposer la liste des smartDirectory.                                                                                                       |                 |                                                                                                        
+| Après sélection par l'utilisateur afficher l'adresse du smartDirectory dont un QRcode ethereum:\<adresse du smartDirectory\>@\<chain\_Id\> (EIP 681).  |                 |  
+| L'écran de détail doit prévoir un bouton "partager" qui permet l'envoi du QRcode et de l'adresse en chaîne de caractères vers un email, whatsapp,\...  |                 |
 
-  ------------------------------------------------------------------------------------------------------------------------------------------------------------ --------------
-  Etapes                                                                                                                                                       Commentaires
-  Sur l'APP, proposer une fonction d'import de smartDirectory qui renvoie sur l'appareil photo.                                                                
-  Analyser le QRcode et le retenir s'il est de la forme "ethereum:\<adresse du smartDirectory\>\[@\<chain\_Id\>\] (EIP 681) \[entre crochet est optionnel\].   
-  En cas de syntaxe correcte, lire l'adresse pour voir si elle correspond à un smartDirectory et proposer sa sauvegarde à l\'utilisateur.                      
-  ------------------------------------------------------------------------------------------------------------------------------------------------------------ --------------
+| Etapes                                                                                                                                                     | Commentaires |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|                                                                                                                                
+| Sur l'APP, proposer une fonction d'import de smartDirectory qui renvoie sur l'appareil photo.                                                              |              |                                                               
+| Analyser le QRcode et le retenir s'il est de la forme "ethereum:\<adresse du smartDirectory\>\[@\<chain\_Id\>\] (EIP 681) \[entre crochet est optionnel\]. |              |  
+| En cas de syntaxe correcte, lire l'adresse pour voir si elle correspond à un smartDirectory et proposer sa sauvegarde à l\'utilisateur.                    |              |
 
 ------------------------------------------------------------------------
 
@@ -1429,7 +1398,7 @@ Si la liste des références évolue, le smartToken n'a pas besoin d'être modif
 
 Il revient au développeur du smartToken de positionner les filtres liés aux exigences du métier.
 
-![](Specifications/images-md/b4d1b90d8ac740d01b7773659e24beeaa073dab3.png)
+![Présentation du smartToken](Specifications/images-md/b4d1b90d8ac740d01b7773659e24beeaa073dab3.png)
 
 ------------------------------------------------------------------------
 
@@ -1437,75 +1406,51 @@ Il revient au développeur du smartToken de positionner les filtres liés aux ex
 ### Cas d'utilisation
 
 * Token fongible multi-émetteurs :
--   Chaque émetteur (un établissement de monnaie électronique, dans le
-    monde régulé) sera autorisé en tant que référence dans un
-    smartDirectory par une autorité de régulation, Cette dernière
-    faisant office d'administrateur du smartDirectory.
--   Le token fongible n\'autorise le mintage de nouveau tokens par un
-    émetteur que s'il est dans la liste, charge à l'émetteur de
-    respecter le cantonnement des fonds associé à ce mintage.
+  * Chaque émetteur (un établissement de monnaie électronique, dans le monde régulé) sera autorisé en tant que référence dans un smartDirectory par une autorité de régulation, Cette dernière faisant office d'administrateur du smartDirectory.
+  * Le token fongible n\'autorise le mintage de nouveau tokens par un émetteur que s'il est dans la liste, charge à l'émetteur de respecter le cantonnement des fonds associé à ce mintage.
 
 * Token fongible à KYC préalable :
+  * En complément (ou indépendamment), il est possible d'avoir un second smartDirectory dans lequel les émetteurs sont des déclarants, à charge pour ces derniers d'indiquer les adresses (références) des utilisateurs qu'ils ont au préalable vérifiées en termes de KYC.
+  * Le token fongible peut ainsi être programmé pour n'autoriser les transferts qu'entre adresses déclarées sur ce second smartDirectory. Les adresses des utilisateurs finaux étant positionnées par un déclarant, la responsabilité du KYC peut être facilement établie.
 
--   En complément (ou indépendamment), il est possible d'avoir un second
-    smartDirectory dans lequel les émetteurs sont des déclarants, à
-    charge pour ces derniers d'indiquer les adresses (références) des
-    utilisateurs qu'ils ont au préalable vérifiées en termes de KYC.
--   Le token fongible peut ainsi être programmé pour n'autoriser les
-    transferts qu'entre adresses déclarées sur ce second smartDirectory.
-    Les adresses des utilisateurs finaux étant positionnées par un
-    déclarant, la responsabilité du KYC peut être facilement établie.
-
--   Notifications des AirDrops
-
--   Un smartDirectory est utilisé pour référencer des tokens qui offrent
-    des airDrops.
--   L'app de l'utilisateur va lire ce smartDirectory, filtrer les
-    références qui concernent des tokens fongibles et lire sa balance
-    dans chacun des tokens.
+* Notifications des AirDrops :
+  * Un smartDirectory est utilisé pour référencer des tokens qui offrent des airDrops.
+  * L'app de l'utilisateur va lire ce smartDirectory, filtrer les références qui concernent des tokens fongibles et lire sa balance dans chacun des tokens.
 
 ------------------------------------------------------------------------
 
 
-### Paramétrage des smartTokens
+### Paramétrage des smartTokens
 
-Tout contrat et donc tout token peut être enregistré comme référence
-dans le smartDirectory, un smartToken est un token (fongible ou non) qui
-peut utiliser les méthodes liées au smartDirectory.
+Tout contrat et donc tout token peut être enregistré comme référence dans le smartDirectory, un smartToken est un token 
+(fongible ou non) qui peut utiliser les méthodes liées au smartDirectory.
 
-Pour cela, en plus de son fonctionnement de token, il comprend 2
-variables spécifiques à sa création lui permettant la consultation lors
-de son usage :
+Pour cela, en plus de son fonctionnement de token, il comprend 2 variables spécifiques à sa création lui permettant la 
+consultation lors de son usage :
 
--   smart\_directory
+* **smart\_directory**
+  * =0x000000 ...
+  * = adresse de smartDirectory valide \<smartDirectoryAddress\>
+* **registrant\_address**
+  * =0x000000...
+  * =\<registrant\_address\> , adresse EOA ou smartContract
 
--   =0x000000 ...
--   = adresse de smartDirectory valide \<smartDirectoryAddress\>
+Le smartToken paramétré avec un smartDirectory et un déclarant doit refuser une transaction si le déclarant a été 
+invalidé par l'administrateur du smartDirectory.
 
--   registrant\_address
+En complément, nous avons ajouté deux autres variables qui facilitent la vérification de la cohérence entre un 
+smartDirectory et le smartToken si ce dernier est aussi référencé :
 
--   =0x000000...
--   =\<registrant\_address\> , adresse EOA ou smartContract
+* smartTokenType
+* smartTokenVersion
 
-Le smartToken paramétré avec un smartDirectory et un déclarant doit
-refuser une transaction si le déclarant a été invalidé par
-l'administrateur du smartDirectory.
+Enfin, pour faciliter le déploiement par un serveur (et non pas directement par l'utilisateur), il est utile d'ajouter 
+deux autres variables :
 
-En complément, nous avons ajouté deux autres variables qui facilitent la
-vérification de la cohérence entre un smartDirectory et le smartToken si
-ce dernier est aussi référencé :
+* parentAddress1
+* parentAddress2
 
--   smartTokenType
--   smartTokenVersion
-
-Enfin, pour faciliter le déploiement par un serveur (et non pas
-directement par l'utilisateur), il est utile d'ajouter deux autres
-variables :
-
--   parentAddress1
--   parentAddress2
-
-![](Specifications/images-md/b1ce7f6d0cffd8f3c4368bdc3e11d5c72ae67474.png)
+![Validité d’un message dans un smartToken](Specifications/images-md/b1ce7f6d0cffd8f3c4368bdc3e11d5c72ae67474.png)
 
 
 ### Déploiement pour tokenisation
@@ -1513,101 +1458,80 @@ variables :
 Nous allons limiter la tokenisation au déploiement de tokens non
 fongibles et de token comptable (token fongible pouvant être négatif).
 
-![](Specifications/images-md/bebf999da19d781ff973ad0680e3104a1c121de6.png)
+![Déploiement et déclaration de smartContracts](Specifications/images-md/bebf999da19d781ff973ad0680e3104a1c121de6.png)
 
 ### API de création d'un smartToken non fongible (smart721)
 
-#### Le déploiement d'un smartToken non fongible se fait avec le recours à une API/smart721create?
+Le déploiement d'un smartToken non fongible se fait avec le recours à une API : **/smart721create?**
 
-Cette API permet de faire créer au serveur un NFT ayant des fonctions
-ERC721 et aussi les fonctions lui permettant de consulter le
-smartDirectory :
+Cette API permet de faire créer au serveur un NFT ayant des fonctions ERC721 et aussi les fonctions lui permettant de 
+consulter le smartDirectory :
 
--   VARIABLE permettant la vérification de la chaîne utilisée par le
-    serveur
+* VARIABLE permettant la vérification de la chaîne utilisée par le serveur
+  * **chain\_id**=number of the chain to be used for deployment
 
--   chain\_id= number of the chain to be used for deployment
+* VARIABLES du nftFolder (collection de NFT)
+  * **max\_token** : maximum number of tokens in this nftFolder. if equal to "0", the number of tokens has no limit
+  * **parent\_address1** : (habituellement nommée "owner")
+    * 0X..., first parentAddress of the folder. usually the EOA address of the user requesting the creation of the smart721
+    * or 0x0000000 .
+  * **parent\_address2** : ("owner" secondaire)
+    * 0X..., second parentAddress of the folder. usually the EOA of another device the user requesting the creation of the smart721
+    * or 0x0000000....folder
 
--   VARIABLES du nftFolder (collection de NFT)
+* VARIABLES liées au smartToken
+  * **smart\_directory**
+  * **registrant\_address**
 
+* VARIABLES de l'ERC721 de base
+  * name : nom de l'ERC721
+  * symbol : symbole de l'ERC721
+  * base\_uri: URI du serveur de téléchargement des fichiers (mis dans base\_uri de l'ERC721)
 
--   max\_token : maximum number of tokens in this nftFolder. if equal to
-    "0", the number of tokens has no limit
--   parent\_address1 : (habituellement nommée "owner")
+|         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| exemple | [https://smart-directory.qaxh.io/smart-director/smart721create?parent\_address1=0x52103544224a2ec194ca9673506b350D927057B4&parent\_address2=0x52103544224a2ec194ca9673506b350D927057B4&max\_token=0&smart\_directory=0x314b51087ce7d40182cf0671264fff0395a25a96&registrant\_address=0x88D65F27e269b4f92CE2Ccf124eAE8648635a67A&name=test\_TK721\_556&symbol=TKT721\_556&base\_uri=https://nftserver.qaxh.io/nftindexread&chain\_id=80002](https://www.google.com/url?q=https://smart-directory.qaxh.io/smart-directorydirectory721create?parent_address1%3D0x52103544224a2ec194ca9673506b350D927057B4%26parent_address2%3D0x52103544224a2ec194ca9673506b350D927057B4%26max_token%3D0%26smart_directory%3D0x0000000000000000000000000000000000000000%26registrant_address%3D0x0000000000000000000000000000000000000000%26name%3DDIR721_556%26symbol%3DDIR721_556%26base_uri%3Dhttps://nftserver.qaxh.io/nftindexread%26chain_id%3D80002&sa=D&source=editors&ust=1735324824875430&usg=AOvVaw3eMLHDYo4jqJmw9dFmXvSz) |
 
-
--   0X..., first parentAddress of the folder. usually the EOA address of
-    the user requesting the creation of the smart721
--   or 0x0000000 .
-
-
--   parent\_address2 :  ("owner" secondaire)
--->
-
--   0X..., second parentAddress of the folder. usually the EOA of
-    another device the user requesting the creation of the smart721
--   or 0x0000000....folder
-
--   VARIABLES liées au smartToken
-
--   smart\_directory
--   registrant\_address
-
--   VARIABLES de l'ERC721 de base
-
-
--   name : nom de l'ERC721
--   symbol : symbole de l'ERC721
--   base\_uri: URI du serveur de téléchargement des fichiers (mis dans
-    base\_uri de l'ERC721)
-
-  --------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  exemple   [https://smart-directory.qaxh.io/smart-director/smart721create?parent\_address1=0x52103544224a2ec194ca9673506b350D927057B4&parent\_address2=0x52103544224a2ec194ca9673506b350D927057B4&max\_token=0&smart\_directory=0x314b51087ce7d40182cf0671264fff0395a25a96&registrant\_address=0x88D65F27e269b4f92CE2Ccf124eAE8648635a67A&name=test\_TK721\_556&symbol=TKT721\_556&base\_uri=https://nftserver.qaxh.io/nftindexread&chain\_id=80002](https://www.google.com/url?q=https://smart-directory.qaxh.io/smart-directorydirectory721create?parent_address1%3D0x52103544224a2ec194ca9673506b350D927057B4%26parent_address2%3D0x52103544224a2ec194ca9673506b350D927057B4%26max_token%3D0%26smart_directory%3D0x0000000000000000000000000000000000000000%26registrant_address%3D0x0000000000000000000000000000000000000000%26name%3DDIR721_556%26symbol%3DDIR721_556%26base_uri%3Dhttps://nftserver.qaxh.io/nftindexread%26chain_id%3D80002&sa=D&source=editors&ust=1735324824875430&usg=AOvVaw3eMLHDYo4jqJmw9dFmXvSz)
-  --------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 en POST.
 
-{
+    {
 
-"return\_code": 200,  
+    "return\_code": 200,
 
-"tx\_hash": "0x....",
+    "tx\_hash": "0x....",
 
-}
+    }
 
--   Return code
-
-
--   200 Success
+* Return code
+  * 200 Success
 
 
 ### Lecture des variables du smart721
 
-Chaque variable peut être lue directement en AI2  (App Inventor 2) :
+Chaque variable peut être lue directement en AI2 (App Inventor 2) :
 
 ![](Specifications/images-md/b981358360c9e8782a0713f67aeeaa73a9acb255.png)
 
-Les fonctions listées ci-dessous permettent de retourner les différentes
-variables du token :
+Les fonctions listées ci-dessous permettent de retourner les différentes variables du token :
+
 
 #### .smartToken721GetType
 
-Sortie : cette fonction retourne le type de token. En l\'occurrence :
-"Smart721".
+**Sortie** : cette fonction retourne le type de token. En l\'occurrence : "Smart721".
 
-Paramètres en entrée : tokenContractAddress
+**Paramètres en entrée** : tokenContractAddress
 
 ![](Specifications/images-md/2df212b3a84eec9fb27d0883a62408702eb29a4e.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "get\_type" du smartContract
-"SmartToken721.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
+La fonction solidity appelée est "get\_type" du smartContract "SmartToken721.sol". Le code java exécuté à partir de 
+l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Type is defined within the token source code")
     public String smartToken721GetType(String tokenContractAddress) {
@@ -1628,23 +1552,20 @@ Android de démonstration est le suivant :
 
 #### .smartToken721GetParent1
 
-Sortie : cette fonction retourne l'adresse "parent1" de l\'émetteur du
-smartToken721.
+**Sortie** : cette fonction retourne l'adresse "parent1" de l\'émetteur du smartToken721.
 
-Paramètres en entrée : tokenContractAddress 
+**Paramètres en entrée** : tokenContractAddress 
 
 ![](Specifications/images-md/5eb5cfad564c01efda209fce13380335f191d536.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "get\_parent1" du smartContract
-"SmartToken721.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
-
+La fonction solidity appelée est "get\_parent1" du smartContract "SmartToken721.sol". Le code java exécuté à partir de 
+l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Parent1 is defined at token creation and allows some alterations")
     public String smartToken721GetParent1(String tokenContractAddress) {
@@ -1664,22 +1585,20 @@ Android de démonstration est le suivant :
 
 #### .smartToken721GetParent2
 
-Sortie : cette fonction retourne l'adresse "parent2" de l\'émetteur du
-smartToken721.
+**Sortie** : cette fonction retourne l'adresse "parent2" de l'émetteur du smartToken721.
 
-Paramètres en entrée : tokenContractAddress 
+**Paramètres en entrée** : tokenContractAddress 
 
 ![](Specifications/images-md/5d6d49d45a03927a2a76901a3ce8a14dec8368c6.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "get\_parent2" du smartContract
-"SmartToken721.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
+La fonction solidity appelée est "get\_parent2" du smartContract "SmartToken721.sol". Le code java exécuté à partir de 
+l'application Android de démonstration est le suivant :
 
 ```Java
     @SimpleFunction(description = "Parent2 is defined at token creation and allows some alterations")
@@ -1701,23 +1620,20 @@ public String smartToken721GetParent2(String tokenContractAddress) {
 
 #### .smartToken721GetMaxToken
 
-Sortie : cette fonction retourne le nombre maximum de token qu'il est
-possible de minter.
+**Sortie** : cette fonction retourne le nombre maximum de token qu'il est possible de minter.
 
-Paramètres en entrée : tokenContractAddress 
+**Paramètres en entrée** : tokenContractAddress 
 
 ![](Specifications/images-md/432262c65edf20351979b6e6564b33d09533ae63.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "get\_max\_token" du smartContract
-"SmartToken721.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
-
+La fonction solidity appelée est "get\_max\_token" du smartContract "SmartToken721.sol". Le code java exécuté à partir 
+de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Returns the max_token value.")
     public String smartToken721GetMaxToken(String tokenContractAddress) {
@@ -1739,23 +1655,20 @@ Android de démonstration est le suivant :
 
 #### .smartToken721GetSmartDirectoryAddress
 
-Sortie : cette fonction retourne retourne l'adresse du SmartDirectory
-associée au token.
+**Sortie** : cette fonction retourne retourne l'adresse du SmartDirectory associée au token.
 
-Paramètres en entrée : tokenContractAddress 
+**Paramètres en entrée** : tokenContractAddress 
 
 ![](Specifications/images-md/65c525e84e9c3cef77d4965acde913f82053bea1.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "get\_smart\_directory" du
-smartContract "SmartToken721.sol". Le code java exécuté à partir de
-l'application Android de démonstration est le suivant :
-
+La fonction solidity appelée est "get\_smart\_directory" du smartContract "SmartToken721.sol". Le code java exécuté à 
+partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Returns the smart directory address.")
     public String smartToken721GetSmartDirectoryAddress(String tokenContractAddress) {
@@ -1776,23 +1689,20 @@ l'application Android de démonstration est le suivant :
 
 #### .smartToken721GetRegistrantAddress
 
-Sortie : cette fonction retourne la "registrantAddress" associée au
-token.
+**Sortie** : cette fonction retourne la "registrantAddress" associée au token.
 
-Paramètres en entrée : tokenContractAddress, 
+**Paramètres en entrée** : tokenContractAddress, 
 
 ![](Specifications/images-md/8aa897774c154d7afbe204b23dcc44fed6969ea0.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "get\_registrant\_address" du
-smartContract "SmartToken721.sol". Le code java exécuté à partir de
-l'application Android de démonstration est le suivant :
-
+La fonction solidity appelée est "get\_registrant\_address" du smartContract "SmartToken721.sol". Le code java exécuté 
+à partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Returns the registrant address.")
     public String smartToken721GetRegistrantAddress(String tokenContractAddress) {
@@ -1813,21 +1723,19 @@ l'application Android de démonstration est le suivant :
 
 #### .blockchainERC721name
 
-Sortie : cette fonction retourne le nom du token SmartToken721 via la
-fonction générique de la norme ERC721.
+**Sortie** : cette fonction retourne le nom du token SmartToken721 via la fonction générique de la norme ERC721.
 
-Paramètres en entrée : contractAddress, 
+**Paramètres en entrée** : contractAddress, 
 
 ![](Specifications/images-md/de99779b061fff80985d524bb5facb74a4012997.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-Le code java exécuté à partir de l'application Android de démonstration
-est le suivant :
+Le code java exécuté à partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Get contract name")
     public String blockchainERC721name(String contractAddress) {
@@ -1843,22 +1751,19 @@ est le suivant :
 
 #### .blockchainERC721symbol
 
-Sortie : cette fonction retourne le symbole du token SmartToken721 via
-la fonction générique de la norme ERC721.
+**Sortie** : cette fonction retourne le symbole du token SmartToken721 via la fonction générique de la norme ERC721.
 
-Paramètres en entrée : contractAddress, 
+**Paramètres en entrée** : contractAddress, 
 
 ![](Specifications/images-md/d87a3485226461ebae8bf8bff05fe6c8314e7ae1.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-Le code java exécuté à partir de l'application Android de démonstration
-est le suivant :
-
+Le code java exécuté à partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Get contract symbol")
     public String blockchainERC721symbol(String contractAddress) {
@@ -1874,23 +1779,20 @@ est le suivant :
 
 #### .smartToken721GetVersion
 
-Sortie : cette fonction retourne la version du smart contract du
-SmartToken721.
+**Sortie** : cette fonction retourne la version du smart contract du SmartToken721.
 
-Paramètres en entrée : tokenContractAddress,
+**Paramètres en entrée** : tokenContractAddress,
 
 ![](Specifications/images-md/e12df53d7769cd283dc0971fe78f0280c60a448c.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "version" du smartContract
-"SmartToken721.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
-
+La fonction solidity appelée est "version" du smartContract "SmartToken721.sol". Le code java exécuté à partir de 
+l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Version refers to the token source code")
     public String smartToken721GetVersion(String tokenContractAddress) {
@@ -1911,130 +1813,69 @@ Android de démonstration est le suivant :
 ------------------------------------------------------------------------
 
 
-### API de création d'un token fongible /smartErc20Acreate?
+### API de création d'un token fongible (smartErc20A)
 
-Le déploiement d'un smartToken fongible se fait avec le recours à une
-API /smartErc20Acreate?
+Le déploiement d'un smartToken fongible se fait avec le recours à une API : **/smartErc20Acreate?**
 
-Cette API doit comprendre tous les paramètres pour créer le
-smartContract :
+Cette API doit comprendre tous les paramètres pour créer le smartContract :
 
--   API
+* API
+  * chain\_id=80002
 
-```{=html}
-<!-- -->
-```
--   chain\_id=80002
-
--   VARIABLES
-
-```{=html}
-<!-- -->
-```
--   chain\_id:
--   decimals : number of decimals of the token: 18 decimales pour
-    l'instant
--   name : name of the token (ERC20 full name)
--   symbol (symbol of the ERC20)
--   parent\_address1 :
-
-```{=html}
-<!-- -->
-```
--    0X..., EOA ou adresse de l'utilisateur demandant la création du
-    smartAToken
-
-```{=html}
-<!-- -->
-```
--   parent\_address2 :  
-
-```{=html}
-<!-- -->
-```
--   EOA ou adresse d'un autre appareil de l'utilisateur demandant la
-    création du smartAToken
-
-```{=html}
-<!-- -->
-```
--   smart\_directory
--   registrant\_address
--   token\_type
-
-```{=html}
-<!-- -->
-```
--   ERC20A
--   ERC20
+* VARIABLES
+  * chain\_id:
+  * decimals : number of decimals of the token: 18 decimales pour l'instant
+  * name : name of the token (ERC20 full name)
+  * symbol (symbol of the ERC20)
+  * parent\_address1 : 0X..., EOA ou adresse de l'utilisateur demandant la création du smartAToken
+  * parent\_address2 : EOA ou adresse d'un autre appareil de l'utilisateur demandant la création du smartAToken
+  * smart\_directory
+  * registrant\_address
+  * token\_type : ERC20A ou ERC20
 
 Le serveur va créer un Accounting Token :
 
--   avec (name, symbol, decimals) fonction des paramètres  donnés par
-    l'API
--   avec parent\_address1, parent\_address2, smart\_directory et
-    registrant\_address fonction des paramètres données par l'API
+* avec (name, symbol, decimals) fonction des paramètres donnés par l'API
+* avec parent\_address1, parent\_address2, smart\_directory et registrant\_address fonction des paramètres données par l'API
 
-Les décimales ne sont qu'une donnée permettant de définir la virgule
-dans les tokens.
+Les décimales ne sont qu'une donnée permettant de définir la virgule dans les tokens.
 
-{"return\_code": 200,  "tx\_hash": "0x...."}
+**{"return\_code": 200,  "tx\_hash": "0x...."}**
 
--   Return code
+* Return code
+  * 200 Success
 
-```{=html}
-<!-- -->
-```
--   200 Success
+Pour le type et la version, appeler get\_type() ou version() après création du token.
 
-Pour le type et la version, appeler get\_type() ou version() après
-création du token
+Exemple, en utilisant le serveur de test :
 
-Exemple, en utilisant le serveur de test
+|                                   |                                                                                                                                                                                                                                                                                                                                                                          |
+|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| exemple                           | /smart-directory/smartErc20Acreate?chain_id=80002&allow_non_zero_total_balance=True&parent_address1=0xe3f1413e071332840db2735f809cf3240c4a4255&parent_address2=0x8a5f2f59a281751965C90d3AEbB4Ba853e1E64bb&smart_directory=0x17da3871714bC7754fcA06002fF483Df63d8F9cc&registrant_address=0x88D65F27e269b4f92CE2Ccf124eAE8648635a67A&name=testERC20APython&symbol=ERC20ATP |
 
-+-----------------------------------+-----------------------------------+
-| exemple                           | /smart                            |
-|                                   | -directory/smartErc20Acreate?chai |
-|                                   | n\_id=80002&allow\_non\_zero\_tot |
-|                                   | al\_balance=True&parent\_address1 |
-|                                   | =0xe3f1413e071332840db2735f809cf3 |
-|                                   | 240c4a4255&parent\_address2=0x8a5 |
-|                                   | f2f59a281751965C90d3AEbB4Ba853e1E |
-|                                   | 64bb&smart\_directory=0x17da38717 |
-|                                   | 14bC7754fcA06002fF483Df63d8F9cc&r |
-|                                   | egistrant\_address=0x88D65F27e269 |
-|                                   | b4f92CE2Ccf124eAE8648635a67A&name |
-|                                   | =testERC20APython&symbol=ERC20ATP |
-+-----------------------------------+-----------------------------------+
 
 ### Lecture des variables du smartERC20A
 
 ![](Specifications/images-md/5a70158c5d1166eedf3fcfc232201e596206acd1.png)
 
-Les fonctions listées ci-dessous permettent de retourner les différentes
-variables du token :
+Les fonctions listées ci-dessous permettent de retourner les différentes variables du token :
 
 
 #### .blockchainERC20ReadVariables
 
-Sortie : cette fonction retourne le nom, le symbole et le nombre de
-décimales du token SmartTokenERC20A via les fonctions génériques
-"get\_name", "get\_symbol" et "get\_decimals" du standard ethereum
-ERC20.
+**Sortie** : cette fonction retourne le nom, le symbole et le nombre de décimales du token SmartTokenERC20A via les 
+fonctions génériques "get\_name", "get\_symbol" et "get\_decimals" du standard ethereum ERC20.
 
-Paramètres en entrée : ERC20  
+**Paramètres en entrée** : ERC20
 
 ![](Specifications/images-md/647ae513db4d13ed0a2b461747fcefc1c73b3960.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
-
-Le code java exécuté à partir de l'application Android de démonstration
-est le suivant :
-
+**Code** :
+Le code java exécuté à partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Get Name, Symbol and decimal of an ERC20")
     public List<String> blockchainERC20ReadVariables(String ERC20) {
@@ -2072,28 +1913,22 @@ est le suivant :
 
 #### .smartTokenERC20AGetType
 
-Sortie : cette fonction retourne le type de SmartTokenERC20A déployé. Le
-type peut avoir 2 valeurs :
+**Sortie** : cette fonction retourne le type de SmartTokenERC20A déployé. Le type peut avoir 2 valeurs :
+* ERC20 : standard ethereum, balances à solde strictement positif.classique,
+* ERC20A : token comptable défini sur la base d'un ERC20 mais pouvant avoir un solde négatif.
 
--   ERC20 : standard ethereum, balances à solde strictement
-    positif.classique,
--   ERC20A : token comptable défini sur la base d'un ERC20 mais pouvant
-    avoir un solde négatif.
-
-Paramètres en entrée : tokenContractAddress  
+**Paramètres en entrée** : tokenContractAddress
 
 ![](Specifications/images-md/146120beb7bb92410f7be9570984e14b67203b3f.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "get\_type" du smartContract
-"SmartTokenERC20A.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
-
+La fonction solidity appelée est "get\_type" du smartContract "SmartTokenERC20A.sol". Le code java exécuté à partir de 
+l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "tokenType is defined at deployment time")
     public String smartTokenERC20AGetType(String tokenContractAddress) {
@@ -2114,23 +1949,20 @@ Android de démonstration est le suivant :
 
 #### .smartTokenERC20AGetParent1
 
-Sortie : cette fonction retourne la "parentAddresss" 1 de l\'émetteur du
-smartTokenERC20A.
+**Sortie** : cette fonction retourne la "parentAddresss" 1 de l'émetteur du smartTokenERC20A.
 
-Paramètres en entrée : tokenContractAddress 
+**Paramètres en entrée** : tokenContractAddress 
 
 ![](Specifications/images-md/c5103ecbeb346052c920e47ccd24807a32acbfb9.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "get\_parent1" du smartContract
-"SmartTokenERC20A.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
-
+La fonction solidity appelée est "get\_parent1" du smartContract "SmartTokenERC20A.sol". Le code java exécuté à partir 
+de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Parent1 is defined at token creation and allows some alterations")
     public String smartTokenERC20AGetParent1(String tokenContractAddress) {
@@ -2151,24 +1983,20 @@ Android de démonstration est le suivant :
 
 #### .smartTokenERC20AGetParent2
 
-Sortie : cette fonction retourne la "parentAddresss" 2 de l\'émetteur du
-smartTokenERC20A.
+**Sortie** : cette fonction retourne la "parentAddresss" 2 de l\'émetteur du smartTokenERC20A.
 
-Paramètres en entrée : tokenContractAddress
-
-   
+**Paramètres en entrée** : tokenContractAddress
 
 ![](Specifications/images-md/b419df52f3ccf3ba7c83b5819bf4378fb2f85f43.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "get\_parent2" du smartContract
-"SmartTokenERC20A.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
+La fonction solidity appelée est "get\_parent2" du smartContract "SmartTokenERC20A.sol". Le code java exécuté à partir 
+de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "Parent2 is defined at token creation and allows some alterations")
     public String smartTokenERC20AGetParent2(String tokenContractAddress) {
@@ -2189,21 +2017,19 @@ Android de démonstration est le suivant :
 
 #### .smartTokenERC20AGetSmartDirectoryAddress
 
-Sortie : cette fonction retourne retourne l'adresse du SmartDirectory
-associée au token.
+**Sortie** : cette fonction retourne retourne l'adresse du SmartDirectory associée au token.
 
-Paramètres en entrée : tokenContractAddress 
+**Paramètres en entrée** : tokenContractAddress 
 
 ![](Specifications/images-md/11d973db764cb1ea945a079646be136eedf0dd83.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "get\_smart\_directory" du
-smartContract "SmartTokenERC20A.sol" :
+La fonction solidity appelée est "get\_smart\_directory" du smartContract "SmartTokenERC20A.sol" :
 ```Java
     @SimpleFunction(description = "SmartDirectoryAddress is defined at creation time")
     public String smartTokenERC20AGetSmartDirectoryAddress(String tokenContractAddress) {
@@ -2224,23 +2050,20 @@ smartContract "SmartTokenERC20A.sol" :
 
 #### .smartTokenERC20AGetRegistrantAddress
 
-Sortie : cette fonction retourne la "registrantAddress" associée au
-token.
+**Sortie** : cette fonction retourne la "registrantAddress" associée au token.
 
-Paramètres en entrée : tokenContractAddress 
+**Paramètres en entrée** : tokenContractAddress 
 
 ![](Specifications/images-md/52b8f3f0fc43f10c30c783d4dc995d2e22f2e9ad.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "get\_registrant" du smartContract
-"SmartTokenERC20A.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
-
+La fonction solidity appelée est "get\_registrant" du smartContract "SmartTokenERC20A.sol". Le code java exécuté à 
+partir de l'application Android de démonstration est le suivant :
 ```Java
     @SimpleFunction(description = "RegistrantAddress is defined at token creation time")
     public String smartTokenERC20AGetRegistrantAddress(String tokenContractAddress) {
@@ -2261,23 +2084,21 @@ Android de démonstration est le suivant :
 
 #### .smartTokenERC20AGetVersion
 
-Sortie : cette fonction retourne la version du smart contract du
+**Sortie** : cette fonction retourne la version du smart contract du
 SmartTokenERC20A.
 
-Paramètres en entrée : tokenContractAddress
+**Paramètres en entrée** : tokenContractAddress
 
 ![](Specifications/images-md/105eac945ad3abe40545bba470f18f9ad85832d0.png)
 
-Conditions d'exécution :
+**Conditions d'exécution** :
 
--   Néant.
+* Néant.
 
-Code :
+**Code** :
 
-La fonction solidity appelée est "version" du smartContract
-"SmartTokenERC20A.sol". Le code java exécuté à partir de l'application
-Android de démonstration est le suivant :
-
+La fonction solidity appelée est "version" du smartContract "SmartTokenERC20A.sol". Le code java exécuté à partir de 
+l'application Android de démonstration est le suivant :
 ```Java
     public String smartTokenERC20AGetVersion(String tokenContractAddress) {
         SmartTokenERC20A smartTokenERC20A = SmartTokenERC20A.load(tokenContractAddress, web3, transactionManager,
@@ -2301,237 +2122,197 @@ Plan de test
 
 ### SmartDirectory administré
 
-Créer un smartDirectory Administré
 
-En utilisant l'API sur le serveur de déploiement.
+* **Créer un smartDirectory Administré**
 
-Vérifier que l'ensemble des paramètres demandés au serveur sont corrects
-dans le smartDirectory (utilisation des getters).
+  * En utilisant l'API sur le serveur de déploiement.
 
-Activer le smartDirectory avec l'adresse parent1.
+  * Vérifier que l'ensemble des paramètres demandés au serveur sont corrects dans le smartDirectory (utilisation des getters).
 
-Vérifier l'impossibilité de déclarer une "reference" avec l'adresse
-parent1.
+  * Activer le smartDirectory avec l'adresse parent1.
 
-Vérifier l'impossibilité de déclarer une référence avec l'adresse
-parent2.
+  * Vérifier l'impossibilité de déclarer une "reference" avec l'adresse parent1.
 
-Vérifier l'impossibilité de déclarer une "reference" avec une EOA
-quelconque.
+  * Vérifier l'impossibilité de déclarer une référence avec l'adresse parent2.
 
-Vérifier l'impossibilité de modifier une string "registrantURI" avec une
-EOA.
+  * Vérifier l'impossibilité de déclarer une "reference" avec une EOA quelconque.
 
-Insérer l'adresse parent1 comme déclarant avec l'adresse parent2 comme
-signature (émetteur)  de la transaction de demande.
+  * Vérifier l'impossibilité de modifier une string "registrantURI" avec une EOA.
 
-lire la liste des déclarants (registrantsList) et vérifier que l'adresse
-parent1 est bien déclarée.
+  * Insérer l'adresse parent1 comme déclarant avec l'adresse parent2 comme signature (émetteur) de la transaction de demande.
 
-vérifier que l'adresse parent1 peut maintenant inscrire une
-regsitrantURI.
+  * lire la liste des déclarants (registrantsList) et vérifier que l'adresse parent1 est bien déclarée.
 
-Insérer l'adresse parent2 comme déclarant avec parent2 comme signature.
+  * vérifier que l'adresse parent1 peut maintenant inscrire une regsitrantURI.
 
-Lire la liste des déclarants (registrantsList) et vérifier que les 2
-adresses parent1 et parent2 sont bien déclarées.
+  * Insérer l'adresse parent2 comme déclarant avec parent2 comme signature.
 
-Déclarer comme "référence" l'adresse parent2 avec parent1 (qui est
-toujours déclarant).
+  * Lire la liste des déclarants (registrantsList) et vérifier que les 2 adresses parent1 et parent2 sont bien déclarées.
 
-Lire la référence pour récupérer le statut et vérifier que le statut
-corresponde et que l'horodatage soit correct.
+  * Déclarer comme "référence" l'adresse parent2 avec parent1 (qui est toujours déclarant).
 
-Écrire un nouveau statut avec "parent1" comme signature.
+  * Lire la référence pour récupérer le statut et vérifier que le statut corresponde et que l'horodatage soit correct.
 
-Relire la référence et la liste des statuts pour vérifier à nouveau les
-index et les horodatages.
+  * Écrire un nouveau statut avec "parent1" comme signature.
 
-Écrire une référence (parent1 ou une EOA)  avec parent2.
+  * Relire la référence et la liste des statuts pour vérifier à nouveau les index et les horodatages.
 
-lire la référence pour récupérer le statut et vérifier que le statut
-corresponde et que l'horodatage soit correct.
+  * Écrire une référence (parent1 ou une EOA) avec parent2.
 
-Invalider l'adresse parent2 dans la liste des registrants.
+  * lire la référence pour récupérer le statut et vérifier que le statut corresponde et que l'horodatage soit correct.
 
-Lire la liste des "déclarants" pour vérifier qu'il ne reste que parent1.
+  * Invalider l'adresse parent2 dans la liste des registrants.
 
-Lire la liste des déclarants non valide pour vérifier qu'il y a bien
-parent2.
+  * Lire la liste des "déclarants" pour vérifier qu'il ne reste que parent1.
 
-Tenter de faire une transaction d'ajout de statut sur la référence créée
-par parent2 (elle doit échouer);
+  * Lire la liste des déclarants non valide pour vérifier qu'il y a bien parent2.
+
+  * Tenter de faire une transaction d'ajout de statut sur la référence créée par parent2 (elle doit échouer);
+
 
 ### SmartDirectory ouvert
 
-Créer un smartDirectory ouvert
 
-En utilisant l'API sur le serveur de déploiement.
+**Créer un smartDirectory ouvert**
 
-Vérifier que l'ensemble des paramètres demandés au serveur sont corrects
-dans le smartDirectory (utilisation des getters).
+  * En utilisant l'API sur le serveur de déploiement.
 
-Activer le smartDirectory avec l'adresse parent1.
+  * Vérifier que l'ensemble des paramètres demandés au serveur sont corrects dans le smartDirectory (utilisation des getters).
 
-Déclarer comme "référence" l'adresse parent2 avec parent1.
+  * Activer le smartDirectory avec l'adresse parent1.
 
-Ajouter une registrant URI avec l'adresse parent1.
+  * Déclarer comme "référence" l'adresse parent2 avec parent1.
 
-Ajouter avec parent1 un nouveau statut sur la "référence" parent2.
+  * Ajouter une registrant URI avec l'adresse parent1.
 
-Lister les statuts de "parent2".
+  * Ajouter avec parent1 un nouveau statut sur la "référence" parent2.
+
+  * Lister les statuts de "parent2".
+  
 
 ### SmartToken721
 
-Créer un smartToken721
 
-En utilisant l'API sur le serveur de déploiement avec comme paramétrage
-le smartDirectory administré précédemment déployé et l'adresse "parent1"
-comme "regsitrant\_address".
+**Créer un smartToken721**
 
-Vérifier que l'ensemble des paramètres demandés au serveur sont corrects
-dans le smartToken (utilisation des getters).
+  * En utilisant l'API sur le serveur de déploiement avec comme paramétrage le smartDirectory administré précédemment déployé et l'adresse "parent1"comme "regsitrant\_address".
 
-Vérifier qu'il est possible de créer un NFT si on utilise parent1.
+  * Vérifier que l'ensemble des paramètres demandés au serveur sont corrects dans le smartToken (utilisation des getters).
 
-Vérifier qu'il n'est pas possible de créer un NFT si l'on utilise
-parent2 (car invalidée).
+  * Vérifier qu'il est possible de créer un NFT si on utilise parent1.
 
-La réalisation de la conformité avec l'ensemble des fonctions d'un NFT
-est hors périmètre de ce plan de test.
+  * Vérifier qu'il n'est pas possible de créer un NFT si l'on utilise parent2 (car invalidée).
 
-Créer un smartToken721
+  * La réalisation de la conformité avec l'ensemble des fonctions d'un NFT est hors périmètre de ce plan de test.
 
-En utilisant l'API sur le serveur de déploiement avec comme paramétrage
-le smartDirectory ouvert précédemment déployé et l'adresse "0x000..."
-comme "registrant\_address".
 
-Vérifier que l'ensemble des paramètres demandés au serveur sont corrects
-dans le smartToken (utilisation des getters).
+**Créer un smartToken721**
 
-Vérifier qu'il est possible de créer un NFT si on utilise "parent2" car
-déclarée dans le smartDirectory (pas de contrôle du déclarant).
+  * En utilisant l'API sur le serveur de déploiement avec comme paramétrage le smartDirectory ouvert précédemment déployé et l'adresse "0x000..."comme "registrant\_address".
 
-Vérifier qu'il n'est pas possible de créer un NFT si l'on utilise
-parent2 (car non déclarée).
+  * Vérifier que l'ensemble des paramètres demandés au serveur sont corrects dans le smartToken (utilisation des getters).
+
+  * Vérifier qu'il est possible de créer un NFT si on utilise "parent2" car déclarée dans le smartDirectory (pas de contrôle du déclarant).
+
+  * Vérifier qu'il n'est pas possible de créer un NFT si l'on utilise parent2 (car non déclarée).
+
 
 ### SmartTokenErc20
 
-Créer un smartTokenErc20
 
-En utilisant l'API sur le serveur de déploiement avec comme paramètres :
+**Créer un smartTokenErc20**
 
--   Le smartDirectory administré précédemment déployé et l'adresse
-    parent1 comme "registrant\_address".
--   Le type ERC20A.
+* En utilisant l'API sur le serveur de déploiement avec comme paramètres :
+  * Le smartDirectory administré précédemment déployé et l'adresse parent1 comme "registrant\_address".
+  * Le type ERC20A.
 
-Vérifier que l'ensemble des paramètres demandés au serveur sont corrects
-dans le smartToken (utilisation des getters).
+* Vérifier que l'ensemble des paramètres demandés au serveur sont corrects dans le smartToken (utilisation des getters).
 
-Enregistrer votre adresse personnelle sur le smartDirectory de
-référence.
+* Enregistrer votre adresse personnelle sur le smartDirectory de référence.
 
-Faire un transfert à partir de votre smartphone- vérifier le bon que
-l'adresse de destination non enregistrée empêche la transaction.
+* Faire un transfert à partir de votre smartphone- vérifier le bon que l'adresse de destination non enregistrée empêche la transaction.
 
-Enregistrer l'adresse de destination sur le smartDirectory.
+* Enregistrer l'adresse de destination sur le smartDirectory.
 
-Vérifier que le transfert marche avec cette nouvelle déclaration.
+* Vérifier que le transfert marche avec cette nouvelle déclaration.
 
 ------------------------------------------------------------------------
+
 
 Bilan économique
 ----------------
 
-![](Specifications/images-md/fe10ce5598c4f6d863c595b842b933b18ec859ca.png)
+![Bilan économique (permissioned sur Polygon)](Specifications/images-md/fe10ce5598c4f6d863c595b842b933b18ec859ca.png)
 
 ------------------------------------------------------------------------
+
 
 App de démonstration du smartDirectory (alpha)
 ==============================================
 
-L'application de démonstration du smartDirectory est une extension de
-l'application de test du projet Qaxh.io. Cette application a été
-développée en App Inventor 2 (AI2). Elle est composée de 2 écrans
-("screen1" et "screen7"). Seul le "screen7" a été spécifiquement
-développé pour le projet smartDirectory.
+L'application de démonstration du smartDirectory est une extension de l'application de test du projet Qaxh.io. Cette 
+application a été développée en App Inventor 2 (AI2). Elle est composée de 2 écrans ("screen1" et "screen7"). Seul le 
+"screen7" a été spécifiquement développé pour le projet smartDirectory.
+
 
 ### Périmètre de l'application
 
-Cette application a eu pour objet de tester les API et l'ensemble des
-fonctions du smartDirectory dans un fonctionnement nominal. Cela reste
-une application pour développeurs qui peut comporter des bogues.
+Cette application a eu pour objet de tester les API et l'ensemble des fonctions du smartDirectory dans un fonctionnement
+nominal. Cela reste une application pour développeurs qui peut comporter des bogues.
 
 ### A propos d'App Inventor 2 (AI2)
 
-AI2 est un langage de blocs mis au point par le
-[MIT](https://www.google.com/url?q=https://appinventor.mit.edu/&sa=D&source=editors&ust=1735324824959332&usg=AOvVaw2uxLKBg2j9pHq1L8qMj0hc) en
-utilisant l'éditeur de programmation visuel
-[BLOCKLY](https://www.google.com/url?q=https://developers.google.com/blockly?hl%3Dfr&sa=D&source=editors&ust=1735324824959752&usg=AOvVaw1WsHbYV6f7deAUNIP5OITA).
+AI2 est un langage de blocs mis au point par le [MIT](https://www.google.com/url?q=https://appinventor.mit.edu/&sa=D&source=editors&ust=1735324824959332&usg=AOvVaw2uxLKBg2j9pHq1L8qMj0hc) en utilisant l'éditeur de programmation visuel [BLOCKLY](https://www.google.com/url?q=https://developers.google.com/blockly?hl%3Dfr&sa=D&source=editors&ust=1735324824959752&usg=AOvVaw1WsHbYV6f7deAUNIP5OITA).
 
 ![](Specifications/images-md/21d0e6b402e6432785bc2866a886dc1c12b21a44.png)
 
-AI2 permet l'ajout d'extensions spécifiques (cf. tuile "import
-extension" en bas à gauche du screenshot ci-dessus avec l'entrée "
-QAXH\_Eth") qui permettent l'accès aux différentes fonctions des
-blockchains EVM.
+AI2 permet l'ajout d'extensions spécifiques (cf. tuile "import extension" en bas à gauche du screenshot ci-dessus avec 
+l'entrée "QAXH\_Eth") qui permettent l'accès aux différentes fonctions des blockchains EVM.
 
-Le choix d'un outil de programmation visuel a été fait pour favoriser
-une approche "low code" devant favoriser l\'appropriation des
-contraintes et opportunités de la blockchain par les équipes métiers.
+Le choix d'un outil de programmation visuel a été fait pour favoriser ne approche "low code" devant favoriser 
+l'appropriation des contraintes et opportunités de la blockchain par les équipes métiers.
 
 ### Code source et recompilation de l'application
 
-Le code source est fourni sous forme d'un fichier .aia  il est à charger
-("import") dans le site web de programmation/compilation
-[http://qaxh2020.qaxh.io:8888](https://www.google.com/url?q=http://qaxh2020.qaxh.io:8888&sa=D&source=editors&ust=1735324824960866&usg=AOvVaw0VHOUR48B5s12mm0qeCQ-u) (créer
-un compte de type "gmail" sans nécessairement avoir besoin d'une adresse
-gmail; pas de vérification de la validité de l'adresse.
+Le code source est fourni sous forme d'un fichier .aia il est à charger ("import") dans le site web de 
+programmation/compilation [http://qaxh2020.qaxh.io:8888](https://www.google.com/url?q=http://qaxh2020.qaxh.io:8888&sa=D&source=editors&ust=1735324824960866&usg=AOvVaw0VHOUR48B5s12mm0qeCQ-u) (créer un compte de type "gmail" sans nécessairement avoir
+besoin d'une adresse gmail; pas de vérification de la validité de l'adresse.
 
-Après chargement l'interface de programmation est similaire à android
-studio en beaucoup plus simple. La première page comme ci-dessus est un
-composeur d'interface utilisateur, le "code" est visible en cliquant en
-haut à droite sur "blocks", on se retrouve avec un langage de type
-blockly.
+Après chargement l'interface de programmation est similaire à android studio en beaucoup plus simple. La première page 
+comme ci-dessus est un composeur d'interface utilisateur, le "code" est visible en cliquant en haut à droite sur 
+"blocks", on se retrouve avec un langage de type blockly.
 
 Cette application à nécessité environ 5000 blocks.
 
-La compilation s'effectue en cliquant sur "build" en haut dans le
-bandeau horizontal de menus, un fichier de type .apk (application
-android) est ensuite proposé en téléchargement via un qrcode. N.B. :
-après téléchargement/transfert sur smartphone de l'apk, il faudra
-valider autoriser la première fois sur android l'installation
-d'application en provenance de de sources différentes du playstore de
-google.
+La compilation s'effectue en cliquant sur "build" en haut dans le bandeau horizontal de menus, un fichier de type .apk 
+(application android) est ensuite proposé en téléchargement via un qrcode. N.B. : après téléchargement/transfert sur 
+smartphone de l'apk, il faudra valider autoriser la première fois sur android l'installation d'application en provenance
+de de sources différentes du playstore de google.
 
 ### Première ouverture de l'App
 
-L'APK disponible sur le GitHub (dossier "Android") permet d'essayer
-immédiatement l'application, vous pouvez vous l'envoyer par email et
-l'ouvrir sur votre android.
+L'APK disponible sur le GitHub (dossier "Android") permet d'essayer immédiatement l'application, vous pouvez vous 
+l'envoyer par email et l'ouvrir sur votre android.
 
-A la première ouverture, l'app initialise un nouveau compte (couple clé
-privée, adresse) et demande à l'utilisateur de choisir la blockchain.
-Seule la chaîne  AMOY est proposée.
+A la première ouverture, l'app initialise un nouveau compte (couple clé privée, adresse) et demande à l'utilisateur de 
+choisir la blockchain. Seule la chaîne AMOY est proposée.
 
-Il revient ensuite à l'utilisateur de sélectionner dans le menu
-"smartMission" pour accéder à l'écran du smartDirectory.
+Il revient ensuite à l'utilisateur de sélectionner dans le menu "smartMission" pour accéder à l'écran du smartDirectory.
 
 ### Le menu principal
 
 Il comporte 3 sections :
 
--   la création et la gestion d'un ou plusieurs smartDirectory,
--   la visualisation des écosystèmes à partir d'un smartDirectory,
--   la création de smartTokens.
+* la création et la gestion d'un ou plusieurs smartDirectory,
+* la visualisation des écosystèmes à partir d'un smartDirectory,
+* la création de smartTokens.
 
 En complément l'APP permet :
 
--   la consultation d'une log pour le développeur,
--   le listage des transactions manipuler par l'APP et un lien direct
-    vers un Explorer AMOY,
--   une log des coûts permettant de reconstituer un bilan économique,
--   un accès à la documentation.
+* la consultation d'une log pour le développeur,
+* le listage des transactions manipuler par l'APP et un lien direct vers un Explorer AMOY,
+* une log des coûts permettant de reconstituer un bilan économique,
+* un accès à la documentation.
 
 ![](Specifications/images-md/1d0248c1abf3b57433aaca1b089bd07848acf2ec.png)
 
@@ -2542,11 +2323,9 @@ Menus Administrateur
 
 ### Deploy smartDirectory
 
-Cet écran permet de saisir les paramètres nécessaires à l'appel de l'API
-de déploiement d'un smartDirectory.
+Cet écran permet de saisir les paramètres nécessaires à l'appel de l'API de déploiement d'un smartDirectory.
 
-A réception du retour du serveur, l'APP attend le minage de la
-transaction et propose l'activation du smartDirectory.
+A réception du retour du serveur, l'APP attend le minage de la transaction et propose l'activation du smartDirectory.
 
 ![](Specifications/images-md/4f101bfa96d0347cee7e5f9616639b5ada54b7e1.png)
 
@@ -2555,11 +2334,9 @@ transaction et propose l'activation du smartDirectory.
 
 ### Manage smartDirectory
 
-Cet écran offre la possibilité d'ajouter un nouveau déclarant
-(registrant) lorsque le smartDirectory est administré.
+Cet écran offre la possibilité d'ajouter un nouveau déclarant (registrant) lorsque le smartDirectory est administré.
 
-Cet écran permet aussi d'invalider un déclarant si besoin et bloquer un
-smartDirectory.
+Cet écran permet aussi d'invalider un déclarant si besoin et bloquer un smartDirectory.
 
 ![](Specifications/images-md/692236af2716dc695fbbb69b1ac78caba6f4fbbd.png)
 
@@ -2574,9 +2351,8 @@ Menus "Registrant"
 
 ### Import smartDirectory
 
-Cet écran permet d'importer l'adresse d'un smartDirectory créé par une
-autre entité. Si le type est de "42" l'adresse sera enregistrée comme un
-smartDirectory sinon comme une EOA.
+Cet écran permet d'importer l'adresse d'un smartDirectory créé par une autre entité. Si le type est de "42" l'adresse 
+sera enregistrée comme un smartDirectory sinon comme une EOA.
 
 ![](Specifications/images-md/bf41efdf6137d0ece2067bf8e7b1c2d2b64fea0b.png)
 
@@ -2585,11 +2361,10 @@ smartDirectory sinon comme une EOA.
 
 ### My RegistrantAddress
 
-Cet écran permet l'affichage de son adresse de déclarant et son envoi,
-accompagné éventuellement d'une adresse de smartDirectory.
+Cet écran permet l'affichage de son adresse de déclarant et son envoi, accompagné éventuellement d'une adresse de 
+smartDirectory.
 
-En complément, l'écran permet la mise à jour de l'URI d'un déclarant
-déjà enregistré dans un smartDirectory.
+En complément, l'écran permet la mise à jour de l'URI d'un déclarant déjà enregistré dans un smartDirectory.
 
 ![](Specifications/images-md/c34c645599a8177d5c045e6b658f9b91ad974ae6.png)
 
@@ -2598,8 +2373,7 @@ déjà enregistré dans un smartDirectory.
 
 ### Change Status Reference
 
-Cet écran liste les références déclarées par l'utilisateur de l'APP et
-permet la mise à jour du statut de chaque référence.
+Cet écran liste les références déclarées par l'utilisateur de l'APP et permet la mise à jour du statut de chaque référence.
 
 ![](Specifications/images-md/428948eeb921d5ef34ff637af66842382493139e.png)
 
@@ -2614,39 +2388,33 @@ Menus Utilisateur
 
 ### Explore Ecosystems 
 
-Cet écran offre une vision des références par smartDirectory. En
-cliquant sur les différentes listes, il est possible d\'accéder à
-l'ensemble des éléments du smartDirectory.
+Cet écran offre une vision des références par smartDirectory. En cliquant sur les différentes listes, il est possible 
+d'accéder à l'ensemble des éléments du smartDirectory.
 
-![](Specifications/images-md/5e6e2fd052e8398738262b6c7f642e90e6d7f5f1.png) 
+![](Specifications/images-md/5e6e2fd052e8398738262b6c7f642e90e6d7f5f1.png)
 
 ### Scan Address in Ecosystem
 
-Cet écran permet la saisie d'une adresse quelconque et va analyser les
-différents smartDirectories connus pour identifier d'éventuelles
-déclarations. Cet écran se scrolle en horizontal pour accéder à
-l'ensemble des informations :
+Cet écran permet la saisie d'une adresse quelconque et va analyser les différents smartDirectories connus pour 
+identifier d'éventuelles déclarations. Cet écran se scrolle en horizontal pour accéder à l'ensemble des informations :
 
 ![](Specifications/images-md/2c5f5150faa331939a8c7f4ca8274fdebe0e74aa.png)
 
 ### My Tokens
 
-Cet écran va scanner dans les smartDirectories connus les tokens
-fongibles (ERC20 et ERC20A) dans lesquels la balance de l'utilisateur
-est différente de zéro.
+Cet écran va scanner dans les smartDirectories connus les tokens fongibles (ERC20 et ERC20A) dans lesquels la balance de
+l'utilisateur est différente de zéro.
 
 ### Faucet / Explorer Amoy
 
-L'ensemble des transactions et adresses sont mémorisées dans le code et
-ainsi disponibles en liste dans cet écran. Il suffit de cliquer sur une
-des lignes pour accéder directement à l'explorateur AMOY. Ceci permet à
-un utilisateur "I do my own checks"  d'avoir un contrôle indépendant de
-l'application.
+L'ensemble des transactions et adresses sont mémorisées dans le code et ainsi disponibles en liste dans cet écran. Il 
+suffit de cliquer sur une des lignes pour accéder directement à l'explorateur AMOY. Ceci permet à un utilisateur "I do 
+my own checks" d'avoir un contrôle indépendant de l'application.
 
-![](Specifications/images-md/30352300836a0a82b4996346a93ec4cc310a012c.jpg) ![](Specifications/images-md/3cdfeabbfc21b36c0d28196bdeb0b1f69d0b42f8.jpg)
+![](Specifications/images-md/30352300836a0a82b4996346a93ec4cc310a012c.jpg)
+![](Specifications/images-md/3cdfeabbfc21b36c0d28196bdeb0b1f69d0b42f8.jpg)
 
-Deux boutons permettent respectivement de filtrer les adresses ou les
-transactions.
+Deux boutons permettent respectivement de filtrer les adresses ou les transactions.
 
 ![](Specifications/images-md/ceece640e1ff646eb7983db00969608545be1eeb.png)
 
@@ -2655,8 +2423,8 @@ Menus smartTokens
 
 ![](Specifications/images-md/8c3da6985f7ace1a7563312cbeed7c430c29c200.png)
 
-Cet écran permet de déployer une série de smartTokens et de les
-référencer pour faciliter les tests et la visualisation des écosystèmes.
+Cet écran permet de déployer une série de smartTokens et de les référencer pour faciliter les tests et la visualisation 
+des écosystèmes.
 
 L'onglet "Manage NFT" n'est pas actif car incomplet.
 
@@ -2665,37 +2433,33 @@ L'onglet "Manage NFT" n'est pas actif car incomplet.
 
 ### Deploy smart721
 
-Permet le déploiement d'un ERC721 avec les fonctions complémentaires de
-smartToken :
+Permet le déploiement d'un ERC721 avec les fonctions complémentaires de smartToken :
 
-![](Specifications/images-md/c356cf5231d858d7ac77dac98666933fd9efb49c.png)![](Specifications/images-md/86a863c1fd9fed5dc83a813108dbb9aca6d832e9.png)
+![](Specifications/images-md/c356cf5231d858d7ac77dac98666933fd9efb49c.png)
+![](Specifications/images-md/86a863c1fd9fed5dc83a813108dbb9aca6d832e9.png)
 
-Un ERC721 avec un paramétrage ne demandant pas de contrôle à gauche et
-un avec un contrôle de smartDirectory et de "registrant".
+Un ERC721 avec un paramétrage ne demandant pas de contrôle à gauche et un avec un contrôle de smartDirectory et de 
+"registrant".
 
 ------------------------------------------------------------------------
 
 
 ### Deploy smart020 
 
-Permet le déploiement d'un ERC20 avec les fonctions complémentaires de
-smartToken :
+Permet le déploiement d'un ERC20 avec les fonctions complémentaires de smartToken :
 
 ![](Specifications/images-md/797c5423258e9c7c98cee64ef3f4c85962e1933f.png)
 
-Un token fongible avec contrôle uniquement de la présence des adresse
-dans un smartDirectrory ("regsitrant" à 0x0000...") avec l\'apparition
-de l'écran de déclaration en retour de l'API du serveur.
+Un token fongible avec contrôle uniquement de la présence des adresse dans un smartDirectrory 
+("regsitrant" à 0x0000...") avec l'apparition de l'écran de déclaration en retour de l'API du serveur.
 
 ------------------------------------------------------------------------
 
 
 ### Register smartToken
 
-Permet de référencer une adresse de smartToken nouvellement créée (ou de
-saisir une adresse externe). L'écran reprend la liste des tokens créés.
-Il suffit de sélectionner pour accéder à la portion de l\'écran pour
-déclarer une référence :
+Permet de référencer une adresse de smartToken nouvellement créée (ou de saisir une adresse externe). L'écran reprend la
+liste des tokens créés. Il suffit de sélectionner pour accéder à la portion de l'écran pour déclarer une référence :
 
 ![](Specifications/images-md/7f7853201080f5c564cb1acb6b4b5f97309079ce.png)
 
@@ -2714,8 +2478,7 @@ Menu d'administration de l'APP
 
 ### Documentation
 
-Ce menu fournit un lien vers ce fichier de documentation dans une
-fenêtre externe.
+Ce menu fournit un lien vers ce fichier de documentation dans une fenêtre externe.
 
 ![](Specifications/images-md/3ede7a00bada14b4cb422ba1ce5bb5238f047a19.jpg)
 
@@ -2724,22 +2487,19 @@ fenêtre externe.
 
 ### Cost Log
 
-Tous les TxHash des transactions sont mémorisés et lors de leur analyse,
-le coût de la transaction est conservé dans un journal dédié (cost log).
-Ce journal est structuré sous forme de CSV ce qui doit permettre une
-utilisation plus facile sous Excel (un filtrage manuel est sûrement
-nécessaire.)
+Tous les TxHash des transactions sont mémorisés et lors de leur analyse, le coût de la transaction est conservé dans un 
+journal dédié (cost log). Ce journal est structuré sous forme de CSV ce qui doit permettre une utilisation plus facile 
+sous Excel (un filtrage manuel est sûrement nécessaire.)
 
-En complément des coûts de GAS, un équivalent Euro/Ether et Euro/POL est
-calculé sur la base d'API donnant le taux au lancement de l'APP.
+En complément des coûts de GAS, un équivalent Euro/Ether et Euro/POL est calculé sur la base d'API donnant le taux au 
+lancement de l'APP.
 
-Cette costlog permet une vision exhaustive des coûts car les API de
-déploiement retournent systématiquement le txHash :
+Cette costlog permet une vision exhaustive des coûts car les API de déploiement retournent systématiquement le txHash :
 
 ![](Specifications/images-md/4c76ca8ce0153401a449e7a953f995d8fa54c78b.jpg)
 
-Une fois accédé, cet écran permet de mettre à jour les informations de
-Eur/Eth et Eur/POL, d'effacer le fichier et d'envoyer le fichier.
+Une fois accédé, cet écran permet de mettre à jour les informations de Eur/Eth et Eur/POL, d'effacer le fichier et 
+d'envoyer le fichier.
 
 Exemple de résultat avec Excel :
 
@@ -2749,13 +2509,11 @@ l
 
 ### App Log
 
-Au choix du développeur, différents éléments sont enregistrés pendant le
-déroulement des blocks. En particulier, si la fonction de LOG est
-appelée, elle permet de mémoriser le dernier bloc avant un éventuel
-plantage de l'application (cela arrive !)
+Au choix du développeur, différents éléments sont enregistrés pendant le déroulement des blocks. En particulier, si la 
+fonction de LOG est appelée, elle permet de mémoriser le dernier bloc avant un éventuel plantage de l'application (cela 
+arrive !).
 
-La visualisation de la Log ne change rien à l'écran en cours, il est
-donc possible de retourner sur l'écran de départ.
+La visualisation de la Log ne change rien à l'écran en cours, il est donc possible de retourner sur l'écran de départ.
 
 ![](Specifications/images-md/873496fd6a11faa893a3d1fd5bdc50f626855095.jpg)
 
@@ -2764,38 +2522,31 @@ donc possible de retourner sur l'écran de départ.
 Compléments pour Citizen Developper
 -----------------------------------
 
-L'app a été créée en AI2 pour faciliter les évolutions et les mises au
-point dans un cadre de démonstration, de validation du fonctionnement et
-de garantie que l'ensemble présente une forme de pertinence pour un
-utilisateur non développeur.
+L'app a été créée en AI2 pour faciliter les évolutions et les mises au point dans un cadre de démonstration, de 
+validation du fonctionnement et de garantie que l'ensemble présente une forme de pertinence pour un utilisateur 
+non-développeur.
 
 ### Mise à jour de l'App
 
-Pour mettre à jour l'application, il est nécessaire d'utiliser le
-fichier .aia disponible sur le GitHub. Pour éditer ce fichier, il n'est
-pas possible d'utiliser directement l'éditeur du [MIT](https://www.google.com/url?q=https://accounts.google.com/o/oauth2/v2/auth?response_type%3Dcode%26client_id%3D835377224499-p6kuf1tm823g8vmvkpl7urs5r0gfasns.apps.googleusercontent.com%26scope%3Dopenid%2520email%26redirect_uri%3Dhttps://login.appinventor.mit.edu/return%26state%3D350364e7-160f-4915-b42b-436cafc71ee4%26nonce%3D82fc5d15-4066-4004-8be6-4fac1b389f11%26&sa=D&source=editors&ust=1735324824974382&usg=AOvVaw2O4nAHoFJQyYWnHzhNTGUo) qui présente des limites dans l'acceptation de taille de fichier. Il est
-donc nécessaire d'utiliser [l'éditeur du projetQaxh.io](https://www.google.com/url?q=http://qaxh2020.qaxh.io:8888/login/&sa=D&source=editors&ust=1735324824974939&usg=AOvVaw0V6XlWJ35_YbLT0za4jsGs)
+Pour mettre à jour l'application, il est nécessaire d'utiliser le fichier .aia disponible sur le GitHub. Pour éditer ce 
+fichier, il n'est pas possible d'utiliser directement l'éditeur du [MIT](https://www.google.com/url?q=https://accounts.google.com/o/oauth2/v2/auth?response_type%3Dcode%26client_id%3D835377224499-p6kuf1tm823g8vmvkpl7urs5r0gfasns.apps.googleusercontent.com%26scope%3Dopenid%2520email%26redirect_uri%3Dhttps://login.appinventor.mit.edu/return%26state%3D350364e7-160f-4915-b42b-436cafc71ee4%26nonce%3D82fc5d15-4066-4004-8be6-4fac1b389f11%26&sa=D&source=editors&ust=1735324824974382&usg=AOvVaw2O4nAHoFJQyYWnHzhNTGUo) qui présente des limites dans 
+l'acceptation de taille de fichier. Il est donc nécessaire d'utiliser [l'éditeur du projetQaxh.io](https://www.google.com/url?q=http://qaxh2020.qaxh.io:8888/login/&sa=D&source=editors&ust=1735324824974939&usg=AOvVaw0V6XlWJ35_YbLT0za4jsGs).
 
-Toute l'application "smartDirectory" se trouve sur le "screen7". Le
-"screen1" est repris du projet Qaxh.io avec désactivation des fonctions
-inutiles pour le projet pour ne garder que la création et la gestion des
-EOA, la gestion des LOGS.
+Toute l'application "smartDirectory" se trouve sur le "screen7". Le "screen1" est repris du projet Qaxh.io avec 
+désactivation des fonctions inutiles pour le projet pour ne garder que la création et la gestion des EOA, la gestion des
+LOGS.
 
 ### Bonnes pratiques de survie dans le code
 
-Le code fait plus de 5000 blocs. Pour s'y retrouver, l\'éditeur possède
-2 commandes importantes dans le menu clic-droit.
+Le code fait plus de 5000 blocs. Pour s'y retrouver, l'éditeur possède 2 commandes importantes dans le menu clic-droit.
 
 ![](Specifications/images-md/2bc40bb99b1537ae1fce02ebabf6643ce96bf6f9.png)
 
--   Sort blocks by categories, permet de lister les blocks dans l'ordre
-    alphabétiques de leurs appellation
--   puis Sort Blocks Vertically, permet de mettre tous les blocks en
-    vertical ce qui simplifie la recherche
+* Sort blocks by categories, permet de lister les blocks dans l'ordre alphabétiques de leurs appellation,
+* puis Sort Blocks Vertically, permet de mettre tous les blocks en vertical ce qui simplifie la recherche.
 
-Tous les éléments de l'interface sont nommés sous la forme de lettre
-pour un domaine de regroupement puis des chiffres qui permettent de
-suivre (à peu près) l'ordre chronologique des traitements.
+Tous les éléments de l'interface sont nommés sous la forme de lettre pour un domaine de regroupement puis des chiffres 
+qui permettent de suivre (à peu près) l'ordre chronologique des traitements.
 
 ### Interaction Blockchain
 
@@ -2807,46 +2558,32 @@ Concernant les interactions écrans ou les interactions API, le langage
 AI2 offrent toutes les facilités pour bien gérer cette programmation
 événementielle.
 
-En complément, il est aussi nécessaire de prendre en compte les
-interactions avec la blockchain. Celle-ci se fait de manière générique :
+En complément, il est aussi nécessaire de prendre en compte les interactions avec la blockchain. Celle-ci se fait de 
+manière générique.
 
--   au départ, il y a la récupération du TxHash d'une transaction (soit
-    faite par l'APP soit en retour d'API)
--   ce TxHash est un paramètre d'un module générique qui nécessitent
-    aussi :
-
-```{=html}
-<!-- -->
-```
--   le nom du block à lancer en cas de minage réussi,
--   le nom du block à lancer en cas de minage,
--   un libellé, défini par le développeur, utilisé pour la costLog
-    permettant ainsi de voir l'origine de la transaction (nouveau NFT,
-    transfert d'ERC20, changement de statut, ...).
+Au départ, il y a la récupération du TxHash d'une transaction (soit faite par l'APP soit en retour d'API). Ce TxHash est 
+un paramètre d'un module générique qui nécessitent aussi :
+  * le nom du block à lancer en cas de minage réussi,
+  * le nom du block à lancer en cas de minage,
+  * un libellé, défini par le développeur, utilisé pour la costLog permettant ainsi de voir l'origine de la transaction (nouveau NFT, transfert d'ERC20, changement de statut, ...).
 
 Deux modules complémentaires permettent :
 
--   de lire périodiquement la blockchain pour connaître l'état de la
-    transaction, soit minée soit en erreur, soit "pending" et la lecture
-    périodique continue.
--   de router vers le block adéquat dès lors que la transaction est soit
-    minée soit en erreur.
+* de lire périodiquement la blockchain pour connaître l'état de la transaction, soit minée soit en erreur, soit "pending" et la lecture périodique continue.
+* de router vers le block adéquat dès lors que la transaction est soit minée soit en erreur.
 
-Le block de lecture périodique alimente en parallèle la costLog et la
-liste des transactions pour l'explorateur.
+Le block de lecture périodique alimente en parallèle la costLog et la liste des transactions pour l'explorateur.
 
 ### Colorisation des adresses
 
-Pour permettre à l'utilisateur de plus rapidement identifier des
-adresses, celles-ci peuvent être coloriser avec les principes suivants
-pour le calcul du RGB :
+Pour permettre à l'utilisateur de plus rapidement identifier des adresses, celles-ci peuvent être coloriser avec les 
+principes suivants pour le calcul du RGB :
 
--   R= caractères HEXA 29 et 28 de l'adresse
--   G= caractères HEXA 38 et 39 de l'adresse
--   B= caractères HEXA 34 et 35 de l'adresse
+* R= caractères HEXA 29 et 28 de l'adresse
+* G= caractères HEXA 38 et 39 de l'adresse
+* B= caractères HEXA 34 et 35 de l'adresse
 
-Attention si la clarté de ce nombre RGB est supérieur à 128, le fond est
-noir, sinon il est blanc :
+Attention si la clarté de ce nombre RGB est supérieur à 128, le fond est noir, sinon il est blanc :
 
 La clarté se calcule suivant la formule : R\*0.3+G\*0.59+B\*0.11
 
@@ -2856,108 +2593,91 @@ La clarté se calcule suivant la formule : R\*0.3+G\*0.59+B\*0.11
 Le serveur de déploiement
 -------------------------
 
-Disponible sous le répertoire api:
+Il est disponible sous le répertoire api. Ce serveur est écrit en python et est prévu pour être déployé derrière un 
+reverse proxy de type nginx.
 
-Ce serveur est écrit en python et est prévu pour être déployé derrière
-un reverse proxy de type nginx.
+* Le fichier de configuration pour nginx est fourni (nginx-config-smart-directory).
 
-Le fichier de configuration pour nginx est fourni
-(nginx-config-smart-directory).
+* Un serveur de test est en ligne: [https://smart-directory.qaxh.io/smart-directory/ping](https://www.google.com/url?q=https://smart-directory.qaxh.io/smart-directory/ping&sa=D&source=editors&ust=1735324824979532&usg=AOvVaw2bH8FJ6QyiL_J3IlNcWLL0)
 
-Un serveur de test est en ligne:
-[https://smart-directory.qaxh.io/smart-directory/ping](https://www.google.com/url?q=https://smart-directory.qaxh.io/smart-directory/ping&sa=D&source=editors&ust=1735324824979532&usg=AOvVaw2bH8FJ6QyiL_J3IlNcWLL0)
+* Script d'installation de l'environnement python : install.sh  (à exécuter une fois).
 
-Script d'installation de l'environement python:  install.sh   \# a
-executer une fois
+* Script de mise en place de l'environnement : setup.sh (à exécuter une fois par session terminal)
 
-Script de mise en place de l'environement:  setup.sh        \# a
-executer une fois par session terminal
+* Script de lancement: init.sh . Le lancement utilise l'utilitaire screen (apt install screen)
 
-Script de lancement: init.sh  
+* Code source dans app.py
 
-Le lancement utilise l'utilitaire screen ( apt install screen)
+Les api disponibles sont :
 
-Code source dans app.py
+**Smartdirectorycreate**
 
-Les api disponibles sont:
+        Arguments:
+      
+         \'parent\_address1\',
+       
+        \'parent\_address2\',
+      
+         \'contract\_uri\',
+      
+         \'admin\_code\',
+      
+         \'chain\_id\'
 
-Smartdirectorycreate
 
-Arguments:
+**smart721create**
 
-                        \'parent\_address1\',
+    Arguments:
+    
+     \'chain\_id\',
+    
+     \'max\_token\',
+    
+     \'parent\_address1\',
+    
+     \'parent\_address2\',
+    
+     \'smart\_directory\',
+    
+     \'registrant\_address\',
+    
+     \'name\',
+    
+     \'symbol\',
+    
+     \'base\_uri\',
 
-                        \'parent\_address2\',
 
-                        \'contract\_uri\',
+**smartErc20Acreate**
 
-                        \'admin\_code\',
+    Arguments:
+    
+     \'chain\_id\',
+    
+     \'parent\_address1\',
+    
+     \'parent\_address2\',
+    
+     \'smart\_directory\',
+    
+     \'registrant\_address\',
+    
+     \'name\',
+    
+     \'symbol\',
+    
+     \'token\_type\'
 
-                        \'chain\_id\'
 
-smart721create
-
-Arguments:
-
-                        \'chain\_id\',
-
-                        \'max\_token\',
-
-                        \'parent\_address1\',
-
-                        \'parent\_address2\',
-
-                        \'smart\_directory\',
-
-                        \'registrant\_address\',
-
-                        \'name\',
-
-                        \'symbol\',
-
-                        \'base\_uri\',
-
-smartErc20Acreate
-
-Arguments:
-
-                         \'chain\_id\',
-
-                         \'parent\_address1\',
-
-                         \'parent\_address2\',
-
-                         \'smart\_directory\',
-
-                         \'registrant\_address\',
-
-                          \'name\',
-
-                           \'symbol\',
-
-                           \'token\_type\'
-
-Ces api sont activés via l'application android, elles peuvent aussi
-l\'être par du code python, par exemple:
+Ces api sont activés via l'application android, elles peuvent aussi l'être par du code python, par exemple:
 
 ------------------------------------------------------------------------
 
 L'application web de consultation/supervision
 ---------------------------------------------
 
-Un frontend web pour le smartDirectory est disponible dans le dossier
-"front" du projet sur Github. Merci de consulter le README.md dans ce
-dossier pour le déployer.
+Un frontend web pour le smartDirectory est disponible dans le dossier "front" du projet sur Github. Merci de consulter 
+le README.md dans ce dossier pour le déployer.
 
-<div>
-
-
-</div>
 
 ------------------------------------------------------------------------
-
-<div>
-
-[\[1\]](#ftnt_ref1)La déclaration est réservée aux adresses Parents
-
-</div>
