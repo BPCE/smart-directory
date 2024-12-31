@@ -82,7 +82,7 @@ def build_http_headers() -> Optional[Dict[str, Tuple[str, str]]]:
     return None
 
 _infura_mainnet_url = build_infura_url("mainnet.infura.io")
-_infura_polygon_amoy_url = build_infura_url("polygon-amoy.infura.io")
+_infura_polygon_amoy_url = "https://rpc-amoy.polygon.technology/"
 _infura_polygon_mainnet_url = build_infura_url("polygon-mainnet.infura.io")
 _infura_goerli_url = build_infura_url("goerli.infura.io")
 _infura_sepolia_url = build_infura_url("sepolia.infura.io")
