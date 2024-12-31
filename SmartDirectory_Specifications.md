@@ -2612,62 +2612,39 @@ Les api disponibles sont :
 
 **Smartdirectorycreate**
 
-        Arguments:
-      
-         \'parent\_address1\',
-       
-        \'parent\_address2\',
-      
-         \'contract\_uri\',
-      
-         \'admin\_code\',
-      
-         \'chain\_id\'
+    Arguments:
+        parent_address1
+        parent_address2
+        contract_uri
+        admin_code
+        chain_id
 
 
 **smart721create**
 
     Arguments:
-    
-     \'chain\_id\',
-    
-     \'max\_token\',
-    
-     \'parent\_address1\',
-    
-     \'parent\_address2\',
-    
-     \'smart\_directory\',
-    
-     \'registrant\_address\',
-    
-     \'name\',
-    
-     \'symbol\',
-    
-     \'base\_uri\',
+        chain_id
+        max_token
+        parent_address1
+        parent_address2
+        smart_directory
+        registrant_address
+        name
+        symbol
+        base_uri
 
 
 **smartErc20Acreate**
 
     Arguments:
-    
-     \'chain\_id\',
-    
-     \'parent\_address1\',
-    
-     \'parent\_address2\',
-    
-     \'smart\_directory\',
-    
-     \'registrant\_address\',
-    
-     \'name\',
-    
-     \'symbol\',
-    
-     \'token\_type\'
-
+        chain_id
+        parent_address1    
+        parent_address2
+        smart_directory
+        registrant_address
+        name
+        symbol
+        token_type
 
 Ces api sont activés via l'application android, elles peuvent aussi l'être par du code python, par exemple:
 
@@ -2676,8 +2653,8 @@ Ces api sont activés via l'application android, elles peuvent aussi l'être par
 L'application web de consultation/supervision
 ---------------------------------------------
 
-Un frontend web pour le smartDirectory est disponible dans le dossier "front" du projet sur Github. Merci de consulter 
-le README.md dans ce dossier pour le déployer.
+Un frontend web pour le smartDirectory est disponible dans le dossier "front" du projet sur Github. 
+[Documentation du frontend](front/README.md)
 
 
 ------------------------------------------------------------------------
