@@ -5,3 +5,4 @@ python -m pip install --upgrade pip
 pip install flask
 pip install web3==6.20.3
 pip install py-solc-x
+pip install python-dotenv
