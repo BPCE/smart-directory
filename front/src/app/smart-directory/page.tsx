@@ -171,6 +171,7 @@ const SmartDirectory = () => {
           <Card>
             <CardHeader>
               <CardTitle>Registrants List</CardTitle>
+              <span className="text-sm text-gray-500">Click on a registrant to see its references</span>
             </CardHeader>
             <CardContent>
               <div className="flex gap-2 mb-4">
@@ -207,6 +208,7 @@ const SmartDirectory = () => {
         <Card>
           <CardHeader>
             <CardTitle>References</CardTitle>
+            <span className="text-sm text-gray-500">Click on a reference to see its status</span>
           </CardHeader>
           <CardContent>
             <div className="flex gap-2 mb-4">
