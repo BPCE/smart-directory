@@ -51,6 +51,6 @@ Voici quelques scripts npm utiles que vous pouvez utiliser :
 
 ## Screenshots du Dashboard
 
-![Dashboard 1](/public/dashboard1.png)
+![Dashboard 1](/front/public/dashboard1.png)
 
-![Dashboard 2](/public/dashboard2.png)
+![Dashboard 2](public/dashboard2.png)
