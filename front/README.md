@@ -48,3 +48,9 @@ Voici quelques scripts npm utiles que vous pouvez utiliser :
 - `npm run build` : Crée une version de production du projet.
 - `npm run start` : Lance le serveur de production.
 - `npm run lint` : Exécute le linter pour vérifier le code.
+
+## Screenshots du Dashboard
+
+![Dashboard 1](front/public/dashboard1.png)
+
+![Dashboard 2](front/public/dashboard2.png)

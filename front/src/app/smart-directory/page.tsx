@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 import {
   Card,
@@ -20,7 +21,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search } from 'lucide-react'
 
-import { getAllRegistrants, getAllReferences, getReferenceStatus, getReference, getRegistrant } from './chainCall'
+import { getAllRegistrants, getAllReferences, getReferenceStatus, getReference, getRegistrant, getContractURI } from './chainCall'
+import next from 'next'
 
 const SmartDirectory = () => {
   //-------state----------
@@ -33,6 +35,7 @@ const SmartDirectory = () => {
   const [allReferenceStatus, setAllReferenceStatus] = useState<readonly (readonly [string, bigint])[] | null>(null)
   const [searchRegistrant, setSearchRegistrant] = useState('');
   const [searchReference, setSearchReference] = useState('');
+  const [contractURI, setContractURI] = useState('');
 
   //-------functions----------
   const fetchRegistrants = async () => {
@@ -73,6 +76,14 @@ const SmartDirectory = () => {
     }
     const allReferencesData = await getReferenceStatus(addressSMDIR, referenceAddress)
     setAllReferenceStatus(allReferencesData as readonly (readonly [string, bigint])[]);
+  };
+  
+  const fetchContractURI = async () => {
+    if (addressSMDIR === '0x0000000000000000000000000000000000000000') {
+      return
+    }
+    const uri = await getContractURI(addressSMDIR)
+    setContractURI(uri as string);
   };
 
   const convertTimestampToParisTime = (timestamp: bigint) => {
@@ -122,7 +133,8 @@ const SmartDirectory = () => {
   
   //-------useEffect----------
   useEffect(() => {
-    fetchRegistrants()
+    fetchRegistrants();
+    fetchContractURI();
   }, [addressSMDIR])
   
   useEffect(() => {
@@ -154,6 +166,16 @@ const SmartDirectory = () => {
                   Submit
                 </Button>
               </div>
+              {contractURI ? (
+                <>
+                  <span className="text-sm text-gray-500">Documentation de ce contrat ou lien vers l'autorité d'administration : </span>
+                  <Link href={contractURI} target="_blank" className="text-blue-500 break-words">
+                    {contractURI}
+                  </Link>
+                </>
+              ) : (
+                <></>
+              )}
               <Table>
                 <TableHeader>
                   <TableRow>
