@@ -52,7 +52,7 @@ en activité ("IN USE").
 
 L'historique des statuts peut aussi etre consultée.
 
-*Affichage initial de l'UI de supervision vous pouvez copier l'adresse d'un des contrats de demonstration (enlever l'espace après l'adresse copiée)*
+*Affichage initial de l'UI de supervision vous pouvez copier l'adresse d'un des contrats de demonstration*
 
 ![Dashboard 1](public/dashboard1.png)
 
@@ -63,5 +63,7 @@ L'historique des statuts peut aussi etre consultée.
 *Cliquer sur l'un des smart contracts pour decouvrir l'historique des changements de statut*
 
 ![Dashboard 3](public/dashboard3.png)
+
+*Historique des changements avec horodatage*
 
 ![Dashboard 4](public/dashboard4.png)
