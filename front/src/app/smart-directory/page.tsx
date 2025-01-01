@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search } from 'lucide-react'
 
-import { getAllRegistrants, getAllReferences, getReferenceStatus } from './chainCall'
+import { getAllRegistrants, getAllReferences, getReferenceStatus, getReference, getRegistrant } from './chainCall'
 
 const SmartDirectory = () => {
   //-------state----------
@@ -43,12 +43,28 @@ const SmartDirectory = () => {
     setAllRegistrants(AllRegistrants as unknown as readonly [`0x${string}`, string][]);
   };
 
+  const fetchRegistrant = async () => {
+    if (searchRegistrant === '') {
+      return
+    }
+    const registrantData = await getRegistrant(addressSMDIR, searchRegistrant as `0x${string}`)
+    setAllReferences(registrantData as unknown as readonly [`0x${string}`, string][]);
+  };
+
   const fetchReferences = async () => {
     if (registrantAddress === '0x0000000000000000000000000000000000000000') {
       return
     }
     const AllReferences = await getAllReferences(addressSMDIR, registrantAddress)
     setAllReferences(AllReferences as unknown as readonly [`0x${string}`, string][]);
+  };
+
+  const fetchReference = async () => {
+    if (searchReference === '') {
+      return
+    }
+    const referenceData = await getReference(addressSMDIR, searchReference as `0x${string}`)
+    setAllReferences(referenceData as unknown as readonly [`0x${string}`, string][]);
   };
 
   const fetchReferenceStatus = async () => {
@@ -81,6 +97,16 @@ const SmartDirectory = () => {
   };
   const handleAddressSubmit = () => {
     setAddressSMDIR(inputAddress as `0x${string}`);
+  };
+  const handleSearchRegistrant = () => {
+    if (searchRegistrant){
+      fetchRegistrant()
+    }
+  };
+  const handleSearchReference = () => {
+    if (searchReference){
+      fetchReference()
+    }
   };
 
   //-------search filters----------
@@ -152,10 +178,10 @@ const SmartDirectory = () => {
                   type="text"
                   value={searchRegistrant}
                   onChange={(e) => setSearchRegistrant(e.target.value)}
-                  placeholder="Search registrants..."
+                  placeholder="Enter registrant address"
                   className="flex-1"
                 />
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" onClick={handleSearchRegistrant}>
                   <Search className="h-4 w-4" />
                 </Button>
               </div>
@@ -188,25 +214,24 @@ const SmartDirectory = () => {
                 type="text"
                 value={searchReference}
                 onChange={(e) => setSearchReference(e.target.value)}
-                placeholder="Search references..."
+                placeholder="Enter smartcontract address"
                 className="flex-1"
               />
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" onClick={handleSearchReference}>
                 <Search className="h-4 w-4" />
               </Button>
             </div>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Reference Address</TableHead>
+                  <TableHead>Smartcontract Address (Reference)</TableHead>
                   <TableHead>Last Status</TableHead>
-                  <TableHead>registrantAddress</TableHead>
-                  <TableHead>registrantIndex</TableHead>
                   <TableHead>ProjectID</TableHead>
-                  <TableHead>referenceType</TableHead>
-                  <TableHead>referenceVersion</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Version</TableHead>
                   <TableHead>status</TableHead>
                   <TableHead>timestamp</TableHead>
+                  <TableHead>registrantAddress</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -214,13 +239,12 @@ const SmartDirectory = () => {
                   <TableRow key={index} onClick={() => handleReferenceClick(reference[2])} className={referenceAddress === reference[2] ? "bg-muted" : ""}>
                     <TableCell>{reference[2]}</TableCell>
                     <TableCell>{reference[8]}</TableCell>
-                    <TableCell>{reference[0]}</TableCell>
-                    <TableCell>{reference[1]}</TableCell>
                     <TableCell>{reference[3]}</TableCell>
                     <TableCell>{reference[4]}</TableCell>
                     <TableCell>{reference[5]}</TableCell>
                     <TableCell>{reference[6]}</TableCell>
-                    <TableCell>{reference[7]}</TableCell>
+                    <TableCell>{convertTimestampToParisTime(reference[7])}</TableCell>
+                    <TableCell>{reference[0]}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
