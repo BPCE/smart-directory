@@ -143,3 +143,14 @@ export const getRegistrant = async (SMDirAddress: `0x${string}`, registrantAddre
   console.log('registrantData:', registrantData);
   return [registrantData];
 };
+
+export const getContractURI = async (SMDirAddress: `0x${string}`) => {
+  // Appel de la fonction getContractURI
+  const contractURI = await client.readContract({
+    address: SMDirAddress,
+    abi,
+    functionName: 'getContractUri',
+  });
+  console.log('contractURI:', contractURI);
+  return contractURI;
+};
