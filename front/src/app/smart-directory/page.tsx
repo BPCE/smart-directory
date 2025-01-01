@@ -168,7 +168,7 @@ const SmartDirectory = () => {
               </div>
               {contractURI ? (
                 <>
-                  <span className="text-sm text-gray-500">Documentation de ce contrat ou lien vers l'autorité d'administration : </span>
+                  <span className="text-sm text-gray-500">Contract documentation or link to administration authority web site : </span>
                   <Link href={contractURI} target="_blank" className="text-blue-500 break-words">
                     {contractURI}
                   </Link>
@@ -283,8 +283,8 @@ const SmartDirectory = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Commentary</TableHead>
+                  <TableHead>Date of status change</TableHead>
+                  <TableHead>status after change</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
