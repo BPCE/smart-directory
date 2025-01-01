@@ -2614,33 +2614,33 @@ reverse proxy de type nginx.
 
 Les api disponibles sont :
 
-**Smartdirectorycreate**
+**Smartdirectorycreate**        Crée (déploie) un contrat de type "SmartDirectory"
 
     Arguments:
-        parent_address1 &emsp; administrateur ayant droit d'écriture
-        parent_address2
-        contract_uri
-        admin_code
-        chain_id
+        parent_address1             administrateur ayant droit d'écriture
+        parent_address2             autre adresse d'administration (ou 0x0)
+        contract_uri                URI de l'administrateur
+        admin_code                  0=administré    1=libre
+        chain_id                    à titre de contrôle (utiliser 80002 pour les tests)
 
 
-**smart721create**
+**smart721create**              Crée (déploie) un contrat de type "ERC721" 
 
     Arguments:
-        chain_id
-        max_token
-        parent_address1
-        parent_address2
-        smart_directory
-        registrant_address
-        name
+        chain_id                    à titre de contrôle (utiliser 80002 pour les tests)
+        max_token                   nombre maximum de tokens de cette collection (ou 0)
+        parent_address1             habituellement appelé "owner", habituellement implicite
+        parent_address2             owner 2eme adresse
+        smart_directory             là ou la référence de ce contrat est stocké
+        registrant_address          registrant (emetteur de ce contrat)
+        name                        variables standard du ERC721 (et suivantes)
         symbol
         base_uri
 
 
-**smartErc20Acreate**
+**smartErc20Acreate**        Crée (deploie) un contrat de type "ERC721" pour demonstration
 
-    Arguments:
+    Arguments:                      logique identique au ERC721 ci-dessus
         chain_id
         parent_address1    
         parent_address2
@@ -2650,7 +2650,7 @@ Les api disponibles sont :
         symbol
         token_type
 
-Ces api sont activés via l'application android, elles peuvent aussi l'être par du code python, par exemple:
+Ces api sont activés via l'application android, elles peuvent aussi l'être par du code python ou autre
 
 ------------------------------------------------------------------------
 
