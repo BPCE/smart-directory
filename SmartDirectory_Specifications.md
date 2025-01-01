@@ -2274,7 +2274,7 @@ l'appropriation des contraintes et opportunités de la blockchain par les équip
 
 ### Code source et recompilation de l'application
 
-Le code source est fourni sous forme d'un fichier .aia il est à charger ("import") dans le site web de 
+Le code source est fourni dans le repertoire "smart-directory/android" sous forme d'un fichier .aia il est à charger ("import") dans le site web de 
 programmation/compilation [http://qaxh2020.qaxh.io:8888](https://www.google.com/url?q=http://qaxh2020.qaxh.io:8888&sa=D&source=editors&ust=1735324824960866&usg=AOvVaw0VHOUR48B5s12mm0qeCQ-u) (créer un compte de type "gmail" sans nécessairement avoir
 besoin d'une adresse gmail; pas de vérification de la validité de l'adresse.
 
@@ -2291,11 +2291,9 @@ de de sources différentes du playstore de google.
 
 ### Première ouverture de l'App
 
-L'APK disponible sur le GitHub (dossier "Android") permet d'essayer immédiatement l'application, vous pouvez vous 
-l'envoyer par email et l'ouvrir sur votre android.
+L'APK disponible dans le même repertoire "smart-directory/android", il permet d'essayer immédiatement l'application, vous pouvez vous l'envoyer par email et l'ouvrir sur votre android.
 
-A la première ouverture, l'app initialise un nouveau compte (couple clé privée, adresse) et demande à l'utilisateur de 
-choisir la blockchain. Seule la chaîne AMOY est proposée.
+A la première ouverture, l'application initialise un nouveau compte (couple clé privée, adresse) et demande à l'utilisateur de choisir la blockchain. Seule la chaîne chaine de test de polygon "AMOY" est proposée.
 
 Il revient ensuite à l'utilisateur de sélectionner dans le menu "smartMission" pour accéder à l'écran du smartDirectory.
 
@@ -2519,24 +2517,29 @@ La visualisation de la Log ne change rien à l'écran en cours, il est donc poss
 
 ------------------------------------------------------------------------
 
-Compléments pour Citizen Developper
+Compléments pour [Citizen Developper](https://www.lemagit.fr/definition/Developpement-citoyen)
 -----------------------------------
 
-L'app a été créée en AI2 pour faciliter les évolutions et les mises au point dans un cadre de démonstration, de 
-validation du fonctionnement et de garantie que l'ensemble présente une forme de pertinence pour un utilisateur 
-non-développeur.
+L'app a été créée en AI2 (AppInventor2) pour faciliter les évolutions et les mises au point dans un cadre de démonstration, de validation du fonctionnement et de garantie que l'ensemble présente une forme de pertinence pour un utilisateur non-développeur.
 
 ### Mise à jour de l'App
 
-Pour mettre à jour l'application, il est nécessaire d'utiliser le fichier .aia disponible sur le GitHub. Pour éditer ce 
-fichier, il n'est pas possible d'utiliser directement l'éditeur du [MIT](https://www.google.com/url?q=https://accounts.google.com/o/oauth2/v2/auth?response_type%3Dcode%26client_id%3D835377224499-p6kuf1tm823g8vmvkpl7urs5r0gfasns.apps.googleusercontent.com%26scope%3Dopenid%2520email%26redirect_uri%3Dhttps://login.appinventor.mit.edu/return%26state%3D350364e7-160f-4915-b42b-436cafc71ee4%26nonce%3D82fc5d15-4066-4004-8be6-4fac1b389f11%26&sa=D&source=editors&ust=1735324824974382&usg=AOvVaw2O4nAHoFJQyYWnHzhNTGUo) qui présente des limites dans 
-l'acceptation de taille de fichier. Il est donc nécessaire d'utiliser [l'éditeur du projetQaxh.io](https://www.google.com/url?q=http://qaxh2020.qaxh.io:8888/login/&sa=D&source=editors&ust=1735324824974939&usg=AOvVaw0V6XlWJ35_YbLT0za4jsGs).
+Pour mettre à jour l'application, il est nécessaire d'utiliser le fichier .aia disponible sur le GitHub. Pour éditer ce fichier, il n'est pas possible d'utiliser directement l'éditeur du [MIT](https://login.appinventor.mit.edu/) qui présente des limites dans l'acceptation de taille de fichier. Il est donc nécessaire d'utiliser [l'éditeur du projet Qaxh.io](http://qaxh2020.qaxh.io:8888/login).
 
-Toute l'application "smartDirectory" se trouve sur le "screen7". Le "screen1" est repris du projet Qaxh.io avec 
-désactivation des fonctions inutiles pour le projet pour ne garder que la création et la gestion des EOA, la gestion des
-LOGS.
+Toute l'application "smartDirectory" se trouve sur le "screen7". Le "screen1" est repris du projet Qaxh.io avec désactivation des fonctions inutiles pour le projet pour ne garder que la création et la gestion des EOA, la gestion des LOGS.
 
-### Bonnes pratiques de survie dans le code
+### L'IDE AppInventor du projet Qaxh.io
+
+Cet IDE est une partie du projet Qaxh.io de BPCE qui sera progressivement mis en open-source au cours de 2025.
+
+L'IDE est une adaptation du projet du MIT ai2.appinventor.mit.edu dont les sources sont disponibles [sur leur projet github](https://github.com/mit-cml/appinventor-sources), les
+limitations ont été levées afin de pouvoir accepter la bibliotéque java web3j permettant
+de faire les accès blockchain depuis java. En effet, les blocs élémentaires apparaissant
+sous AppInventor sont des classes java pour Android se conformant aux necessités de AppInventor. Une adaptation de la chaine de compilation a été effectuée afin d'utiliser la nouvelle phase
+de post compilation de java D8 [au lieu de dex](https://android-developers.googleblog.com/2020/02/the-path-to-dx-deprecation.html).
+Ces améliorations n'ont pas pu être remontées aux auteurs faut de moyens de tests car AppInventor cible aussi les smartphone très anciens (Android 5). D8 est necessaire car les versions recentes de la bibliothèque web3j sont compilées dans des versions récentes du bytecode java que seul D8 peut convertir en bytecode de la jvm d'Android.
+
+### Bonnes pratiques pour naviguer dans le code
 
 Le code fait plus de 5000 blocs. Pour s'y retrouver, l'éditeur possède 2 commandes importantes dans le menu clic-droit.
 
@@ -2574,9 +2577,9 @@ Deux modules complémentaires permettent :
 
 Le block de lecture périodique alimente en parallèle la costLog et la liste des transactions pour l'explorateur.
 
-### Colorisation des adresses
+### Coloration des adresses
 
-Pour permettre à l'utilisateur de plus rapidement identifier des adresses, celles-ci peuvent être coloriser avec les 
+Pour permettre à l'utilisateur de plus rapidement identifier des adresses, celles-ci peuvent être de différentes couleurs avec les 
 principes suivants pour le calcul du RGB :
 
 * R= caractères HEXA 29 et 28 de l'adresse
@@ -2593,12 +2596,13 @@ La clarté se calcule suivant la formule : R\*0.3+G\*0.59+B\*0.11
 Le serveur de déploiement
 -------------------------
 
-Il est disponible sous le répertoire api. Ce serveur est écrit en python et est prévu pour être déployé derrière un 
+C'est un serveur de deploiement via API facilitant les deploiements de smart contrats et des fins de test.
+Il est disponible sous le répertoire smart-directory/api. Ce serveur est écrit en python et est prévu pour être déployé derrière un 
 reverse proxy de type nginx.
 
 * Le fichier de configuration pour nginx est fourni (nginx-config-smart-directory).
 
-* Un serveur de test est en ligne: [https://smart-directory.qaxh.io/smart-directory/ping](https://www.google.com/url?q=https://smart-directory.qaxh.io/smart-directory/ping&sa=D&source=editors&ust=1735324824979532&usg=AOvVaw2bH8FJ6QyiL_J3IlNcWLL0)
+* Un serveur de test est en ligne: [https://smart-directory.qaxh.io/smart-directory/ping](https://smart-directory.qaxh.io/smart-directory/ping)
 
 * Script d'installation de l'environnement python : install.sh  (à exécuter une fois).
 
@@ -2613,7 +2617,7 @@ Les api disponibles sont :
 **Smartdirectorycreate**
 
     Arguments:
-        parent_address1
+        parent_address1 &emsp; administrateur ayant droit d'écriture
         parent_address2
         contract_uri
         admin_code
