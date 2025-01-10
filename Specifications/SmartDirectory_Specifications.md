@@ -1,1 +1,0 @@
-../SmartDirectory_Specifications.md
