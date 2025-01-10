@@ -2,8 +2,6 @@
 ## SmartDirectory
 [Documentation complète](SmartDirectory_Specifications.md)
 
-[Déploiement du projet](<##Déploiement du projet>)
-
 Confronté à la prolifération des adresses, l'utilisateur à besoin de s'assurer de leur authenticité lorsqu'il s'apprete à effectuer une transaction d'importance qu'elle soit monétaire ou de confiance.
 
 Nous proposons une structuration de l'offre: le "smart directory" est une liste blanche administrée.
@@ -101,7 +99,7 @@ L'application est à installer sur smartphone en téléchargeant son fichier "AE
 "smart-directory/android".
 
 Les informations permettant de consulter le code source de l'application (et de le compiler) ainsi que le descriptif des
-fonctions disponibles sont dans la section [Application Android de démonstration du smartDirectory (alpha)]() de la 
+fonctions disponibles sont dans la section [Application Android de démonstration du smartDirectory (alpha)](<SmartDirectory_Specifications.md/Application Android de démonstration du smartDirectory (alpha)>) de la 
 [documentation complète](SmartDirectory_Specifications.md).
 
 ## Application web de supervision d'un SmartDirectory
