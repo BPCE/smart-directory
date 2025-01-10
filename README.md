@@ -1,5 +1,5 @@
 
-## Ce smart contract est-il légitime ?
+## SmartDirectory
 [Documentation complète](SmartDirectory_Specifications.md)
 
 [Déploiement du projet](<##Déploiement du projet>)
@@ -70,7 +70,7 @@ npm install -g @remix-project/remixd
 * lancer le démon
 
 ```Bash
-npm install -g @remix-project/remixd
+remixd
 ```
 * se rendre sur le site [remix.ethereum.org](https://remix.ethereum.org/) et activer le plugin "REMIXD". Les 
 smart-contracts seront déployables et manipulables en mode "localhost (cf. la documentation [remixd](https://remix-ide.readthedocs.io/en/latest/remixd.html).
