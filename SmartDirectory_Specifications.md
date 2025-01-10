@@ -173,7 +173,7 @@ Cas d'usages
 Un organisme de contrôle, de régulation ou d'audit, veut faciliter l'identification par le public des entités régulées 
 et des smartContracts déployés par ces dernières. L'administrateur de l'organe de contrôle déploie le smartDirectory, 
 puis inscrit les déclarants au fur et à mesure qu'ils sont agréés. Chaque déclarant inscrit ensuite lui-même les 
-adresses des contrats qu\'il déploie et maintient pour chacun un statut.
+adresses des contrats qu'il déploie et maintient pour chacun un statut.
 
 L'application de surveillance se met à jour automatiquement en allant lire la liste des adresses à surveiller sur le 
 smartDirectory. Les utilisateurs grand public utilisent ces listes pour vérifier la validité des adresses sur lesquelles
@@ -240,7 +240,7 @@ demandé!) :
 Cette mise en séquence est nécessaire car le déploiement se fait par un tiers (le serveur) et donc le consentement de 
 l'administrateur doit être enregistré. De plus, cette séquence permet de ne pas utiliser pour la validation les mêmes 
 clés que celles du serveur, car autant le déploiement doit se faire par EOA, autant il peut être pratique, pour le 
-compte de l\'application client, de pouvoir choisir de passer par un compte abstrait (account abstraction) au lieu d'une
+compte de l'application client, de pouvoir choisir de passer par un compte abstrait (account abstraction) au lieu d'une
 EOA.
 
 Une telle architecture est compatible avec un administrateur humain voulant valider tous les déploiements, par analogie 
@@ -285,8 +285,8 @@ L'utilisation d'un smartDirectory implique cependant des points de vigilance com
   * Évolution future : une deuxième étape pourrait aborder la faisabilité d'un smartToken d'une chaîne pour lire un smartDirectory d'une autre chaîne. L'ajout d'un paramètre "chainID" en plus de "contractVersion" et de "contractType" serait un minimum. L'utilisation des informations "on chain" par des smartcontracts nécessiterait une passerelle inter-chain.
 
 
-* Évaluer l\'architecture de la solution pour un système de **blockchains permissionnées** (Consortium).
-  * La proposition s'accorde bien sur une architecture permissionnée car, même dans un cadre de consortium, il est nécessaire de permettre à ses membres d'exposer l\'état de leur smartcontracts (actif, inactif, version ...). L'utilisation des informations du smartDirectory par les smartcontracts permet de restreindre les accès à un sous-ensemble des membres.
+* Évaluer l'architecture de la solution pour un système de **blockchains permissionnées** (Consortium).
+  * La proposition s'accorde bien sur une architecture permissionnée car, même dans un cadre de consortium, il est nécessaire de permettre à ses membres d'exposer l'état de leur smartcontracts (actif, inactif, version ...). L'utilisation des informations du smartDirectory par les smartcontracts permet de restreindre les accès à un sous-ensemble des membres.
 
 
 * Utilisation éventuelle d'un système d'autorisation multipartite (DAO, Multisig).
@@ -302,7 +302,7 @@ Les objectifs et ressources du projet
 1.  La réalisation en solidity du smartDirectory et son déploiement sur une blockchain de test, par exemple polygon AMOY.
 2.  La réalisation d'une APP sur Android à des fins d'UI de démonstration pour écrire ou consulter les informations 
 contenues dans un smart directory. Cette application a permis d'effectuer les actions et contrôles du plan de test.
-3.  Réalisation d\'une application web d'affichage du contenu d'un smartDirectory, liste des registrants, liste des 
+3.  Réalisation d'une application web d'affichage du contenu d'un smartDirectory, liste des registrants, liste des 
 références, historique des statuts.
 4.  La mise en place d'un serveur de déploiement avec 3 types de smartContracts (smartDirectory, ERC20, ERC721) en 
 déploiement par API.
@@ -311,12 +311,12 @@ déploiement par API.
 
 | Fonctionnalité                                                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                  |
 |--------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Identification et catalogage des smartContracts\*                  | En utilisant l'adresse du déclarant et le code projet il est possible de créer différents écosystèmes d'adresses.                                                                                                                                                                                                                                                                                                            |
-| Création d'une base de données consultable\*                       | Le smartContract “smartDirectory” enregistre les adresses des smartContracts et un code projet ainsi que l’adresse déclarante.<br/>Le smartDirectory expose des “getters” permettant la lecture directe de chaque smartContract déclaré ou bien des listes.                                                                                                                                                                  |
-| Développement d'une interface utilisateur- déclarant\*             | L'interface déclarant permet :<br/>- de choisir le type de smartContract à déployer,<br/>- de choisir les paramètres par défaut pour chaque type,<br/>- de remplacer les paramètres par défaut lors de la demande de création d’un smartContract,<br/>- de valider par transaction blockchain toute création de smartContract,<br/>- de lister les smartContracts déclarés, c’est-à-dire enregistrés dans le smartDirectory. | 
-| Développement d\'une interface  utilisateur- superviseur\*         | Cette interface superviseur permet :<br/>- de filtrer la liste des smartContracts déclarés par des libellés (projectID),<br/>- de filtrer cette liste par version,<br/>- de filtrer cette liste par adresse de déclarant,<br/>- d'exporter la liste des adresses ainsi sélectionnées.                                                                                                                                        |
-| Intégration de la vérification  des versions et des mises à jour\* | Chaque smartContract intègre un numéro de version à l’origine. Ce numéro d’origine ne peut être modifié mais l’ajout de status horodatés et historisés permet les mises à jour le cas échéant.                                                                                                                                                                                                                               |
-\*_fonctionnalité identifiée dans le cahier des charges_
+| Identification et catalogage des smartContracts*                  | En utilisant l'adresse du déclarant et le code projet il est possible de créer différents écosystèmes d'adresses.                                                                                                                                                                                                                                                                                                            |
+| Création d'une base de données consultable*                       | Le smartContract “smartDirectory” enregistre les adresses des smartContracts et un code projet ainsi que l’adresse déclarante.<br/>Le smartDirectory expose des “getters” permettant la lecture directe de chaque smartContract déclaré ou bien des listes.                                                                                                                                                                  |
+| Développement d'une interface utilisateur- déclarant*             | L'interface déclarant permet :<br/>- de choisir le type de smartContract à déployer,<br/>- de choisir les paramètres par défaut pour chaque type,<br/>- de remplacer les paramètres par défaut lors de la demande de création d’un smartContract,<br/>- de valider par transaction blockchain toute création de smartContract,<br/>- de lister les smartContracts déclarés, c’est-à-dire enregistrés dans le smartDirectory. | 
+| Développement d'une interface  utilisateur- superviseur*         | Cette interface superviseur permet :<br/>- de filtrer la liste des smartContracts déclarés par des libellés (projectID),<br/>- de filtrer cette liste par version,<br/>- de filtrer cette liste par adresse de déclarant,<br/>- d'exporter la liste des adresses ainsi sélectionnées.                                                                                                                                        |
+| Intégration de la vérification  des versions et des mises à jour* | Chaque smartContract intègre un numéro de version à l’origine. Ce numéro d’origine ne peut être modifié mais l’ajout de status horodatés et historisés permet les mises à jour le cas échéant.                                                                                                                                                                                                                               |
+*_fonctionnalité identifiée dans le cahier des charges_
 
 
 Potentiellement on pourrait réaliser un EIP (Ethereum Improvement Proposal) qui propose une approche standard sur :
@@ -360,11 +360,11 @@ Ces 2 éléments permettent la gestion d'un répertoire décentralisé composé 
 de **leurs émetteurs (registrants)**. Ce répertoire peut être déployé, activé, configuré et administré par des adresses 
 spécifiques appelées "**parents**".
 
-L\'objectif principal est de :
+L'objectif principal est de :
 
 * **Structurer et suivre des références** associées à des projets spécifiques.
 * **Gérer les statuts des références** pour suivre leurs évolutions dans le temps.
-* **Administrer des participants**, en leur permettant d\'ajouter des références ou non, en fonction du mode sélectionné au 
+* **Administrer des participants**, en leur permettant d'ajouter des références ou non, en fonction du mode sélectionné au 
 moment du déploiement du SmartDirectory.
 
 Deux modes de gestion sont disponibles pour les administrateurs du SmartDirectory :
@@ -377,7 +377,7 @@ Deux modes de gestion sont disponibles pour les administrateurs du SmartDirector
    - **Liberté d'inscriptio**n : n'importe quelle adresse peut s'auto-enregistrer et ajouter des références.
    - **Inscription automatique** : si une adresse non connue tente d'ajouter une référence, elle est automatiquement enregistrée comme participant.
 
-Ces deux modes permettent d\'adapter le smart contract aux besoins spécifiques :
+Ces deux modes permettent d'adapter le smart contract aux besoins spécifiques :
 * **Contrôle strict** pour des fournisseurs de services et applications devant être vérifiées au préalable.
 * **Ouverture totale** pour des environnements collaboratifs.
 
@@ -470,7 +470,7 @@ Pour ce faire, un enregistrement préalable du déclarant par l'une ou l'autre d
 
 
 * Si l' "AdminCode" du SmartDirectory est "selfDeclaration" (1) : enregistrement en simultané du déclarant et de la référence.
-  * Si le déclarant n'est pas présent -\> l\'appelant s\'auto-enregistre dans la table des déclarants et ajout de la référence.
+  * Si le déclarant n'est pas présent -\> l'appelant s'auto-enregistre dans la table des déclarants et ajout de la référence.
   * Si le déclarant est présent -\> ajout uniquement de la référence.
 
 
@@ -584,7 +584,7 @@ référencé (referenceAddress). C'est la fonction principale d'utilisation du s
 
 **Conditions d'exécution :**
 
-* Si la référence n'existe pas, le dictionnaire renvoyé comporte un message d\'erreur.
+* Si la référence n'existe pas, le dictionnaire renvoyé comporte un message d'erreur.
 
 | paramètres                                                                                                                         | retour valide                                                                                                                                                                                                                                                                                                                           | retour en erreur                                                                                                                           |
 |------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
@@ -1198,7 +1198,7 @@ Ces variables ainsi que les structures de stockage des déclarants ("registrants
 * parents[2\] : liste des 2 adresses des créateurs du SmartDirectory (adresses demandées lors de la requête API de création du contrat). Elles doivent être différentes et ne pas être \`address(0)\`.
 * contractVersion : version du contrat pour identifier les évolutions sûrement nécessaire
 * contractType : numéro arbitrairement fixé à "42" permettant de reconnaître en "machine readable" que c'est un smartDirectory.
-* activationCode : statut d\'activation du contrat mis à jour exclusivement par une des deux adresses Parent pour indiquer la validité du smartDirectory :
+* activationCode : statut d'activation du contrat mis à jour exclusivement par une des deux adresses Parent pour indiquer la validité du smartDirectory :
   * "0" ou "pending" =\> en cours de création, pas encore validé. Aucune référencement ne peut être enregistré.
   * "1" ou "active" =\> smartDirectory validé par une parentAddress : toutes les fonctions sont accessibles.
   * "2" ou "closed" =\> smartDirectory clôturé par une parentAddress :aucune transaction ni mise à jour ne peut se faire.
@@ -1218,7 +1218,7 @@ Ces variables ainsi que les structures de stockage des déclarants ("registrants
 
 ### Les fonctions de management du SmartDirectory
 
-Ces fonctions permettent d\'accéder aux paramètres du SmartDirectory :
+Ces fonctions permettent d'accéder aux paramètres du SmartDirectory :
 
 
 #### .smartDirectoryActivationCodeEoaUpdate
@@ -1392,7 +1392,7 @@ Le concept du smartToken introduit la possibilité pour un token (fongible, non 
 smartDirectory afin de filtrer les adresses qui lui envoient des ordres (transfert, mintage, ...) pour ne retenir que 
 celles qui sont dans ce smartDirectory.
 
-Cette approche permet de réaliser des écosystèmes avec des contrôles d\'accès. En effet, il suffit de positionner dans 
+Cette approche permet de réaliser des écosystèmes avec des contrôles d'accès. En effet, il suffit de positionner dans 
 le smartContract une adresse de smartDirectory et éventuellement une adresse de déclarant pour réaliser ce filtrage. 
 Si la liste des références évolue, le smartToken n'a pas besoin d'être modifié.
 
@@ -1407,7 +1407,7 @@ Il revient au développeur du smartToken de positionner les filtres liés aux ex
 
 * Token fongible multi-émetteurs :
   * Chaque émetteur (un établissement de monnaie électronique, dans le monde régulé) sera autorisé en tant que référence dans un smartDirectory par une autorité de régulation, Cette dernière faisant office d'administrateur du smartDirectory.
-  * Le token fongible n\'autorise le mintage de nouveau tokens par un émetteur que s'il est dans la liste, charge à l'émetteur de respecter le cantonnement des fonds associé à ce mintage.
+  * Le token fongible n'autorise le mintage de nouveau tokens par un émetteur que s'il est dans la liste, charge à l'émetteur de respecter le cantonnement des fonds associé à ce mintage.
 
 * Token fongible à KYC préalable :
   * En complément (ou indépendamment), il est possible d'avoir un second smartDirectory dans lequel les émetteurs sont des déclarants, à charge pour ces derniers d'indiquer les adresses (références) des utilisateurs qu'ils ont au préalable vérifiées en termes de KYC.
@@ -1983,7 +1983,7 @@ de l'application Android de démonstration est le suivant :
 
 #### .smartTokenERC20AGetParent2
 
-**Sortie** : cette fonction retourne la "parentAddresss" 2 de l\'émetteur du smartTokenERC20A.
+**Sortie** : cette fonction retourne la "parentAddresss" 2 de l'émetteur du smartTokenERC20A.
 
 **Paramètres en entrée** : tokenContractAddress
 
@@ -2247,8 +2247,8 @@ Bilan économique
 ------------------------------------------------------------------------
 
 
-App de démonstration du smartDirectory (alpha)
-==============================================
+Application Android de démonstration du smartDirectory (alpha)
+==============================================================
 
 L'application de démonstration du smartDirectory est une extension de l'application de test du projet Qaxh.io. Cette 
 application a été développée en App Inventor 2 (AI2). Elle est composée de 2 écrans ("screen1" et "screen7"). Seul le 
@@ -2269,31 +2269,37 @@ AI2 est un langage de blocs mis au point par le [MIT](https://www.google.com/url
 AI2 permet l'ajout d'extensions spécifiques (cf. tuile "import extension" en bas à gauche du screenshot ci-dessus avec 
 l'entrée "QAXH\_Eth") qui permettent l'accès aux différentes fonctions des blockchains EVM.
 
-Le choix d'un outil de programmation visuel a été fait pour favoriser ne approche "low code" devant favoriser 
+Le choix d'un outil de programmation visuel a été fait pour favoriser une approche "low code" devant permettre 
 l'appropriation des contraintes et opportunités de la blockchain par les équipes métiers.
 
 ### Code source et recompilation de l'application
 
-Le code source est fourni dans le repertoire "smart-directory/android" sous forme d'un fichier .aia il est à charger ("import") dans le site web de 
-programmation/compilation [http://qaxh2020.qaxh.io:8888](https://www.google.com/url?q=http://qaxh2020.qaxh.io:8888&sa=D&source=editors&ust=1735324824960866&usg=AOvVaw0VHOUR48B5s12mm0qeCQ-u) (créer un compte de type "gmail" sans nécessairement avoir
-besoin d'une adresse gmail; pas de vérification de la validité de l'adresse.
+Le code source est fourni dans le répertoire "smart-directory/android" sous forme du fichier "AE_Qaxh131.aia". Il est à charger 
+("import") dans le site web de programmation/compilation [http://qaxh2020.qaxh.io:8888](https://www.google.com/url?q=http://qaxh2020.qaxh.io:8888&sa=D&source=editors&ust=1735324824960866&usg=AOvVaw0VHOUR48B5s12mm0qeCQ-u) (utiliser une adresse 
+"xxxx@gmail.com" sans nécessairement avoir besoin qu'elle existe; il n'y a pas de vérification de la validité de l'adresse).
 
 Après chargement l'interface de programmation est similaire à android studio en beaucoup plus simple. La première page 
 comme ci-dessus est un composeur d'interface utilisateur, le "code" est visible en cliquant en haut à droite sur 
 "blocks", on se retrouve avec un langage de type blockly.
 
+Dans le menu "My Projects", importer le fichier "AE_Qaxh131.aia" que vous aurez préalablement téléchargé via "Import 
+project (.aia) from my computer".
+
 Cette application à nécessité environ 5000 blocks.
 
 La compilation s'effectue en cliquant sur "build" en haut dans le bandeau horizontal de menus, un fichier de type .apk 
 (application android) est ensuite proposé en téléchargement via un qrcode. N.B. : après téléchargement/transfert sur 
-smartphone de l'apk, il faudra valider autoriser la première fois sur android l'installation d'application en provenance
-de de sources différentes du playstore de google.
+smartphone de l'apk, il faudra valider/autoriser la première fois sur android l'installation d'application en provenance
+de sources différentes du playstore de Google.
 
 ### Première ouverture de l'App
 
-L'APK disponible dans le même repertoire "smart-directory/android", il permet d'essayer immédiatement l'application, vous pouvez vous l'envoyer par email et l'ouvrir sur votre android.
+L'APK disponible dans le même repertoire "smart-directory/android", il permet d'essayer immédiatement l'application, 
+vous pouvez le télécharger à partir de votre smartphone via le github ou vous l'envoyer par email et l'ouvrir sur votre 
+android.
 
-A la première ouverture, l'application initialise un nouveau compte (couple clé privée, adresse) et demande à l'utilisateur de choisir la blockchain. Seule la chaîne chaine de test de polygon "AMOY" est proposée.
+A la première ouverture, l'application initialise un nouveau compte (couple clé privée, adresse) et demande à 
+l'utilisateur de choisir la blockchain. Seule la chaîne chaine de test de polygon "AMOY" est proposée.
 
 Il revient ensuite à l'utilisateur de sélectionner dans le menu "smartMission" pour accéder à l'écran du smartDirectory.
 
@@ -2371,7 +2377,8 @@ En complément, l'écran permet la mise à jour de l'URI d'un déclarant déjà 
 
 ### Change Status Reference
 
-Cet écran liste les références déclarées par l'utilisateur de l'APP et permet la mise à jour du statut de chaque référence.
+Cet écran liste les références déclarées par l'utilisateur de l'APP et permet la mise à jour du statut de chaque 
+référence.
 
 ![](Specifications/images-md/428948eeb921d5ef34ff637af66842382493139e.png)
 
@@ -2520,24 +2527,32 @@ La visualisation de la Log ne change rien à l'écran en cours, il est donc poss
 Compléments pour [Citizen Developper](https://www.lemagit.fr/definition/Developpement-citoyen)
 -----------------------------------
 
-L'app a été créée en AI2 (AppInventor2) pour faciliter les évolutions et les mises au point dans un cadre de démonstration, de validation du fonctionnement et de garantie que l'ensemble présente une forme de pertinence pour un utilisateur non-développeur.
+L'app a été créée en AI2 (AppInventor2) pour faciliter les évolutions et les mises au point dans un cadre de 
+démonstration, de validation du fonctionnement et de garantie que l'ensemble présente une forme de pertinence pour un 
+utilisateur non-développeur.
 
 ### Mise à jour de l'App
 
-Pour mettre à jour l'application, il est nécessaire d'utiliser le fichier .aia disponible sur le GitHub. Pour éditer ce fichier, il n'est pas possible d'utiliser directement l'éditeur du [MIT](https://login.appinventor.mit.edu/) qui présente des limites dans l'acceptation de taille de fichier. Il est donc nécessaire d'utiliser [l'éditeur du projet Qaxh.io](http://qaxh2020.qaxh.io:8888/login).
+Pour mettre à jour l'application, il est nécessaire d'utiliser le fichier .aia disponible sur le GitHub. 
+Pour éditer ce fichier, il n'est pas possible d'utiliser directement l'éditeur du [MIT](https://login.appinventor.mit.edu/) qui présente des limites 
+dans l'acceptation de taille de fichier. Il est donc nécessaire d'utiliser [l'éditeur du projet Qaxh.io](http://qaxh2020.qaxh.io:8888/login).
 
-Toute l'application "smartDirectory" se trouve sur le "screen7". Le "screen1" est repris du projet Qaxh.io avec désactivation des fonctions inutiles pour le projet pour ne garder que la création et la gestion des EOA, la gestion des LOGS.
+Toute l'application "smartDirectory" se trouve sur le "screen7". Le "screen1" est repris du projet Qaxh.io avec 
+désactivation des fonctions inutiles pour le projet pour ne garder que la création et la gestion des EOA, la gestion des
+LOGS.
 
 ### L'IDE AppInventor du projet Qaxh.io
 
 Cet IDE est une partie du projet Qaxh.io de BPCE qui sera progressivement mis en open-source au cours de 2025.
 
-L'IDE est une adaptation du projet du MIT ai2.appinventor.mit.edu dont les sources sont disponibles [sur leur projet github](https://github.com/mit-cml/appinventor-sources), les
-limitations ont été levées afin de pouvoir accepter la bibliotéque java web3j permettant
-de faire les accès blockchain depuis java. En effet, les blocs élémentaires apparaissant
-sous AppInventor sont des classes java pour Android se conformant aux necessités de AppInventor. Une adaptation de la chaine de compilation a été effectuée afin d'utiliser la nouvelle phase
-de post compilation de java D8 [au lieu de dex](https://android-developers.googleblog.com/2020/02/the-path-to-dx-deprecation.html).
-Ces améliorations n'ont pas pu être remontées aux auteurs faut de moyens de tests car AppInventor cible aussi les smartphone très anciens (Android 5). D8 est necessaire car les versions recentes de la bibliothèque web3j sont compilées dans des versions récentes du bytecode java que seul D8 peut convertir en bytecode de la jvm d'Android.
+L'IDE est une adaptation du projet du MIT ai2.appinventor.mit.edu dont les sources sont disponibles 
+[sur leur projet github](https://github.com/mit-cml/appinventor-sources), les limitations ont été levées afin de pouvoir accepter la bibliothéque java web3j 
+permettant de faire les accès blockchain depuis java. En effet, les blocs élémentaires apparaissant sous AppInventor 
+sont des classes java pour Android se conformant aux nécessités de AppInventor. Une adaptation de la chaine de 
+compilation a été effectuée afin d'utiliser la nouvelle phase de post compilation de java D8 [au lieu de dex](https://android-developers.googleblog.com/2020/02/the-path-to-dx-deprecation.html).
+Ces améliorations n'ont pas pu être remontées aux auteurs faut de moyens de tests car AppInventor cible aussi les 
+smartphones très anciens (Android 5). D8 est nécessaire car les versions récentes de la bibliothèque web3j sont 
+compilées dans des versions récentes du bytecode java que seul D8 peut convertir en bytecode de la jvm d'Android.
 
 ### Bonnes pratiques pour naviguer dans le code
 
@@ -2553,13 +2568,11 @@ qui permettent de suivre (à peu près) l'ordre chronologique des traitements.
 
 ### Interaction Blockchain
 
-Comme toute application smartphone, il est nécessaire de gérer les
-interactions clients dont la séquence est bien souvent aléatoire vu du
-développeur.
+Comme toute application smartphone, il est nécessaire de gérer les interactions clients dont la séquence est bien 
+souvent aléatoire vu du développeur.
 
-Concernant les interactions écrans ou les interactions API, le langage
-AI2 offrent toutes les facilités pour bien gérer cette programmation
-événementielle.
+Concernant les interactions écrans ou les interactions API, le langage AI2 offrent toutes les facilités pour bien 
+gérer cette programmation événementielle.
 
 En complément, il est aussi nécessaire de prendre en compte les interactions avec la blockchain. Celle-ci se fait de 
 manière générique.
@@ -2596,7 +2609,7 @@ La clarté se calcule suivant la formule : R\*0.3+G\*0.59+B\*0.11
 Le serveur de déploiement
 -------------------------
 
-C'est un serveur de deploiement via API facilitant les deploiements de smart contrats et des fins de test.
+C'est un serveur de déploiement via API facilitant les déploiements de smart contrats et des fins de test.
 Il est disponible sous le répertoire smart-directory/api. Ce serveur est écrit en python et est prévu pour être déployé derrière un 
 reverse proxy de type nginx.
 
