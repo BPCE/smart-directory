@@ -196,7 +196,7 @@ const SmartDirectory = () => {
               <span className="text-sm text-gray-500">Click on a registrant to see its references</span>
             </CardHeader>
             <CardContent>
-              <div className="flex gap-2 mb-4">
+                <div className="flex gap-2 mb-4">
                 <Input
                   type="text"
                   value={searchRegistrant}
@@ -204,10 +204,13 @@ const SmartDirectory = () => {
                   placeholder="Enter registrant address"
                   className="flex-1"
                 />
-                <Button variant="outline" size="icon" onClick={handleSearchRegistrant}>
+                <Button variant="outline" size="icon" onClick={() => {
+                  setSearchRegistrant(searchRegistrant.trim());
+                  handleSearchRegistrant();
+                }}>
                   <Search className="h-4 w-4" />
                 </Button>
-              </div>
+                </div>
               <Table>
                 <TableHeader>
                   <TableRow>

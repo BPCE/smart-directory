@@ -9,7 +9,7 @@ elif [[ ${WINDIR:-undef} == "undef" ]]; then # Linux
 export SET NODE_OPTIONS=--openssl-legacy-provider
 else # git bash
 #on Windows node is supposed to be in the path and of the proper version
-#on windows the the git sdk shlould be installed (https://github.com/git-for-windows/build-extra/releases/latest)
+#on windows the the git sdk should be installed (https://github.com/git-for-windows/build-extra/releases/latest)
 #the git sdk has make and python
     GIT_SDK_PATH=/c/git-sdk-64
     export JAVA_HOME=`cygpath -w /C/Program\ Files/java/jdk1.8.0_181`
