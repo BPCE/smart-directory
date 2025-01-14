@@ -48,12 +48,22 @@ L'adresse du smart directory étant entrée, la liste des registrants s'affiche,
 Pour un registrant donné, la liste de ses smart contracts référencés s'affiche. Il est aussi possible d'entrer une adresse de smart contract dans la case "Enter smartcontract address" meme si le registrant n'est pas identifié, c'est typiquement la manoeuvre que ferait un utilisateur qui voudrait authentifier une adresse de smart contract.
 
 Lors de l'affichage du smart contract en référence, son dernier statut ("Last Status") est donné, l'utilisateur peut ainsi s'assurer que l'adresse est toujours
-en activité (et non expirée).
+en activité ("IN USE").
 
 L'historique des statuts peut aussi etre consultée.
 
-![Dashboard 1](/front/public/dashboard1.png)
+*Affichage initial de l'UI de supervision vous pouvez copier l'adresse d'un des contrats de demonstration*
+
+![Dashboard 1](public/dashboard1.png)
+
+*Cliquer sur l'un des registrants pour decouvrir les smart contracts qu'il a déployé*
 
 ![Dashboard 2](public/dashboard2.png)
 
+*Cliquer sur l'un des smart contracts pour decouvrir l'historique des changements de statut*
+
 ![Dashboard 3](public/dashboard3.png)
+
+*Historique des changements avec horodatage*
+
+![Dashboard 4](public/dashboard4.png)

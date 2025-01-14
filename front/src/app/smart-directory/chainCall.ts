@@ -12,6 +12,8 @@ export const getAllRegistrants = async (SMDirAddress: `0x${string}`) => {
     return
   }
 
+  SMDirAddress = `0x${SMDirAddress.slice(2).trimEnd()}` as `0x${string}`;
+
   // Appel de la fonction getRegistrantLastIndex
   const lastIndexData = await client.readContract({
     address: SMDirAddress,
@@ -145,6 +147,8 @@ export const getRegistrant = async (SMDirAddress: `0x${string}`, registrantAddre
 };
 
 export const getContractURI = async (SMDirAddress: `0x${string}`) => {
+
+  SMDirAddress = `0x${SMDirAddress.slice(2).trimEnd()}` as `0x${string}`;
   // Appel de la fonction getContractURI
   const contractURI = await client.readContract({
     address: SMDirAddress,
