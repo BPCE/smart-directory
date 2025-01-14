@@ -184,7 +184,7 @@ const SmartDirectory = () => {
                 </TableHeader>
                 <TableBody>
                   <TableRow>
-                    <TableCell>{addressSMDIR!=='0x0000000000000000000000000000000000000000'?addressSMDIR:"⬆️ paste your SmartDirectory address there ⬆️ try this one as exemple : 0x4f0aFf36f83b2bb16789728Da7F32CF91d427ecA 📝 or this one : 0x623a73351159c85cdb0d3cd8665ab13dbf42f4f2 📝 "}</TableCell>
+                    <TableCell>{addressSMDIR!=='0x0000000000000000000000000000000000000000'?addressSMDIR:"⬆️ paste your SmartDirectory address there ⬆️ try this one as exemple : 0x88CBa1e32db10CE775210C80A39F407EAA982E0D 📝"}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -222,7 +222,11 @@ const SmartDirectory = () => {
                   {filteredRegistrants.map((registrant: any, index: any) => (
                     <TableRow key={index} onClick={() => handleRegistrantClick(registrant[0])} className={registrantAddress === registrant[0] ? "bg-muted" : ""}>
                       <TableCell>{registrant[0]}</TableCell>
-                      <TableCell>{registrant[1]}</TableCell>
+                      <TableCell>
+                        <Link href={registrant[1]} target="_blank" className="text-blue-500 break-words">
+                          {registrant[1]}
+                        </Link>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -252,11 +256,10 @@ const SmartDirectory = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Smartcontract Address (Reference)</TableHead>
-                  <TableHead>Last Status</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>ProjectID</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Version</TableHead>
-                  <TableHead>status</TableHead>
                   <TableHead>timestamp</TableHead>
                   <TableHead>registrantAddress</TableHead>
                 </TableRow>
@@ -269,7 +272,6 @@ const SmartDirectory = () => {
                     <TableCell>{reference[3]}</TableCell>
                     <TableCell>{reference[4]}</TableCell>
                     <TableCell>{reference[5]}</TableCell>
-                    <TableCell>{reference[6]}</TableCell>
                     <TableCell>{convertTimestampToParisTime(reference[7])}</TableCell>
                     <TableCell>{reference[0]}</TableCell>
                   </TableRow>
@@ -291,7 +293,7 @@ const SmartDirectory = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {allReferenceStatus?.map((referenceStatus: any, index: any) => (
+                {allReferenceStatus && [...allReferenceStatus].sort((a: readonly [string, bigint], b: readonly [string, bigint]) => Number(b[1]) - Number(a[1])).map((referenceStatus: readonly [string, bigint], index: number) => (
                   <TableRow key={index}>
                     <TableCell>{convertTimestampToParisTime(referenceStatus[1])}</TableCell>
                     <TableCell>{referenceStatus[0]}</TableCell>
