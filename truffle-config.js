@@ -125,7 +125,10 @@ module.exports = {
 		  //mnemonic: {
 			  //phrase: process.env.MNEMONIC
 		  //},
-          privateKeys:[process.env.QAXH_PVK],
+          privateKeys:[
+            process.env.QAXH_PVK,
+            process.env.HAMZA_PVK
+          ],
           providerOrUrl: 'https://rpc-amoy.polygon.technology/'
         })
       },
