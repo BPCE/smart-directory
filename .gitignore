@@ -27,13 +27,11 @@ __pycache__/
 test_uSafe.py
 fhe_pk.bin
 zero_value.bin
-custom_variables.py
 venv
 .idea
 qodana.yaml
 Writerside/
 api/log/
-constants.py
 .states
 
 /compiler_config.json
