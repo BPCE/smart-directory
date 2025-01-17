@@ -366,7 +366,7 @@ library SmartDirectoryLib {
 
     function createRegistrantInternal(SmartDirectoryStorage storage self, address _registrantAddress) private {
 
-        Registrant memory registrant;
+        Registrant memory registrant = Registrant("", 0, new address[](0));
         registrant.index = self.registrants.length;
 
         self.registrants.push(_registrantAddress);
