@@ -107,7 +107,7 @@ const SmartDirectory = () => {
     setReferenceAddress(address);
   };
   const handleAddressSubmit = () => {
-    setAddressSMDIR(inputAddress as `0x${string}`);
+    setAddressSMDIR(inputAddress.trimEnd() as `0x${string}`);
   };
   const handleSearchRegistrant = () => {
     if (searchRegistrant){
