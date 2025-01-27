@@ -1,53 +1,64 @@
-# @metamask/template-snap-monorepo
+# Metamask Snap Pour SmartDirectory
 
-This repository demonstrates how to develop a snap with TypeScript. For detailed
-instructions, see [the MetaMask documentation](https://docs.metamask.io/guide/snaps.html#serving-a-snap-to-your-local-environment).
+Bienvenue dans le projet **Metamask Snap** pour le **SmartDirectory**! Ce guide explique les prérequis et les étapes nécessaires pour configurer et lancer le projet.
 
-MetaMask Snaps is a system that allows anyone to safely expand the capabilities
-of MetaMask. A _snap_ is a program that we run in an isolated environment that
-can customize the wallet experience.
+## 🛠 Prérequis
 
-## Snaps is pre-release software
+Avant de commencer, assurez-vous d'avoir installé :
 
-To interact with (your) Snaps, you will need to install [MetaMask Flask](https://metamask.io/flask/),
-a canary distribution for developers that provides access to upcoming features.
+1. **Node.js** : Version **18.20.0** ou supérieure.
+   - [Téléchargez Node.js ici](https://nodejs.org/)
+2. **Yarn** : Le gestionnaire de paquets.
+   - Installez Yarn globalement si ce n'est pas déjà fait :
+     ```bash
+     npm install -g yarn
+     ```
 
-## Getting Started
+## 🚀 Installation
 
-Clone the template-snap repository [using this template](https://github.com/MetaMask/template-snap-monorepo/generate)
-and set up the development environment:
+Le projet inclut un script `install.sh` qui simplifie l'installation et le démarrage.
 
-```shell
-yarn install && yarn start
+1. Rendez le script d'installation exécutable :
+
+   ```bash
+   chmod +x install.sh
+   ```
+
+2. Exécutez le script pour installer les dépendances et démarrer le projet :
+   ```bash
+   ./install.sh
+   ```
+
+## ▶️ Démarrage manuel
+
+Si vous avez déjà installé les dépendances avec `yarn install`, vous pouvez simplement démarrer le projet avec :
+
+```bash
+yarn start
 ```
 
-## Cloning
+## 📦 Scripts utiles
 
-This repository contains GitHub Actions that you may find useful, see
-`.github/workflows` and [Releasing & Publishing](https://github.com/MetaMask/template-snap-monorepo/edit/main/README.md#releasing--publishing)
-below for more information.
+- **Installer les dépendances :**
+  ```bash
+  yarn install
+  ```
+- **Démarrer le projet :**
+  ```bash
+  yarn start
+  ```
 
-If you clone or create this repository outside the MetaMask GitHub organization,
-you probably want to run `./scripts/cleanup.sh` to remove some files that will
-not work properly outside the MetaMask GitHub organization.
+## ❓ Support
 
-If you don't wish to use any of the existing GitHub actions in this repository,
-simply delete the `.github/workflows` directory.
+Si vous rencontrez des problèmes, vérifiez que :
 
-## Contributing
+1. Vous utilisez **Node.js 18.20.0** ou supérieur :
+   ```bash
+   node -v
+   ```
+2. Yarn est installé :
+   ```bash
+   yarn -v
+   ```
 
-### Testing and Linting
-
-Run `yarn test` to run the tests once.
-
-Run `yarn lint` to run the linter, or run `yarn lint:fix` to run the linter and
-fix any automatically fixable issues.
-
-### Using NPM packages with scripts
-
-Scripts are disabled by default for security reasons. If you need to use NPM
-packages with scripts, you can run `yarn allow-scripts auto`, and enable the
-script in the `lavamoat.allowScripts` section of `package.json`.
-
-See the documentation for [@lavamoat/allow-scripts](https://github.com/LavaMoat/LavaMoat/tree/main/packages/allow-scripts)
-for more information.
+---
