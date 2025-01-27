@@ -120,7 +120,7 @@ const Index = () => {
         Bienvenue sur l'extension <Span>SmartDirectory</Span>
       </Heading>
       <Subtitle>
-       ⬇️ Commencez en installant l'extension ⬇️
+       ⬇️ Installez l'extension ⬇️
       </Subtitle>
       <CardContainer>
         {error && (
@@ -158,9 +158,9 @@ const Index = () => {
         {shouldDisplayReconnectButton(installedSnap) && (
           <Card
             content={{
-              title: 'ajout de l\'extension',
+              title: 'Bouton d\'installation ou de mise à jour de l\'extension',
               description:
-          'Lorsque vous êtes connecté à l\'extension local en cours d\'exécution, ce bouton sera toujours affiché afin de mettre à jour l\'extension si une modification est apportée.',
+          '',
               button: (
           <ReconnectButton
             onClick={requestSnap}
