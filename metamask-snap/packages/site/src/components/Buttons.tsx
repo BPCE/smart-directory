@@ -73,7 +73,7 @@ const ConnectedIndicator = styled.div`
 export const InstallFlaskButton = () => (
   <Link href="https://metamask.io/flask/" target="_blank">
     <FlaskFox />
-    <ButtonText>Install MetaMask Flask</ButtonText>
+    <ButtonText>Installer MetaMask Flask</ButtonText>
   </Link>
 );
 
@@ -81,7 +81,7 @@ export const ConnectButton = (props: ComponentProps<typeof Button>) => {
   return (
     <Button {...props}>
       <FlaskFox />
-      <ButtonText>Connect</ButtonText>
+      <ButtonText>Connection</ButtonText>
     </Button>
   );
 };
@@ -90,13 +90,13 @@ export const ReconnectButton = (props: ComponentProps<typeof Button>) => {
   return (
     <Button {...props}>
       <FlaskFox />
-      <ButtonText>Reconnect</ButtonText>
+      <ButtonText>Reconnection</ButtonText>
     </Button>
   );
 };
 
 export const SendHelloButton = (props: ComponentProps<typeof Button>) => {
-  return <Button {...props}>Send message</Button>;
+  return <Button {...props}>Envoyer un message</Button>;
 };
 
 export const HeaderButtons = () => {
@@ -118,7 +118,7 @@ export const HeaderButtons = () => {
   return (
     <ConnectedContainer>
       <ConnectedIndicator />
-      <ButtonText>Connected</ButtonText>
+      <ButtonText>Connecté(e)</ButtonText>
     </ConnectedContainer>
   );
 };
