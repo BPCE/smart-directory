@@ -117,10 +117,10 @@ const Index = () => {
   return (
     <Container>
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        Bienvenu sur l'extension <Span>SmartDirectory</Span>
       </Heading>
       <Subtitle>
-        Get started by editing <code>src/index.tsx</code>
+       ⬇️ Commencez en installant l'extension ⬇️
       </Subtitle>
       <CardContainer>
         {error && (
@@ -131,9 +131,9 @@ const Index = () => {
         {!isMetaMaskReady && (
           <Card
             content={{
-              title: 'Install',
+              title: 'Installer',
               description:
-                'Snaps is pre-release software only available in MetaMask Flask, a canary distribution for developers with access to upcoming features.',
+          'L\'extension est un logiciel en pré-version disponible uniquement dans MetaMask Flask.',
               button: <InstallFlaskButton />,
             }}
             fullWidth
@@ -142,14 +142,14 @@ const Index = () => {
         {!installedSnap && (
           <Card
             content={{
-              title: 'Connect',
+              title: 'Connecter',
               description:
-                'Get started by connecting to and installing the example snap.',
+          'Commencez par vous connecter et installer l\'extension SmartDirectory.',
               button: (
-                <ConnectButton
-                  onClick={requestSnap}
-                  disabled={!isMetaMaskReady}
-                />
+          <ConnectButton
+            onClick={requestSnap}
+            disabled={!isMetaMaskReady}
+          />
               ),
             }}
             disabled={!isMetaMaskReady}
@@ -158,20 +158,20 @@ const Index = () => {
         {shouldDisplayReconnectButton(installedSnap) && (
           <Card
             content={{
-              title: 'Reconnect',
+              title: 'ajout de l\'extension',
               description:
-                'While connected to a local running snap this button will always be displayed in order to update the snap if a change is made.',
+          'Lorsque vous êtes connecté à l\'extension local en cours d\'exécution, ce bouton sera toujours affiché afin de mettre à jour l\'extension si une modification est apportée.',
               button: (
-                <ReconnectButton
-                  onClick={requestSnap}
-                  disabled={!installedSnap}
-                />
+          <ReconnectButton
+            onClick={requestSnap}
+            disabled={!installedSnap}
+          />
               ),
             }}
             disabled={!installedSnap}
           />
         )}
-        <Card
+        {/* <Card
           content={{
             title: 'Send Hello message',
             description:
@@ -189,14 +189,12 @@ const Index = () => {
             Boolean(installedSnap) &&
             !shouldDisplayReconnectButton(installedSnap)
           }
-        />
+        /> */}
         <Notice>
-          <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
-          </p>
+            <p>
+            Veuillez noter que les fichiers <b>snap.manifest.json</b> et{' '}
+            <b>package.json</b> doivent être situés dans le répertoire racine du serveur.
+            </p>
         </Notice>
       </CardContainer>
     </Container>
