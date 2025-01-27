@@ -54,7 +54,7 @@ export const Header = ({
           onToggle={handleToggleClick}
           defaultChecked={getThemePreference()}
         />
-        <HeaderButtons />
+        
       </RightContainer>
     </HeaderWrapper>
   );
