@@ -117,7 +117,7 @@ const Index = () => {
   return (
     <Container>
       <Heading>
-        Bienvenu sur l'extension <Span>SmartDirectory</Span>
+        Bienvenue sur l'extension <Span>SmartDirectory</Span>
       </Heading>
       <Subtitle>
        ⬇️ Commencez en installant l'extension ⬇️
