@@ -5,7 +5,7 @@
 # Fonction pour afficher les messages d'erreur avec un emoji
 function error_message {
     echo "❌ $1"
-    exit 1
+    return 1
 }
 
 # Vérifier si Node.js est installé
@@ -82,4 +82,4 @@ if [ $? -ne 0 ]; then
     error_message "Erreur lors du démarrage du projet."
 fi
 echo "🎉 Projet démarré avec succès !"
-exit 0
+return 0
