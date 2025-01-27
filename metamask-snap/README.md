@@ -1,6 +1,6 @@
-# Metamask Snap Pour SmartDirectory
+# Extension Metamask Pour SmartDirectory
 
-Bienvenue dans le projet **Metamask Snap** pour le **SmartDirectory**! Ce guide explique les prérequis et les étapes nécessaires pour configurer et lancer le projet.
+Bienvenue dans le projet **Extension Metamask** pour le **SmartDirectory**! Ce guide explique les prérequis et les étapes nécessaires pour configurer et lancer le projet.
 
 ## 🛠 Prérequis
 
