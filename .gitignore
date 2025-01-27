@@ -18,7 +18,6 @@ swarm/
 QAXHA/
 out.log
 trace.log
-package.json
 package-lock.json
 .vscode/
 yarn.lock
