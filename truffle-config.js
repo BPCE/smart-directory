@@ -113,6 +113,30 @@ module.exports = {
       maxPriorityFeePerGas: 1500000000,
       maxFeePerGas: 1500000100 // must add twice the base fee
     },
+    holesky: {
+      network_id: 17000,
+      networkCheckTimeout: 1200000,
+      timeoutBlocks: 2000,
+      pollingInterval: 5000,
+      deploymentPollingInterval: 5000,
+      retryTimeout: 5000,
+      provider: () => {
+          return new HDWalletProvider({
+		  //mnemonic: {
+			  //phrase: process.env.MNEMONIC
+		  //},
+          privateKeys:[
+            process.env.QAXH_PVK
+          ],
+          //providerOrUrl: process.env.RPC_HOLESKY_PROVIDER
+          providerOrUrl: 'https://ethereum-holesky-rpc.publicnode.com'
+        })
+      },
+      SkipDryRun: true,
+      gas:10000000,
+      maxPriorityFeePerGas: 1500000000,
+      maxFeePerGas: 1500000100 // must add twice the base fee
+    },
     amoy: {
       network_id: 80002,
       networkCheckTimeout: 1200000,
