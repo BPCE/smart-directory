@@ -84,6 +84,12 @@ STR_NULL_ADDRESS = "0x0000000000000000000000000000000000000000"
 def init(blockchain_id):
     globals.SERVICE_CID = SERVICE_CID_TEST
     match str(blockchain_id):
+        case "17000":
+            globals.QAXHU = QAXHU_AMOY
+            globals.QAXHA = QAXHA_AMOY
+            globals.AUTH_ADDRESS = AUTH_ADDRESS_AMOY
+            globals.AUTH_ACCESS_URL = AUTH_ACCESS_URL_AMOY
+            globals.FILESERVER_RETURN_URL = FILESERVER_RETURN_URL_AMOY
         case "80002":
             globals.QAXHU = QAXHU_AMOY
             globals.QAXHA = QAXHA_AMOY
