@@ -90,7 +90,8 @@ _fhenix_testnet_url = "https://api.testnet.fhenix.zone:7747"
 _zama_devnet_url = "https://devnet.zama.ai"
 _xrpl_test_url = "https://rpc-evm-sidechain.xrpl.org"
 _hardhat_url = "http://127.0.0.1:8545/"
-
+_mekong_devnet_url = "https://rpc.mekong.ethpandaops.io"
+_holesky_testnet_url = "https://ethereum-holesky-rpc.publicnode.com"
 
 _headers = build_http_headers()
 
@@ -115,6 +116,10 @@ def get_gasstation(chain_id):
         return "https://gasstation-testnet.polygon.technology/v2"
     elif int(chain_id) == 1440002:
        return "https://gas-station.qaxh.io/dev-xrpl"
+    elif int(chain_id) == 7078815900:
+        return "https://gas-station.qaxh.io/dev-mekong"
+    elif int(chain_id) == 17000:
+        return "https://gas-station.qaxh.io/holesky-ethereum"
     else:
         return ""
 
@@ -235,6 +240,10 @@ def init_w3(new_chain_id):
             set_poa_chain(w3)
         case "sepolia" | "11155111":
             w3 = Web3(load_provider_from_uri(_infura_sepolia_url, _headers))
+        case "holesky" | "17000":
+            w3 = Web3(load_provider_from_uri(_holesky_testnet_url, _headers))
+        case "mekong" | "7078815900":
+            w3 = Web3(load_provider_from_uri(_mekong_testnet_url, _headers))
         case "fhenixtestnet" | "42069":
             w3 = Web3(load_provider_from_uri(_fhenix_testnet_url, _headers))
             sleep(1)
