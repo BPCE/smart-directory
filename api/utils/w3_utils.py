@@ -145,6 +145,7 @@ def get_transaction_dict(from_add = None, w3 = None):
         the_maxPriorityFee = 2 * 1000000000 # 1Gwei
         result['maxPriorityFeePerGas'] = the_maxPriorityFee
         result['maxFeePerGas'] = the_maxPriorityFee + 2 * base_fee
+        logging.info ("case no base_fee tx_dict: " + str(result))
         return result
 
     url = get_gasstation(chain_id)
@@ -155,6 +156,7 @@ def get_transaction_dict(from_add = None, w3 = None):
         the_maxPriorityFee = 2 * 1000000000 # 1Gwei
         result['maxPriorityFeePerGas'] = the_maxPriorityFee
         result['maxFeePerGas'] = the_maxPriorityFee + 2 * base_fee
+        logging.info ("case no gas station tx_dict: " + str(result))
         return result
 
     # call gas station
@@ -171,19 +173,19 @@ def get_transaction_dict(from_add = None, w3 = None):
                 data['standard']['maxFee']*1000000000)
             while (result['maxPriorityFeePerGas'] > result['maxFeePerGas']):
                 result['maxFeePerGas'] = result['maxFeePerGas'] + 2 * base_fee
-            logging.info (str(result))
+            logging.info ("case polygon gas station tx_dict: " + str(result))
             return result
         elif 'result' in data:
-            logging.info ("etherscan or our gasstation")
             fee_data = data['result']
-            base_fee = int(fee_data['suggestBaseFee']*1000000000)
+            logging.info ("etherscan or our gasstation fee_data: "+ str(fee_data))
+            base_fee = int(float(fee_data['suggestBaseFee'])*1000000000)
             the_maxPriorityFee = int(
-                (fee_data['ProposeGasPrice']-fee_data['maxPriorityFee'])*1000000000)
+                (float(fee_data['FastGasPrice'])-float(fee_data['suggestBaseFee']))*1000000000)
             if the_maxPriorityFee == 0:
-                the_maxPriorityFee = 1000000000;
+                the_maxPriorityFee = 1000000000
             result['maxPriorityFeePerGas'] = the_maxPriorityFee
             result['maxFeePerGas'] = the_maxPriorityFee + 2 * base_fee
-            logging.info (str(result))
+            logging.info ("case etherscan or our gasstation tx_dict: " + str(result))
             return result
     except requests.exceptions.ConnectionError as e:
         the_maxPriorityFee = 50 * 1000000000
@@ -193,6 +195,7 @@ def get_transaction_dict(from_add = None, w3 = None):
     if the_maxPriorityFee is not None:
         result['maxPriorityFeePerGas'] = the_maxPriorityFee
         result['maxFeePerGas'] = the_maxPriorityFee + 2 * base_fee
+        logging.info ("case maxPriorityFee tx_dict: " + str(result))
         return result
 
 # some middleware documentation:
