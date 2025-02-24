@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/template-snap-monorepo.git"
   },
   "source": {
-    "shasum": "HP/u4CVpzg1o3Fy5aizk+3CmGFnsIZbA+kXaIdoe5ZY=",
+    "shasum": "nSpMkQ9qvbQcA/jU+F8wXufPQcMbTRAM3MqtRGObcBE=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -17,6 +17,7 @@
     }
   },
   "initialPermissions": {
+    "endowment:page-home": {},
     "snap_manageState": {},
     "endowment:transaction-insight": {
       "allowTransactionOrigin": true

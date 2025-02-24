@@ -1,10 +1,12 @@
-import type { OnTransactionHandler } from '@metamask/snaps-sdk';
-import { Box, Heading, Text, Bold } from '@metamask/snaps-sdk/jsx';
+import { OnTransactionHandler, OnHomePageHandler, OnUserInputHandler, UserInputEventType, OnInstallHandler } from '@metamask/snaps-sdk';
+import { Box, Heading, Text, Bold, Section, Form, Field, Input, Button, Option, Dropdown } from '@metamask/snaps-sdk/jsx';
 import { Chain, createPublicClient, http } from 'viem';
-import { polygonAmoy, holesky } from 'viem/chains';
+import { polygonAmoy, holesky, sepolia } from 'viem/chains';
 import { abi } from './abi';
 
 //TODO: Demander à l'utilisateur de renseigner les informations de configuration (address, chain, url) pour chaque réseau
+
+const chainArray = [polygonAmoy, holesky, sepolia];
 
 const smartDirectoryConfig: [number, Chain, string, `0x${string}`][] = [
   [
@@ -37,6 +39,56 @@ const createCustomClient = (chainId: number) => {
     return String(error);
   }
 };
+
+const getFromMemorySmartDirectoryConfig = async () => {
+  const state =
+    (await snap.request({
+      method: 'snap_manageState',
+      params: { operation: 'get', encrypted: false },
+    })) || {};
+  return state.smartDirectoryConfig;
+};
+
+const addToMemorySmartDirectoryConfig = async (newConfig: [number, Chain, string, `0x${string}`]) => {
+  const currentState = await getFromMemorySmartDirectoryConfig();
+  const smartDirectoryConfig = currentState ? JSON.parse(currentState as unknown as string) : [];
+  smartDirectoryConfig.push(newConfig);
+  await snap.request({
+    method: 'snap_manageState',
+    params: {
+      operation: 'update',
+      newState: { smartDirectoryConfig: JSON.stringify(smartDirectoryConfig) },
+      encrypted: false,
+    },
+  });
+  const afterState = await getFromMemorySmartDirectoryConfig();
+  return afterState;
+};
+
+const removeFromMemorySmartDirectoryConfig = async (index: number) => {
+  const state =
+    (await snap.request({
+      method: 'snap_manageState',
+      params: { operation: 'get', encrypted: false },
+    })) || {};
+  if (!state.smartDirectoryConfig) {
+    return;
+  }
+  const smartDirectoryConfig = JSON.parse(state.smartDirectoryConfig as string);
+  smartDirectoryConfig.splice(index, 1);
+  await snap.request({
+    method: 'snap_manageState',
+    params: {
+      operation: 'update',
+      newState: { ...state, smartDirectoryConfig: JSON.stringify(smartDirectoryConfig) },
+      encrypted: false,
+    },
+  });
+};
+
+// ──────────────────────────────────────────────
+// FONCTIONS DE LECTURE DE CONTRAT
+// ──────────────────────────────────────────────
 
 const getReferenceLastStatus = async (
   SMDirAddress: `0x${string}`,
@@ -105,11 +157,14 @@ const getRegistrantUri = async (
   return registrantUri;
 };
 
+
+// ──────────────────────────────────────────────
+// HANDLERS
+// ──────────────────────────────────────────────
+
 // Gestionnaire des transactions sortantes.
-export const onTransaction: OnTransactionHandler = async ({
-  transaction,
-  chainId,
-}) => {
+export const onTransaction: OnTransactionHandler = async ({ transaction, chainId }) => {
+
   // Correction de la recherche de SMdirAddress
   const SMdirAddress = smartDirectoryConfig.find(
     ([configId]) => configId = (chainId as unknown as number)
@@ -127,30 +182,8 @@ export const onTransaction: OnTransactionHandler = async ({
     customClient,
   );
 
-  // ──────────────────────────────────────────────
-  // GESTION DU STOCKAGE : stocker smartDirectoryConfig dans l'état du Snap
-  // ──────────────────────────────────────────────
-
-  // 1. Récupérer l'état actuel (ou un objet vide si inexistant)
-  const state =
-    (await snap.request({
-      method: 'snap_manageState',
-      params: { operation: 'get', encrypted: false },
-    })) || {};
-
-  // 2. Vérifier si smartDirectoryConfig a déjà été stocké
-  if (!state.smartDirectoryConfig) {
-    await snap.request({
-      method: 'snap_manageState',
-      params: {
-        operation: 'update',
-        newState: { ...state, smartDirectoryConfig: JSON.stringify(smartDirectoryConfig) },
-        encrypted: false,
-      },
-    });
-    // On met à jour la variable state pour l'affichage
-    state.smartDirectoryConfig = JSON.stringify(smartDirectoryConfig);
-  }
+  // Récupérer l'état actuel (ou un objet vide si inexistant)
+  const state = getFromMemorySmartDirectoryConfig
 
   // ──────────────────────────────────────────────
   // AFFICHAGE DU CONTENU : inclusion du tableau smartDirectoryConfig stocké
@@ -182,10 +215,129 @@ export const onTransaction: OnTransactionHandler = async ({
         </Text>
         <Heading>Smart Directory Configuration</Heading>
         {/* Affichage de chaque élément stocké */}
-        {typeof state.smartDirectoryConfig === 'string' && JSON.parse(state.smartDirectoryConfig).map((entry: any, index: number) => (
+        {typeof state === 'string' && JSON.parse(state).map((entry: any, index: number) => (
           <Text key={`config-${index}`}>{JSON.stringify(entry)}</Text>
         ))}
       </Box>
     ),
   };
+};
+
+
+export const onHomePage: OnHomePageHandler = async () => {
+  const smartDirectoryConfig = await getFromMemorySmartDirectoryConfig();
+  return {
+    content: (
+      <Box>
+        <Heading>Smart Directory Configuration</Heading>
+        <Section>
+          <Heading>add a new SMdir :</Heading>
+          <Form name="form-to-fill">
+            <Text>Choose a Chain :</Text>
+            <Dropdown name="chainid">
+              {chainArray.map((chain, index) => (
+                <Option key={`chain-${index}`} value={chain.id.toString()}>
+                  {chain.name}
+                </Option>
+              ))}
+            </Dropdown>
+            <Field label="Smart Directory Address">
+              <Input name="smartDirectoryAddress" placeholder="Enter your SMdir address" />
+            </Field>
+            <Button type="submit">Submit</Button>
+          </Form>
+        </Section>
+        <Heading>Smart Directory Configuration</Heading>
+
+        {/* Affichage de chaque élément stocké */}
+        {smartDirectoryConfig && JSON.parse(smartDirectoryConfig as string).map((entry: [number, Chain, string, `0x${string}`], index: number) => (
+          <Section>
+            <Text key={`config-${index}`}>{entry.toString()}</Text>
+            <Form name={`delete-form-${index}`}>
+              <Input name="deleteConfig" value={index.toString()} />
+              <Button type="submit">Delete 🚮</Button>
+            </Form>
+          </Section>
+        ))}
+
+      </Box>
+    ),
+  };
+};
+
+export const onUserInput: OnUserInputHandler = async ({ id, event }): Promise<void> => {
+  if (event.type === UserInputEventType.FormSubmitEvent) {
+    //------- Supprimer un Smart Directory
+    if (event.value.deleteConfig !== undefined) {
+      const index = Number(event.value.deleteConfig);
+      await removeFromMemorySmartDirectoryConfig(index);
+      const newState = await getFromMemorySmartDirectoryConfig();
+      await snap.request({
+        method: 'snap_updateInterface',
+        params: {
+          id,
+          ui: (
+            <Box>
+              <Heading>Smart Directory Configuration</Heading>
+              {newState &&
+                JSON.parse(newState as string).map((entry: any, index: number) => (
+                  <Section key={`config-${index}`}>
+                    <Text>{entry.toString()}</Text>
+                  </Section>
+                ))}
+            </Box>
+          ),
+        },
+      });
+      return;
+    }
+    //------- Ajouter un nouveau Smart Directory
+    if (event.value.chainid !== undefined && event.value.smartDirectoryAddress !== undefined) {
+      const currentState = await addToMemorySmartDirectoryConfig([
+        Number(event.value.chainid),
+        chainArray.find((chain) => chain.id === Number(event.value.chainid))!,
+        chainArray.find((chain) => chain.id === Number(event.value.chainid))!.blockExplorers.default.url,
+        `0x${event.value.smartDirectoryAddress}`,
+      ]);
+      await snap.request({
+        method: 'snap_updateInterface',
+        params: {
+          id,
+          ui: (
+            <Box>
+              <Heading>Smart Directory Configuration</Heading>
+              {/* Affichage de chaque élément stocké */}
+              {currentState && JSON.parse(currentState as string).map((entry: any, index: number) => (
+                <Section>
+                  <Text key={`config-${index}`}>{entry.toString()}</Text>
+                </Section>
+              ))}
+            </Box>
+          ),
+        },
+      });
+    }
+  }
+};
+
+export const onInstall: OnInstallHandler = async () => {
+  // ──────────────────────────────────────────────
+  // GESTION DU STOCKAGE : stocker smartDirectoryConfig dans l'état du Snap
+  // ──────────────────────────────────────────────
+
+  // 1. Récupérer l'état actuel (ou un objet vide si inexistant)
+  const state = await getFromMemorySmartDirectoryConfig();
+
+  // 2. Vérifier si smartDirectoryConfig a déjà été stocké
+  if (!state) {
+    // 3. Si non, stocker un tableau vide
+    await snap.request({
+      method: 'snap_manageState',
+      params: {
+        operation: 'update',
+        newState: { smartDirectoryConfig: JSON.stringify(smartDirectoryConfig) },
+        encrypted: false,
+      },
+    });
+  }
 };
