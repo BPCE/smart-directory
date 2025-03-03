@@ -4,7 +4,6 @@ import { Chain, createPublicClient, http } from 'viem';
 import { polygonAmoy, holesky, sepolia } from 'viem/chains';
 import { abi } from './abi';
 
-//TODO: Demander à l'utilisateur de renseigner les informations de configuration (address, chain, url) pour chaque réseau
 
 const chainArray = [polygonAmoy, holesky, sepolia];
 
@@ -24,9 +23,9 @@ const smartDirectoryConfig: [number, Chain, string, `0x${string}`][] = [
 ];
 
 const createCustomClient = (chainId: number) => {
-  // Correction de l'opérateur d'égalité
+
   const [id, clientObject, url, SMDirAddress] =
-    smartDirectoryConfig.find(([configId]) => configId = chainId) ?? [];
+    smartDirectoryConfig.find(([configId]) => configId == chainId) ?? [];
   try {
     if (!id) {
       throw new Error('Invalid chainId');
@@ -47,6 +46,20 @@ const getFromMemorySmartDirectoryConfig = async () => {
       params: { operation: 'get', encrypted: false },
     })) || {};
   return state.smartDirectoryConfig;
+};
+
+const getFromMemorySDConfigJSON = async () => {
+  const state = await getFromMemorySmartDirectoryConfig();
+  if (!state) {
+    return [];
+  }
+  const smartDirectoryConfig = JSON.parse(state as string);
+  return smartDirectoryConfig.map(([chainId, chainObject, rpcUrl, smDirAddress]: [number, Chain, string, `0x${string}`]) => ({
+    chainId,
+    chainName: chainObject.name,
+    rpcUrl,
+    smDirAddress,
+  }));
 };
 
 const addToMemorySmartDirectoryConfig = async (newConfig: [number, Chain, string, `0x${string}`]) => {
@@ -157,7 +170,17 @@ const getRegistrantUri = async (
   return registrantUri;
 };
 
+// ──────────────────────────────────────────────
+// FONCTIONS AUTRES
+// ──────────────────────────────────────────────
 
+//fonction pour récupérer le title d'une url donnée
+const getTitle = async (url: string) => {
+  const response = await fetch(url);
+  const text = await response.text();
+  const title = text.match(/<title>(.*?)<\/title>/);
+  return title ? title[1] : 'No title found';
+};
 // ──────────────────────────────────────────────
 // HANDLERS
 // ──────────────────────────────────────────────
@@ -225,7 +248,7 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
 
 
 export const onHomePage: OnHomePageHandler = async () => {
-  const smartDirectoryConfig = await getFromMemorySmartDirectoryConfig();
+  const smartDirectoryConfig = await getFromMemorySDConfigJSON();
   return {
     content: (
       <Box>
@@ -248,18 +271,24 @@ export const onHomePage: OnHomePageHandler = async () => {
           </Form>
         </Section>
         <Heading>Smart Directory Configuration</Heading>
-
         {/* Affichage de chaque élément stocké */}
-        {smartDirectoryConfig && JSON.parse(smartDirectoryConfig as string).map((entry: [number, Chain, string, `0x${string}`], index: number) => (
-          <Section>
-            <Text key={`config-${index}`}>{entry.toString()}</Text>
-            <Form name={`delete-form-${index}`}>
-              <Input name="deleteConfig" value={index.toString()} />
-              <Button type="submit">Delete 🚮</Button>
-            </Form>
-          </Section>
-        ))}
-
+        {await Promise.all(smartDirectoryConfig.map(async (entry: { chainId: number; chainName: string; rpcUrl: string; smDirAddress: `0x${string}` }, index: number) => {
+          // const registrantUri = await getRegistrantUri(entry.smDirAddress);
+          // const title = registrantUri ? await getTitle(registrantUri) : 'No title found';
+          return (
+            <Section key={`config-${index}`}>
+              <Text>{entry.chainId.toString()}</Text>
+              <Text>{entry.chainName}</Text>
+              <Text>{entry.rpcUrl}</Text>
+              <Text>{entry.smDirAddress}</Text>
+              {/* <Text>{title}</Text> */}
+              <Form name={`delete-form-${index}`}>
+                <Input name="deleteConfig" value={index.toString()} />
+                <Button type="submit">Delete 🚮</Button>
+              </Form>
+            </Section>
+          );
+        }))}
       </Box>
     ),
   };
