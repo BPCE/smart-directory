@@ -22,22 +22,28 @@ const smartDirectoryConfig: [number, Chain, string, `0x${string}`][] = [
   ],
 ];
 
-const createCustomClient = (chainId: number) => {
+//vérifier si l'adresse commence par 0x
+const sanitizeAddress = (address: string): `0x${string}` => {
+  return address.startsWith('0x') ? address as `0x${string}` : `0x${address}` as `0x${string}`;
+};
 
-  const [id, clientObject, url, SMDirAddress] =
-    smartDirectoryConfig.find(([configId]) => configId == chainId) ?? [];
+
+const createCustomClient = async (chainId: number) => {
+  // Récupérer la chaîne à partir de chainArray, et non pas de la config stockée
+  const chainObject = chainArray.find((chain) => chain.id === chainId);
+  if (!chainObject) {
+    throw new Error(`Chain with id ${chainId} not found`);
+  }
   try {
-    if (!id) {
-      throw new Error('Invalid chainId');
-    }
     return createPublicClient({
-      chain: clientObject,
-      transport: http(url),
+      chain: chainObject,
+      transport: http(chainObject.rpcUrls.default.http[0]),
     });
   } catch (error) {
     return String(error);
   }
 };
+
 
 const getFromMemorySmartDirectoryConfig = async () => {
   const state =
@@ -170,16 +176,43 @@ const getRegistrantUri = async (
   return registrantUri;
 };
 
+const getSmDirUri = async (
+  SMDirAddress: `0x${string}`,
+  customClient: any,
+) => {
+  try {
+    const contractURI = await customClient.readContract({
+      address: SMDirAddress,
+      abi,
+      functionName: 'getContractUri',
+    });
+    // Si le résultat est vide, on renvoie null
+    if (!contractURI || contractURI === '0x') {
+      return "null";
+    }
+    return contractURI;
+  } catch (error) {
+    console.error("Erreur lors de la lecture de l'URI du contrat :", error);
+    return null;
+  }
+};
+
 // ──────────────────────────────────────────────
 // FONCTIONS AUTRES
 // ──────────────────────────────────────────────
 
 //fonction pour récupérer le title d'une url donnée
 const getTitle = async (url: string) => {
-  const response = await fetch(url);
-  const text = await response.text();
-  const title = text.match(/<title>(.*?)<\/title>/);
-  return title ? title[1] : 'No title found';
+  try {
+    console.log('Fetching title for:', url);
+    const response = await fetch(url);
+    const text = await response.text();
+    const title = text.match(/<title>(.*?)<\/title>/);
+    return title ? title[1] : 'No title found';
+  } catch (error) {
+    console.error('Error fetching title:', error);
+    return JSON.stringify(error);
+  }
 };
 // ──────────────────────────────────────────────
 // HANDLERS
@@ -193,7 +226,7 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
     ([configId]) => configId = (chainId as unknown as number)
   )?.[3] as `0x${string}`;
 
-  const customClient = createCustomClient(chainId as unknown as number);
+  const customClient = await createCustomClient(chainId as unknown as number);
   const referenceInfo = await getReferenceLastStatus(
     SMdirAddress,
     transaction.to as `0x${string}`,
@@ -273,15 +306,17 @@ export const onHomePage: OnHomePageHandler = async () => {
         <Heading>Smart Directory Configuration</Heading>
         {/* Affichage de chaque élément stocké */}
         {await Promise.all(smartDirectoryConfig.map(async (entry: { chainId: number; chainName: string; rpcUrl: string; smDirAddress: `0x${string}` }, index: number) => {
-          // const registrantUri = await getRegistrantUri(entry.smDirAddress);
-          // const title = registrantUri ? await getTitle(registrantUri) : 'No title found';
+          const customClient = await createCustomClient(entry.chainId);
+          const SmDirUri = await getSmDirUri(entry.smDirAddress, customClient);
+          // const title = SmDirUri ? await getTitle(SmDirUri) : 'No title found';
           return (
             <Section key={`config-${index}`}>
               <Text>{entry.chainId.toString()}</Text>
               <Text>{entry.chainName}</Text>
               <Text>{entry.rpcUrl}</Text>
               <Text>{entry.smDirAddress}</Text>
-              {/* <Text>{title}</Text> */}
+              <Text>{SmDirUri ? SmDirUri : "no Uri attached to this contract"}</Text>
+              <Text>{(await getTitle("http://127.0.0.1:3000")) || "no title found"}</Text>
               <Form name={`delete-form-${index}`}>
                 <Input name="deleteConfig" value={index.toString()} />
                 <Button type="submit">Delete 🚮</Button>
@@ -326,7 +361,7 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }): Promise<vo
         Number(event.value.chainid),
         chainArray.find((chain) => chain.id === Number(event.value.chainid))!,
         chainArray.find((chain) => chain.id === Number(event.value.chainid))!.blockExplorers.default.url,
-        `0x${event.value.smartDirectoryAddress}`,
+        sanitizeAddress(event.value.smartDirectoryAddress as string),
       ]);
       await snap.request({
         method: 'snap_updateInterface',
@@ -353,20 +388,12 @@ export const onInstall: OnInstallHandler = async () => {
   // ──────────────────────────────────────────────
   // GESTION DU STOCKAGE : stocker smartDirectoryConfig dans l'état du Snap
   // ──────────────────────────────────────────────
-
-  // 1. Récupérer l'état actuel (ou un objet vide si inexistant)
-  const state = await getFromMemorySmartDirectoryConfig();
-
-  // 2. Vérifier si smartDirectoryConfig a déjà été stocké
-  if (!state) {
-    // 3. Si non, stocker un tableau vide
-    await snap.request({
-      method: 'snap_manageState',
-      params: {
-        operation: 'update',
-        newState: { smartDirectoryConfig: JSON.stringify(smartDirectoryConfig) },
-        encrypted: false,
-      },
-    });
-  }
+  await snap.request({
+    method: 'snap_manageState',
+    params: {
+      operation: 'update',
+      newState: { smartDirectoryConfig: JSON.stringify(smartDirectoryConfig) },
+      encrypted: false,
+    },
+  });
 };
