@@ -10,11 +10,12 @@
   "main": "./dist/bundle.js",
   "files": [
     "dist/",
+    "img/",
     "snap.manifest.json"
   ],
   "scripts": {
     "allow-scripts": "yarn workspace root allow-scripts",
-    "build": "mm-snap build",
+    "build": "webpack --config webpack.config.js",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf dist",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
@@ -30,6 +31,8 @@
     "@metamask/snaps-sdk": "^6.14.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
     "@jest/globals": "^29.5.0",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.2.0",
@@ -42,6 +45,7 @@
     "@types/react-dom": "18.2.4",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
+    "babel-loader": "^10.0.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "~2.26.0",
@@ -55,7 +59,9 @@
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.1.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1"
   },
   "packageManager": "yarn@3.2.1",
   "engines": {

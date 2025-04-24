@@ -4,6 +4,10 @@ import { resolve } from 'path';
 const config: SnapConfig = {
   bundler: 'webpack',
   input: resolve(__dirname, 'src/index.tsx'),
+  output: {
+    minimize: false
+  },
+  sourceMap: "inline",
   server: {
     port: 8080,
   },
@@ -13,3 +17,4 @@ const config: SnapConfig = {
 };
 
 export default config;
+

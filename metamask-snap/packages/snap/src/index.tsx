@@ -287,9 +287,12 @@ export const onHomePage: OnHomePageHandler = async () => {
       <Box>
         <Heading>Smart Directory Configuration</Heading>
         <Section>
-          <Heading>add a new SMdir :</Heading>
+          <Heading>adding a new SMdir :</Heading>
           <Form name="form-to-fill">
-            <Text>Choose a Chain :</Text>
+          <Field label="Smart Directory Address">
+              <Input name="smartDirectoryAddress" placeholder="Enter your SMdir address" />
+            </Field>
+            <Text>In chain :</Text>
             <Dropdown name="chainid">
               {chainArray.map((chain, index) => (
                 <Option key={`chain-${index}`} value={chain.id.toString()}>
@@ -297,10 +300,7 @@ export const onHomePage: OnHomePageHandler = async () => {
                 </Option>
               ))}
             </Dropdown>
-            <Field label="Smart Directory Address">
-              <Input name="smartDirectoryAddress" placeholder="Enter your SMdir address" />
-            </Field>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Add</Button>
           </Form>
         </Section>
         <Heading>Smart Directory Configuration</Heading>
@@ -363,6 +363,7 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }): Promise<vo
         chainArray.find((chain) => chain.id === Number(event.value.chainid))!.blockExplorers.default.url,
         sanitizeAddress(event.value.smartDirectoryAddress as string),
       ]);
+      console.log("adding")
       await snap.request({
         method: 'snap_updateInterface',
         params: {
