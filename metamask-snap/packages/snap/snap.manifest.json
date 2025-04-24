@@ -1,16 +1,17 @@
 {
   "version": "0.1.0",
-  "description": "An example Snap written in TypeScript.",
+  "description": "SmartDirectory confirms that you are interacting with a registered contract address",
   "proposedName": "SmartDirectory Analysis",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/template-snap-monorepo.git"
   },
   "source": {
-    "shasum": "b6nV3ePdiAZ7jXxtVocvf4GDEwVbomG5+MEnYfbKwgQ=",
+    "shasum": "Bsfv1Fc/UtAFyf+HZmdHxPnpIsnoZ/BVpx8NYYsvvVY=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
+        "iconPath": "img/smart-directory.svg",
         "packageName": "snap",
         "registry": "https://registry.npmjs.org/"
       }
@@ -29,6 +30,6 @@
       "snaps": true
     }
   },
-  "platformVersion": "6.14.0",
+  "platformVersion": "6.21.0",
   "manifestVersion": "0.1"
 }
