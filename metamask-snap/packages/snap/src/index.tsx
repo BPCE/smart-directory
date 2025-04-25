@@ -1,5 +1,8 @@
 import { OnTransactionHandler, OnHomePageHandler, OnUserInputHandler, UserInputEventType, OnInstallHandler } from '@metamask/snaps-sdk';
-import { Box, Heading, Text, Bold, Section, Form, Field, Input, Button, Option, Dropdown } from '@metamask/snaps-sdk/jsx';
+import { Address, Avatar, Banner, Bold, Box, Button, Card, Checkbox, Container,
+          Dropdown, Field, Footer, Form, Heading, Icon, Input, Italic,
+          Link, Row, Section, Skeleton, Text, Value,
+          Option} from '@metamask/snaps-sdk/jsx';
 import { Chain, createPublicClient, http } from 'viem';
 import { polygonAmoy, holesky, sepolia } from 'viem/chains';
 import { abi } from './abi';
@@ -205,10 +208,14 @@ const getSmDirUri = async (
 const getTitle = async (url: string) => {
   try {
     console.log('Fetching title for:', url);
-    const response = await fetch(url);
-    const text = await response.text();
-    const title = text.match(/<title>(.*?)<\/title>/);
-    return title ? title[1] : 'No title found';
+    // Utilisation de l'API Microlink pour récupérer le title meme si l'url n'accepte pas les requetes CORS
+    // Il faut ajouter le header "Access-Control-Allow-Origin" pour que la reponse a une demande directe a l'URL passe
+    const response = await fetch(`https://api.microlink.io?url=${encodeURIComponent(url)}`, {
+    });
+    console.log('Response:',  JSON.stringify(response, null, 2));
+    const data = await response.json(); // not using microlink use: response.text();
+    const title = data.data.title; // not using microlink  parse: data.match(/<title>(.*?)<\/title>/);
+    return title ? title : 'No title found';
   } catch (error) {
     console.error('Error fetching title:', error);
     return JSON.stringify(error);
@@ -220,7 +227,7 @@ const getTitle = async (url: string) => {
 
 // Gestionnaire des transactions sortantes.
 export const onTransaction: OnTransactionHandler = async ({ transaction, chainId }) => {
-
+  console.log('onTransaction is active', transaction.toString());
   // Correction de la recherche de SMdirAddress
   const SMdirAddress = smartDirectoryConfig.find(
     ([configId]) => configId = (chainId as unknown as number)
@@ -237,6 +244,7 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
     transaction.to as `0x${string}`,
     customClient,
   );
+
 
   // Récupérer l'état actuel (ou un objet vide si inexistant)
   const state = getFromMemorySmartDirectoryConfig
@@ -256,8 +264,8 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
           You are interacting with{' '}
           <Bold>{transaction.to as `0x${string}`}</Bold>{' '}
           {referenceInfo
-            ? 'which is part of the SmartDirectory.'
-            : 'which is not part of the smartdirectory.'}
+            ? 'which has been approved by the SmartDirectory authority.'
+            : 'which is unknown to the smartdirectory authorities.'}
         </Text>
         <Text>
           {referenceInfo !== null
@@ -272,15 +280,31 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
         <Heading>Smart Directory Configuration</Heading>
         {/* Affichage de chaque élément stocké */}
         {typeof state === 'string' && JSON.parse(state).map((entry: any, index: number) => (
+          <Box>
           <Text key={`config-${index}`}>{JSON.stringify(entry)}</Text>
+          </Box>
         ))}
       </Box>
     ),
   };
 };
 
+function buildCaip10Address(
+  namespace: string,
+  chainId: string,
+  accountAddress: string
+): `${string}:${string}:${string}` {
+  if (!namespace || !chainId || !accountAddress) {
+    throw new Error('All CAIP-10 components must be non-empty strings');
+  }
+  if (namespace === 'eip155' && !accountAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
+    throw new Error('Invalid EVM address format');
+  }
+  return `${namespace}:${chainId}:${accountAddress}` as `${string}:${string}:${string}`;
+}
 
 export const onHomePage: OnHomePageHandler = async () => {
+  console.log('onHomePage is active');
   const smartDirectoryConfig = await getFromMemorySDConfigJSON();
   return {
     content: (
@@ -303,24 +327,24 @@ export const onHomePage: OnHomePageHandler = async () => {
             <Button type="submit">Add</Button>
           </Form>
         </Section>
-        <Heading>Smart Directory Configuration</Heading>
+        <Heading>List of the configured Smart Directories</Heading>
         {/* Affichage de chaque élément stocké */}
         {await Promise.all(smartDirectoryConfig.map(async (entry: { chainId: number; chainName: string; rpcUrl: string; smDirAddress: `0x${string}` }, index: number) => {
           const customClient = await createCustomClient(entry.chainId);
-          const SmDirUri = await getSmDirUri(entry.smDirAddress, customClient);
-          // const title = SmDirUri ? await getTitle(SmDirUri) : 'No title found';
+          const registrantUri = await getSmDirUri(entry.smDirAddress, customClient);
+          const registrantTitle = registrantUri ? await getTitle(registrantUri) : 'No uri for this registrant';
           return (
             <Section key={`config-${index}`}>
-              <Text>{entry.chainId.toString()}</Text>
-              <Text>{entry.chainName}</Text>
+              <Box>
+              <Text>{registrantTitle || "no registrant title"}</Text>
+              <Link href={registrantUri ? registrantUri : "no registrant URI"}>{registrantUri ? registrantUri : "no registrant URI"}</Link>
+              <Address address={buildCaip10Address("eip155",entry.chainId.toString(),entry.smDirAddress)}></Address>
               <Text>{entry.rpcUrl}</Text>
-              <Text>{entry.smDirAddress}</Text>
-              <Text>{SmDirUri ? SmDirUri : "no Uri attached to this contract"}</Text>
-              <Text>{(await getTitle("http://127.0.0.1:3000")) || "no title found"}</Text>
               <Form name={`delete-form-${index}`}>
                 <Input name="deleteConfig" value={index.toString()} />
                 <Button type="submit">Delete 🚮</Button>
               </Form>
+              </Box>
             </Section>
           );
         }))}
