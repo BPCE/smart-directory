@@ -7,6 +7,9 @@ import { Chain, createPublicClient, http } from 'viem';
 import { polygonAmoy, holesky, sepolia } from 'viem/chains';
 import { abi } from './abi';
 
+import {
+  Insight,
+} from './components';
 
 const chainArray = [polygonAmoy, holesky, sepolia];
 
@@ -35,7 +38,7 @@ const createCustomClient = async (chainId: number) => {
   // Récupérer la chaîne à partir de chainArray, et non pas de la config stockée
   const chainObject = chainArray.find((chain) => chain.id === chainId);
   if (!chainObject) {
-    throw new Error(`Chain with id ${chainId} not found`);
+    return `Chain with id ${chainId} not in smart directories`;
   }
   try {
     return createPublicClient({
@@ -226,68 +229,101 @@ const getTitle = async (url: string) => {
 // ──────────────────────────────────────────────
 
 // Gestionnaire des transactions sortantes.
+// export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
+//   const { from, to } = transaction;
+
+//   const interfaceId = await snap.request({
+//     method: 'snap_createInterface',
+//     params: {
+//       ui: <Insight from={from} to={to} />,
+//       context: { transaction },
+//     },
+//   });
+
+//   return { id: interfaceId };
+// };
+
 export const onTransaction: OnTransactionHandler = async ({ transaction, chainId }) => {
   console.log('onTransaction is active', transaction.toString());
   // Correction de la recherche de SMdirAddress
+  const { from, to } = transaction;
   const SMdirAddress = smartDirectoryConfig.find(
     ([configId]) => configId = (chainId as unknown as number)
   )?.[3] as `0x${string}`;
 
   const customClient = await createCustomClient(chainId as unknown as number);
-  const referenceInfo = await getReferenceLastStatus(
-    SMdirAddress,
-    transaction.to as `0x${string}`,
-    customClient,
-  );
-  const registrantUri = await getRegistrantUri(
-    SMdirAddress,
-    transaction.to as `0x${string}`,
-    customClient,
-  );
+  var referenceInfo: string | null | any = null;
+  var registrantUri: any | null = null;
+  if (typeof customClient === 'string'){
+    referenceInfo = null;
+  } else { 
+    referenceInfo = await getReferenceLastStatus(
+      SMdirAddress,
+      transaction.to as `0x${string}`,
+      customClient,
+    );
+    registrantUri = await getRegistrantUri(
+      SMdirAddress,
+      transaction.to as `0x${string}`,
+      customClient,
+    );
+  }
+
+  const interfaceId = await snap.request({
+    method: 'snap_createInterface',
+    params: {
+      ui: <Insight from={from} referenceInfo={referenceInfo} registrantUri={registrantUri}/>,
+      context: { transaction },
+    },
+  });
+
+  return { id: interfaceId };
+}
+
+//   // Récupérer l'état actuel (ou un objet vide si inexistant)
+//   const state = getFromMemorySmartDirectoryConfig
 
 
-  // Récupérer l'état actuel (ou un objet vide si inexistant)
-  const state = getFromMemorySmartDirectoryConfig
 
-  // ──────────────────────────────────────────────
-  // AFFICHAGE DU CONTENU : inclusion du tableau smartDirectoryConfig stocké
-  // ──────────────────────────────────────────────
-  return {
-    content: (
-      <Box>
-        <Heading>
-          {referenceInfo !== null
-            ? '✅🔐'
-            : '⛔️⛔️⛔️ Unknown Smartcontract ⛔️⛔️⛔️'}
-        </Heading>
-        <Text>
-          You are interacting with{' '}
-          <Bold>{transaction.to as `0x${string}`}</Bold>{' '}
-          {referenceInfo
-            ? 'which has been approved by the SmartDirectory authority.'
-            : 'which is unknown to the smartdirectory authorities.'}
-        </Text>
-        <Text>
-          {referenceInfo !== null
-            ? 'The reference status is: ' + JSON.stringify(referenceInfo)
-            : ''}
-        </Text>
-        <Text>
-          {registrantUri !== null
-            ? 'The registrant URI is: ' + registrantUri
-            : ''}
-        </Text>
-        <Heading>Smart Directory Configuration</Heading>
-        {/* Affichage de chaque élément stocké */}
-        {typeof state === 'string' && JSON.parse(state).map((entry: any, index: number) => (
-          <Box>
-          <Text key={`config-${index}`}>{JSON.stringify(entry)}</Text>
-          </Box>
-        ))}
-      </Box>
-    ),
-  };
-};
+//   // ──────────────────────────────────────────────
+//   // AFFICHAGE DU CONTENU : inclusion du tableau smartDirectoryConfig stocké
+//   // ──────────────────────────────────────────────
+//   return {
+//     content: (
+//       <Box>
+//         <Heading>
+//           {referenceInfo !== null
+//             ? '✅🔐'
+//             : '⛔️⛔️⛔️ Unknown Smartcontract ⛔️⛔️⛔️'}
+//         </Heading>
+//         <Text>
+//           You are interacting with{' '}
+//           <Bold>{transaction.to as `0x${string}`}</Bold>{' '}
+//           {referenceInfo
+//             ? 'which has been approved by the SmartDirectory authority.'
+//             : 'which is unknown to the smartdirectory authorities.'}
+//         </Text>
+//         <Text>
+//           {referenceInfo !== null
+//             ? 'The reference status is: ' + JSON.stringify(referenceInfo)
+//             : ''}
+//         </Text>
+//         <Text>
+//           {registrantUri !== null
+//             ? 'The registrant URI is: ' + registrantUri
+//             : ''}
+//         </Text>
+//         <Heading>Smart Directory Configuration</Heading>
+//         {/* Affichage de chaque élément stocké */}
+//         {typeof state === 'string' && JSON.parse(state).map((entry: any, index: number) => (
+//           <Box>
+//           <Text key={`config-${index}`}>{JSON.stringify(entry)}</Text>
+//           </Box>
+//         ))}
+//       </Box>
+//     ),
+//   };
+// };
 
 function buildCaip10Address(
   namespace: string,

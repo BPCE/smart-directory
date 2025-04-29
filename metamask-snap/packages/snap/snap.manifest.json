@@ -1,17 +1,17 @@
 {
   "version": "0.1.0",
   "description": "SmartDirectory confirms that you are interacting with a registered contract address",
-  "proposedName": "SmartDirectory Analysis",
+  "proposedName": "SmartDirectory",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/template-snap-monorepo.git"
   },
   "source": {
-    "shasum": "ALvTmll6td/LpldHDOyTicvb9o96xwu/WzIq05+NQr0=",
+    "shasum": "MRTpSp05+DaWDvRmHaVSbS4+Abkj4G0i5YS7u8zU58A=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "iconPath": "img/smart-directory.svg",
+        "iconPath": "img/smart-directory-icon.svg",
         "packageName": "snap",
         "registry": "https://registry.npmjs.org/"
       }
