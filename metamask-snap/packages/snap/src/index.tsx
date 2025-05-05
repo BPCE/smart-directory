@@ -255,23 +255,25 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
   console.log('onTransaction is active', transaction.toString());
   // Correction de la recherche de SMdirAddress
   const { from, to } = transaction;
-  const SMdirAddress = smartDirectoryConfig.find(
+  const smDirAddress = smartDirectoryConfig.find(
     ([configId]) => configId = (chainId as unknown as number)
   )?.[3] as `0x${string}`;
-
   const customClient = await createCustomClient(chainId as unknown as number);
+  const smDirUri = await getSmDirUri(smDirAddress, customClient);
+  const smDirTitle = smDirUri ? await getTitle(smDirUri) : 'No uri for this smart directory';
+
   var referenceInfo: string | null | any = null;
   var registrantUri: any | null = null;
   if (typeof customClient === 'string'){
     referenceInfo = null;
   } else { 
     referenceInfo = await getReferenceLastStatus(
-      SMdirAddress,
+      smDirAddress,
       transaction.to as `0x${string}`,
       customClient,
     );
     registrantUri = await getRegistrantUri(
-      SMdirAddress,
+      smDirAddress,
       transaction.to as `0x${string}`,
       customClient,
     );
@@ -280,7 +282,8 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
   const interfaceId = await snap.request({
     method: 'snap_createInterface',
     params: {
-      ui: <Insight from={from} referenceInfo={referenceInfo} registrantUri={registrantUri}/>,
+      ui: <Insight from={from} referenceInfo={referenceInfo} registrantUri={registrantUri} 
+                   registrantTitle={await getTitle(registrantUri)} authorityTitle={smDirTitle}/>,
       context: { transaction },
     },
   });
@@ -288,50 +291,8 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
   return { id: interfaceId };
 }
 
-//   // Récupérer l'état actuel (ou un objet vide si inexistant)
-//   const state = getFromMemorySmartDirectoryConfig
 
 
-
-//   // ──────────────────────────────────────────────
-//   // AFFICHAGE DU CONTENU : inclusion du tableau smartDirectoryConfig stocké
-//   // ──────────────────────────────────────────────
-//   return {
-//     content: (
-//       <Box>
-//         <Heading>
-//           {referenceInfo !== null
-//             ? '✅🔐'
-//             : '⛔️⛔️⛔️ Unknown Smartcontract ⛔️⛔️⛔️'}
-//         </Heading>
-//         <Text>
-//           You are interacting with{' '}
-//           <Bold>{transaction.to as `0x${string}`}</Bold>{' '}
-//           {referenceInfo
-//             ? 'which has been approved by the SmartDirectory authority.'
-//             : 'which is unknown to the smartdirectory authorities.'}
-//         </Text>
-//         <Text>
-//           {referenceInfo !== null
-//             ? 'The reference status is: ' + JSON.stringify(referenceInfo)
-//             : ''}
-//         </Text>
-//         <Text>
-//           {registrantUri !== null
-//             ? 'The registrant URI is: ' + registrantUri
-//             : ''}
-//         </Text>
-//         <Heading>Smart Directory Configuration</Heading>
-//         {/* Affichage de chaque élément stocké */}
-//         {typeof state === 'string' && JSON.parse(state).map((entry: any, index: number) => (
-//           <Box>
-//           <Text key={`config-${index}`}>{JSON.stringify(entry)}</Text>
-//           </Box>
-//         ))}
-//       </Box>
-//     ),
-//   };
-// };
 
 function buildCaip10Address(
   namespace: string,
@@ -375,13 +336,13 @@ export const onHomePage: OnHomePageHandler = async () => {
         {/* Affichage de chaque élément stocké */}
         {await Promise.all(smartDirectoryConfig.map(async (entry: { chainId: number; chainName: string; rpcUrl: string; smDirAddress: `0x${string}` }, index: number) => {
           const customClient = await createCustomClient(entry.chainId);
-          const registrantUri = await getSmDirUri(entry.smDirAddress, customClient);
-          const registrantTitle = registrantUri ? await getTitle(registrantUri) : 'No uri for this registrant';
+          const smDirUri = await getSmDirUri(entry.smDirAddress, customClient);
+          const smDirTitle = smDirUri ? await getTitle(smDirUri) : 'No uri for this smart directory';
           return (
             <Section key={`config-${index}`}>
               <Box>
-              <Text>{registrantTitle || "no registrant title"}</Text>
-              <Link href={registrantUri ? registrantUri : "no registrant URI"}>{registrantUri ? registrantUri : "no registrant URI"}</Link>
+              <Text>{smDirTitle || "no smart directory title"}</Text>
+              <Link href={smDirUri ? smDirUri : "no smart directory URI"}>{smDirUri ? smDirUri : "no smart directory URI"}</Link>
               <Address address={buildCaip10Address("eip155",entry.chainId.toString(),entry.smDirAddress)}></Address>
               <Text>{entry.rpcUrl}</Text>
               <Form name={`delete-form-${index}`}>
