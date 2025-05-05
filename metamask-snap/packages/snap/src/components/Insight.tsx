@@ -1,38 +1,51 @@
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
 import React from 'react';
-import { Bold, Button, Box, Text, Row, Address, Icon, Image, Link} from '@metamask/snaps-sdk/jsx';
+import { Bold, Button, Box, Text, Row, Address, Icon, Image, Link, Tooltip} from '@metamask/snaps-sdk/jsx';
 
 type InsightProps = {
   from: string;
   referenceInfo?: string;
   registrantUri?: string;
+  registrantTitle?: string;
+  authorityTitle?: string;
 };
 
-export const Insight: SnapComponent<InsightProps> = ({ from, referenceInfo, registrantUri }) => {
+export const Insight: SnapComponent<InsightProps> = ({ from, referenceInfo, registrantUri, registrantTitle, authorityTitle }) => {
   return (
     <Box>
       <Box alignment='center' direction='horizontal' >
         {referenceInfo?
             [
-            <Image src={checkmarkSvgContent} alt={(() => { console.log("loading checkmark icon"); return "Checkmark icon"; })()} />,
+            <Tooltip content="The operator of the destination address is known by the authority {authorityTitle}">
+                <Image src={checkmarkSvgContent} alt={(() => { console.log("loading checkmark icon"); return "Checkmark icon"; })()} />
+            </Tooltip>,
             <Text>{referenceInfo}</Text>
             ]
+
         :
         [
-            <Image src={warningSvgContent} alt={(() => { console.log("loading warning icon"); return "Warning icon"; })()} />,
+            <Tooltip content="This destination address does not belong to a referenced entity">
+            <Image src={warningSvgContent} alt={(() => { console.log("loading warning icon"); return "Warning icon"; })()} />
+                </Tooltip>,
             <Text>This destination address does not belong to a referenced entity</Text>
         ]
         }
         </Box>
+
         {referenceInfo?
             [
-            <Row label=" Author Uri">
-                {registrantUri ? <Link href={registrantUri}> {registrantUri} </Link> : <Text>No registrant URI</Text>}
-            </Row>,
-            <Row label="Reference Info">
-                <Text>{referenceInfo || "no reference"}</Text>
-            </Row>
-
+                <Row label="Author">
+                    {registrantTitle ? <Text> {registrantTitle} </Text> : <Text>No registrant title</Text>}
+                </Row>,
+                <Row label=" Author Uri">
+                    {registrantUri ? <Link href={registrantUri}> {registrantUri} </Link> : <Text>No registrant URI</Text>}
+                </Row>,
+                <Row label="Reference Info">
+                    <Text>{referenceInfo || "no reference"}</Text>
+                </Row>,
+                <Row label="Authority">
+                    {authorityTitle ? <Text> {authorityTitle} </Text> : <Text>No authority title</Text>}
+                </Row>
             ]
         :<Text> <Bold>Accept only if you are confident</Bold> </Text>}
       <Button name="transaction-type">See transaction type</Button>
