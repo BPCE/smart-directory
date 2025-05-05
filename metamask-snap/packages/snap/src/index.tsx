@@ -319,7 +319,7 @@ export const onHomePage: OnHomePageHandler = async () => {
           <Heading>adding a new SMdir :</Heading>
           <Form name="form-to-fill">
           <Field label="Smart Directory Address">
-              <Input name="smartDirectoryAddress" placeholder="Enter your SMdir address" />
+              <Input name="smartDirectoryAddress" placeholder="Enter another smart directory address" />
             </Field>
             <Text>In chain :</Text>
             <Dropdown name="chainid">
