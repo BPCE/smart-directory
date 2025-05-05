@@ -33,12 +33,20 @@ const sanitizeAddress = (address: string): `0x${string}` => {
   return address.startsWith('0x') ? address as `0x${string}` : `0x${address}` as `0x${string}`;
 };
 
+function normalizeChainId(id: string | number): number {
+  if (typeof id === 'number') return id;
+  // Remove 'eip155:' prefix if present and convert to number
+  return parseInt(id.replace(/^eip155:/, ''), 10);
+}
 
-const createCustomClient = async (chainId: number) => {
+const createCustomClient = async (chainId: any) => {
   // Récupérer la chaîne à partir de chainArray, et non pas de la config stockée
-  const chainObject = chainArray.find((chain) => chain.id === chainId);
+  const chainObject = chainArray.find((chain) => normalizeChainId(chain.id) === normalizeChainId(chainId));
   if (!chainObject) {
-    return `Chain with id ${chainId} not in smart directories`;
+    let message =  `Chain with id ${chainId} not in smart directories`;
+    console.log(message);
+    //console.log('chainArray', JSON.stringify(chainArray, null, 2));
+    return message;
   }
   try {
     return createPublicClient({
