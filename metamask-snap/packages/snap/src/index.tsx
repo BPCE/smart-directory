@@ -5,7 +5,6 @@ import { Address, Avatar, Banner, Bold, Box, Button, Card, Checkbox, Container,
           Dropdown, Field, Footer, Form, Heading, Icon, Image, Input, Italic,
           Link, Row, Section, Skeleton, Text, Value, 
           Option} from '@metamask/snaps-sdk/jsx';
-import { Chain } from 'viem';
 
 import { abi } from './abi';
 
@@ -14,26 +13,28 @@ import {
   Insight,
 } from './components';
 
-import { buildCaip10Address, getSmDirUri, getTitle, createCustomClient, SmartDirectoryConfig, SmartDirectoryConfigEntry } from './chain_utils';
+import { getSmDirUri, getTitle, createCustomClient, 
+      SmartDirectoryConfig, getChainIdFromName,
+      getChainNameFromId, getRpcUrlFromId
+    } from './chain_utils';
 
-import { polygonAmoy, holesky, sepolia } from 'viem/chains';
 
-export const chainArray = [polygonAmoy, holesky, sepolia];
-
-const smartDirectoryConfig: SmartDirectoryConfig = [
+const smartDirectoryConfigExample: SmartDirectoryConfig = [
   [
-    polygonAmoy.id,
-    polygonAmoy,
+    getChainIdFromName('polygonAmoy'),
+    "polygonAmoy",
     'https://polygon-amoy.drpc.org',
     '0x88CBa1e32db10CE775210C80A39F407EAA982E0D',
   ],
   [
-    holesky.id,
-    holesky,
+     getChainIdFromName('holesky'),
+    "holesky",
     'https://holesky.drpc.org',
     '0x6CC5Aa35253fA17064Af37cB6DD56692f7ee68F6',
   ],
 ];
+
+var smartDirectoryConfig: SmartDirectoryConfig;
 
 //vérifier si l'adresse commence par 0x
 const sanitizeAddress = (address: string): `0x${string}` => {
@@ -58,7 +59,7 @@ const getFromMemorySDConfigJSON = async () => {
   return smartDirectoryConfig;
 };
 
-const addToMemorySmartDirectoryConfig = async (newConfig: [number, Chain, string, `0x${string}`]) => {
+const addToMemorySmartDirectoryConfig = async (newConfig: [number, string, string, `0x${string}`]) => {
   const currentState = await getFromMemorySmartDirectoryConfig();
   const smartDirectoryConfig = currentState ? JSON.parse(currentState as unknown as string) : [];
   smartDirectoryConfig.push(newConfig);
@@ -190,7 +191,7 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
   const { from, to } = transaction;
   const smDirAddress = smartDirectoryConfig.find(
     (entry) => entry[0] === (chainId as unknown as number))?.[3] as `0x${string}`;
-  const customClient = await createCustomClient(chainId as unknown as number, chainArray);
+  const customClient = await createCustomClient(chainId as unknown as number);
   const smDirUri = await getSmDirUri(smDirAddress, customClient);
   const smDirTitle = smDirUri ? await getTitle(smDirUri) : 'No uri for this smart directory';
 
@@ -233,7 +234,6 @@ export const onHomePage: OnHomePageHandler = async () => {
 
 async function createHomePageUI(smartDirectoryConfig: SmartDirectoryConfig) {
   <Homepage smartDirectoryConfig={smartDirectoryConfig} 
-            chainArray={chainArray} 
   />
 }
 
@@ -258,8 +258,8 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }): Promise<vo
     if (event.value.chainid !== undefined && event.value.smartDirectoryAddress !== undefined) {
       const currentState = await addToMemorySmartDirectoryConfig([
         Number(event.value.chainid),
-        chainArray.find((chain) => chain.id === Number(event.value.chainid))!,
-        chainArray.find((chain) => chain.id === Number(event.value.chainid))!.blockExplorers.default.url,
+        getChainNameFromId(Number(event.value.chainid))!,
+        getRpcUrlFromId(Number(event.value.chainid))!,
         sanitizeAddress(event.value.smartDirectoryAddress as string),
       ]);
       console.log("adding")
