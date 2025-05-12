@@ -2,22 +2,23 @@ import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
 import React, { useEffect, useState } from 'react';
 import { Bold, Button, Box, Text, Row, Heading, Form, Field, Dropdown, Option, Section, Input, Address, Icon, Image, Link, Tooltip } from '@metamask/snaps-sdk/jsx';
 import { Chain } from 'viem';
-import { buildCaip10Address, getSmDirUri, getTitle, createCustomClient, SmartDirectoryConfig, SmartDirectoryConfigEntry } from '../chain_utils';
+import { buildCaip10Address, getSmDirUri, getTitle, 
+    createCustomClient, SmartDirectoryConfig, SmartDirectoryConfigEntry,
+    getChainIds, getChainNameFromId } from '../chain_utils';
 
 
 
 type HomepageProps = {
   smartDirectoryConfig: SmartDirectoryConfigEntry[];
-
 };
 
-export const Homepage: SnapComponent<HomepageProps> = ({ smartDirectoryConfig, chainArray }) => {
+export const Homepage: SnapComponent<HomepageProps> = ({ smartDirectoryConfig }) => {
   const [configEntries, setConfigEntries] = useState<
     {
       smDirTitle: string;
       smDirUri: string | null;
       chainId: number;
-      chain: Chain;
+      chainName: string;
       rpcUrl: string;
       smDirAddress: `0x${string}`;
     }[]
@@ -27,15 +28,15 @@ export const Homepage: SnapComponent<HomepageProps> = ({ smartDirectoryConfig, c
   useEffect(() => {
     const fetchConfigEntries = async () => {
       const entries = await Promise.all(
-        smartDirectoryConfig.map(async (entry: SmartDirectoryConfigEntry2) => {
-          const customClient = await createCustomClient(entry[0], chainArray);
+        smartDirectoryConfig.map(async (entry: SmartDirectoryConfigEntry) => {
+          const customClient = await createCustomClient(entry[0]);
           const smDirUri = await getSmDirUri(entry[3], customClient);
           const smDirTitle = smDirUri ? await getTitle(smDirUri) : 'No URI for this smart directory';
           return {
             smDirTitle,
             smDirUri,
             chainId: entry[0],
-            chain: entry[1],
+            chainName: entry[1],
             rpcUrl: entry[2],
             smDirAddress: entry[3],
           };
@@ -45,7 +46,7 @@ export const Homepage: SnapComponent<HomepageProps> = ({ smartDirectoryConfig, c
     };
 
     fetchConfigEntries();
-  }, [smartDirectoryConfig, chainArray]);
+  }, [smartDirectoryConfig]);
 
   return (
     <Box>
@@ -57,10 +58,10 @@ export const Homepage: SnapComponent<HomepageProps> = ({ smartDirectoryConfig, c
             <Input name="smartDirectoryAddress" placeholder="Enter another smart directory address" />
           </Field>
           <Text>In chain:</Text>
-          <Dropdown name="chainid">
-            {chainArray.map((chain, index) => (
-              <Option key={`chain-${index}`} value={chain.id.toString()}>
-                {chain.name}
+          <Dropdown name="chainSelection">
+            {getChainIds().map((id) => (
+              <Option key={`chain-${id}`} value={id.toString()}>
+                {getChainNameFromId(id) || `Chain ${id}`}
               </Option>
             ))}
           </Dropdown>
