@@ -7,6 +7,14 @@ import { polygonAmoy, holesky, sepolia } from 'viem/chains';
 const chainArray = [polygonAmoy, holesky, sepolia];
 
 export type SmartDirectoryConfigEntry = [number, string , string,  `0x${string}`]
+export type SmartDirectoryConfigExpandedEntry = {
+  smDirTitle: string;
+  smDirUri: string;
+  chainId: number;
+  chainName: string;
+  rpcUrl: string;
+  smDirAddress: `0x${string}`;
+};
 export type SmartDirectoryConfig = SmartDirectoryConfigEntry[];
 
 export function buildCaip10Address(
@@ -35,17 +43,21 @@ export const getSmDirUri = async (
       });
       // Si le résultat est vide, on renvoie null
       if (!contractURI || contractURI === '0x') {
-        return "null";
+        return "no URI";
       }
       return contractURI;
     } catch (error) {
       console.error("Erreur lors de la lecture de l'URI du contrat :", error);
-      return null;
+      return "error reading URI";
     }
   };
 
   //fonction pour récupérer le title d'une url donnée
 export const getTitle = async (url: string) => {
+    // Vérification de l'URL
+    if (!url || url.includes('no URI for')) {
+      return '';
+    }
     try {
       console.log('Fetching title for:', url);
       // Utilisation de l'API Microlink pour récupérer le title meme si l'url n'accepte pas les requetes CORS
@@ -69,16 +81,27 @@ export const getTitle = async (url: string) => {
   }
 
   export const getChainIdFromName = (name: string): number  => {
+    if (chainArray.length === 0) {
+      console.error('chainArray is empty');
+      console.trace();
+      return 0;
+    }
+    const names = chainArray.map((chain) => chain.name);
+    console.log('Chain names:', names);
     const chain = chainArray.find((chain) => chain.name === name);
     if (chain) {
       return chain.id;
     } else {
       console.error(`Chain with name ${name} not found`);
+      console.trace();
+      console.log('chainArray', JSON.stringify(chainArray, null, 2));
       return 0;
     }
   };
 
   export const getChainNameFromId = (id: number): string => {
+    console.log('getChainNameFromId chainArray', JSON.stringify(chainArray, null, 2));
+    console.log('getChainNameFromId id', id);
     const chain = chainArray.find((chain) => chain.id === id); 
     return chain ? chain.name : "Internal error: chain not found";
   };

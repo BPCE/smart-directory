@@ -13,28 +13,30 @@ import {
   Insight,
 } from './components';
 
-import { getSmDirUri, getTitle, createCustomClient, 
-      SmartDirectoryConfig, getChainIdFromName,
+import { getSmDirUri, getTitle, createCustomClient,
+      SmartDirectoryConfig, SmartDirectoryConfigEntry,
+      SmartDirectoryConfigExpandedEntry,
+      getChainIds, getChainIdFromName,
       getChainNameFromId, getRpcUrlFromId
     } from './chain_utils';
 
 
 const smartDirectoryConfigExample: SmartDirectoryConfig = [
   [
-    getChainIdFromName('polygonAmoy'),
-    "polygonAmoy",
+    getChainIdFromName("Polygon Amoy"),
+    "Polygon Amoy",
     'https://polygon-amoy.drpc.org',
     '0x88CBa1e32db10CE775210C80A39F407EAA982E0D',
   ],
   [
-     getChainIdFromName('holesky'),
-    "holesky",
+     getChainIdFromName("Holesky"),
+    "Holesky",
     'https://holesky.drpc.org',
     '0x6CC5Aa35253fA17064Af37cB6DD56692f7ee68F6',
   ],
 ];
 
-var smartDirectoryConfig: SmartDirectoryConfig;
+var smartDirectoryConfig: SmartDirectoryConfig = [];
 
 //vérifier si l'adresse commence par 0x
 const sanitizeAddress = (address: string): `0x${string}` => {
@@ -52,8 +54,11 @@ const getFromMemorySmartDirectoryConfig = async () => {
 
 const getFromMemorySDConfigJSON = async () => {
   const state = await getFromMemorySmartDirectoryConfig();
+  console.log('getFromMemorySDConfigJSON', state);
   if (!state) {
-    return [];
+    console.log('getFromMemorySDConfigJSON state is null returning []');
+    return smartDirectoryConfigExample;
+    //return [];
   }
   const smartDirectoryConfig = JSON.parse(state as string);
   return smartDirectoryConfig;
@@ -86,6 +91,7 @@ const removeFromMemorySmartDirectoryConfig = async (index: number) => {
   }
   const smartDirectoryConfig = JSON.parse(state.smartDirectoryConfig as string);
   smartDirectoryConfig.splice(index, 1);
+  console.log('removeFromMemorySmartDirectoryConfig', JSON.stringify(smartDirectoryConfig));
   await snap.request({
     method: 'snap_manageState',
     params: {
@@ -185,6 +191,7 @@ const getRegistrantUri = async (
 //   return { id: interfaceId };
 // };
 
+
 export const onTransaction: OnTransactionHandler = async ({ transaction, chainId }) => {
   console.log('onTransaction is active', transaction.toString());
   // Correction de la recherche de SMdirAddress
@@ -224,21 +231,52 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
   return { id: interfaceId };
 }
 
+
+function create2(){
+  console.log('create2');
+  return (
+    <Box>
+      <Heading>Smart Directory Configuration</Heading>
+      <Text> Smart Directory Configurations Found create2:</Text>
+    </Box>
+  );
+}
+
 export const onHomePage: OnHomePageHandler = async () => {
-  console.log('onHomePage is active');
   const smartDirectoryConfig = await getFromMemorySDConfigJSON();
+  console.log('onHomePage is active with smartDirectoryConfig', smartDirectoryConfig);
+  const entries = await Promise.all(
+    smartDirectoryConfig.map(async (entry: SmartDirectoryConfigEntry) => {
+      const customClient = await createCustomClient(entry[0]);
+      const smDirUri = await getSmDirUri(entry[3], customClient);
+      const smDirTitle = smDirUri ? await getTitle(smDirUri) : 'No URI for this smart directory';
+      return {
+        smDirTitle: smDirTitle,
+        smDirUri: smDirUri,
+        chainId: entry[0],
+        chainName: entry[1],
+        rpcUrl: entry[2],
+        smDirAddress: entry[3],
+      };
+    })
+  );
+  console.log('onHomePage entries', JSON.stringify(entries, null, 2));
+  console.log('createHomePageUI called');
   return {
-    content: (createHomePageUI(smartDirectoryConfig).then((ui) => ui) as unknown) as any,
+    content: createHomePageUI(entries)
   };
 };
 
-async function createHomePageUI(smartDirectoryConfig: SmartDirectoryConfig) {
-  <Homepage smartDirectoryConfig={smartDirectoryConfig} 
-  />
+function createHomePageUI(smartDirectoryExpandedEntries: SmartDirectoryConfigExpandedEntry[]) {
+  console.log('createHomePageUI with smartDirectoryConfig', smartDirectoryExpandedEntries);
+  return (
+    <Homepage smartDirectoryConfig_param={smartDirectoryExpandedEntries} />
+  );
 }
 
 export const onUserInput: OnUserInputHandler = async ({ id, event }): Promise<void> => {
   if (event.type === UserInputEventType.FormSubmitEvent) {
+    console.log('onUserInput is active', JSON.stringify(event));
     //------- Supprimer un Smart Directory
     if (event.name.startsWith('delete-form-')) {
       const index = Number(event.name.replace('delete-form-', ''));
@@ -249,45 +287,37 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }): Promise<vo
         method: 'snap_updateInterface',
         params: {
           id,
-          ui: createHomePageUI(smartDirectoryConfig).then((ui) => ui) as any,
+          ui: createHomePageUI(smartDirectoryConfig),
         },
       });
       return;
     }
     //------- Ajouter un nouveau Smart Directory
-    if (event.value.chainid !== undefined && event.value.smartDirectoryAddress !== undefined) {
-      const currentState = await addToMemorySmartDirectoryConfig([
-        Number(event.value.chainid),
-        getChainNameFromId(Number(event.value.chainid))!,
-        getRpcUrlFromId(Number(event.value.chainid))!,
-        sanitizeAddress(event.value.smartDirectoryAddress as string),
-      ]);
-      console.log("adding")
-      await snap.request({
-        method: 'snap_updateInterface',
-        params: {
-          id,
-          ui: (
-            <Box>
-              <Heading>Smart Directory Configuration</Heading>
-              {/* Affichage de chaque élément stocké */}
-              {currentState && JSON.parse(currentState as string).map((entry: any, index: number) => (
-                <Section>
-                  <Text key={`config-${index}`}>{entry.toString()}</Text>
-                </Section>
-              ))}
-            </Box>
-          ),
-        },
-      });
+    if (event.name.startsWith('form-add-smart-directory')) {
+      if (event.value.chainId !== undefined && event.value.smartDirectoryAddress !== undefined) {
+        const currentState = await addToMemorySmartDirectoryConfig([
+          Number(event.value.chainId),
+          getChainNameFromId(Number(event.value.chainId))!,
+          getRpcUrlFromId(Number(event.value.chainId))!,
+          sanitizeAddress(event.value.smartDirectoryAddress as string),
+        ]);
+        console.log("adding to memory smartDirectoryConfig", currentState);
+        const smartDirectoryConfig = await getFromMemorySDConfigJSON();
+        await snap.request({
+          method: 'snap_updateInterface',
+          params: {
+            id,
+            ui: createHomePageUI(smartDirectoryConfig),
+          },
+        });
+      }
     }
   }
 };
 
 export const onInstall: OnInstallHandler = async () => {
-  // ──────────────────────────────────────────────
-  // GESTION DU STOCKAGE : stocker smartDirectoryConfig dans l'état du Snap
-  // ──────────────────────────────────────────────
+  console.log('Initializing smartDirectoryConfig on install');
+  smartDirectoryConfig = smartDirectoryConfigExample; // Initialize with example config
   await snap.request({
     method: 'snap_manageState',
     params: {

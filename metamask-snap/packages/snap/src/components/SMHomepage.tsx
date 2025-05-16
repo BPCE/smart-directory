@@ -3,62 +3,40 @@ import React, { useEffect, useState } from 'react';
 import { Bold, Button, Box, Text, Row, Heading, Form, Field, Dropdown, Option, Section, Input, Address, Icon, Image, Link, Tooltip } from '@metamask/snaps-sdk/jsx';
 import { Chain } from 'viem';
 import { buildCaip10Address, getSmDirUri, getTitle, 
-    createCustomClient, SmartDirectoryConfig, SmartDirectoryConfigEntry,
+    createCustomClient, SmartDirectoryConfigEntry,
+    SmartDirectoryConfigExpandedEntry,
     getChainIds, getChainNameFromId } from '../chain_utils';
 
 
 
 type HomepageProps = {
-  smartDirectoryConfig: SmartDirectoryConfigEntry[];
+  smartDirectoryConfig_param: SmartDirectoryConfigExpandedEntry[];
 };
 
-export const Homepage: SnapComponent<HomepageProps> = ({ smartDirectoryConfig }) => {
-  const [configEntries, setConfigEntries] = useState<
-    {
-      smDirTitle: string;
-      smDirUri: string | null;
-      chainId: number;
-      chainName: string;
-      rpcUrl: string;
-      smDirAddress: `0x${string}`;
-    }[]
-  >([]);
+export const Homepage: SnapComponent<HomepageProps> = ({smartDirectoryConfig_param} ) => {
+  if (!Array.isArray(smartDirectoryConfig_param)) {
+    console.error('smartDirectoryConfig is not an array:', smartDirectoryConfig_param);
+    // return null; // Or handle the error appropriately
+  }
+  if (smartDirectoryConfig_param.length === 0) {
+    console.error('smartDirectoryConfig is empty or invalid:', JSON.stringify(smartDirectoryConfig_param));
+  }
 
-  // Fetch and process smart directory configuration
-  useEffect(() => {
-    const fetchConfigEntries = async () => {
-      const entries = await Promise.all(
-        smartDirectoryConfig.map(async (entry: SmartDirectoryConfigEntry) => {
-          const customClient = await createCustomClient(entry[0]);
-          const smDirUri = await getSmDirUri(entry[3], customClient);
-          const smDirTitle = smDirUri ? await getTitle(smDirUri) : 'No URI for this smart directory';
-          return {
-            smDirTitle,
-            smDirUri,
-            chainId: entry[0],
-            chainName: entry[1],
-            rpcUrl: entry[2],
-            smDirAddress: entry[3],
-          };
-        })
-      );
-      setConfigEntries(entries);
-    };
-
-    fetchConfigEntries();
-  }, [smartDirectoryConfig]);
+  console.log('Homepage component', JSON.stringify(smartDirectoryConfig_param));
 
   return (
     <Box>
-      <Heading>Smart Directory Configuration</Heading>
+      {(smartDirectoryConfig_param.length == 0 )?
+        <Heading>No Smart Directory Configurations Found Please add a configuration to get started.</Heading>:<Heading> </Heading>
+      }
       <Section>
-        <Heading>Adding a new SMdir:</Heading>
-        <Form name="form-to-fill">
+        <Heading>Add a new Smart Directory:</Heading>
+        <Form name="form-add-smart-directory">
           <Field label="Smart Directory Address">
             <Input name="smartDirectoryAddress" placeholder="Enter another smart directory address" />
           </Field>
           <Text>In chain:</Text>
-          <Dropdown name="chainSelection">
+          <Dropdown name="chainId">
             {getChainIds().map((id) => (
               <Option key={`chain-${id}`} value={id.toString()}>
                 {getChainNameFromId(id) || `Chain ${id}`}
@@ -68,23 +46,32 @@ export const Homepage: SnapComponent<HomepageProps> = ({ smartDirectoryConfig })
           <Button type="submit">Add</Button>
         </Form>
       </Section>
-      <Heading>List of the Configured Smart Directories</Heading>
-      {configEntries.map((entry, index) => (
+      {smartDirectoryConfig_param.length > 0 ?
+      <Heading>List of the Configured Smart Directories</Heading>:
+      <Heading>No Configured Smart Directories</Heading>}
+      {smartDirectoryConfig_param.map((entry, index) => (
         <Section key={`config-${index}`}>
-          <Box alignment="center" direction="horizontal">
+          <Box alignment="center">
             <Box>
               <Text>{entry.smDirTitle || 'No smart directory title'}</Text>
-              <Link href={entry.smDirUri || '#'}>{entry.smDirUri || 'No smart directory URI'}</Link>
+              {isValidUri(entry.smDirUri)?
+                <Link href={entry.smDirUri || '#'}>{entry.smDirUri || 'No smart directory URI'}</Link>
+                :
+                <Text>{entry.smDirUri || 'No smart directory URI'}</Text>
+              }
               <Address address={buildCaip10Address('eip155', entry.chainId.toString(), entry.smDirAddress)} />
               <Text>{entry.rpcUrl}</Text>
             </Box>
-            <Form name={`delete-form-${index}`}>
-              <Section key={`delete-form`}>
-                <Button type="submit">
-                  <Image src={trashCanSvgContent} alt="Delete" />
-                </Button>
-              </Section>
-            </Form>
+            <Box alignment="center" direction="horizontal" crossAlignment='center'>
+              <Form name={`delete-form-${index}`}>
+                <Section key={`delete-form`}>
+                  <Button type="submit">
+                    <Image src={trashCanSvgContent} alt="Delete" />
+                  </Button>
+                </Section>
+              </Form>
+              <Text>Delete</Text>
+            </Box>
           </Box>
         </Section>
       ))}
@@ -92,7 +79,20 @@ export const Homepage: SnapComponent<HomepageProps> = ({ smartDirectoryConfig })
   );
 };
 
-const trashCanSvgContent = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="80" height="80" viewBox="0 0 256 256" xml:space="preserve">
+function isValidUri(uri: any): boolean {
+  if (!uri || typeof uri !== 'string') {
+    return false;
+  }
+  if (uri.length === 0) {
+    return false;
+  }
+  if (uri.startsWith('http')) {
+    return true;
+  }
+  return false;
+}
+
+const trashCanSvgContent = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="30" height="30" viewBox="0 0 256 256" xml:space="preserve">
 <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
     <path d="M 64.71 90 H 25.291 c -4.693 0 -8.584 -3.67 -8.859 -8.355 l -3.928 -67.088 c -0.048 -0.825 0.246 -1.633 0.812 -2.234 c 0.567 -0.601 1.356 -0.941 2.183 -0.941 h 59.002 c 0.826 0 1.615 0.341 2.183 0.941 c 0.566 0.601 0.86 1.409 0.813 2.234 l -3.928 67.089 C 73.294 86.33 69.403 90 64.71 90 z M 18.679 17.381 l 3.743 63.913 C 22.51 82.812 23.771 84 25.291 84 H 64.71 c 1.52 0 2.779 -1.188 2.868 -2.705 l 3.742 -63.914 H 18.679 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
     <path d="M 80.696 17.381 H 9.304 c -1.657 0 -3 -1.343 -3 -3 s 1.343 -3 3 -3 h 71.393 c 1.657 0 3 1.343 3 3 S 82.354 17.381 80.696 17.381 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
