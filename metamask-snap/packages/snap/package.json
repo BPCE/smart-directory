@@ -34,6 +34,7 @@
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
     "@jest/globals": "^29.5.0",
+    "@lavamoat/webpack": "^0.10.0-beta.0",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.2.0",
     "@metamask/eslint-config-jest": "^12.1.0",
