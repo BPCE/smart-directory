@@ -100,7 +100,6 @@ export const getTitle = async (url: string) => {
   };
 
   export const getChainNameFromId = (id: number): string => {
-    console.log('getChainNameFromId chainArray', JSON.stringify(chainArray, null, 2));
     console.log('getChainNameFromId id', id);
     const chain = chainArray.find((chain) => chain.id === id); 
     return chain ? chain.name : "Internal error: chain not found";
