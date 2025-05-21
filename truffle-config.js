@@ -151,7 +151,6 @@ module.exports = {
 		  //},
           privateKeys:[
             process.env.QAXH_PVK,
-            process.env.HAMZA_PVK
           ],
           providerOrUrl: 'https://rpc-amoy.polygon.technology/'
         })
