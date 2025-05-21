@@ -142,7 +142,7 @@ const getReferenceLastStatus = async (
     console.error(error);
     referenceStatus = null;
   }
-  console.log(referenceStatus);
+  console.log("referenceStatus:", referenceStatus);
   return referenceStatus;
 };
 
@@ -214,12 +214,12 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
   const smDirUri = await getSmDirUri(smDirAddress, customClient);
   const smDirTitle = smDirUri ? await getTitle(smDirUri) : 'No uri for this smart directory';
 
-  var referenceInfo: string | null | any = null;
+  var referenceStatus: string | null | any = null;
   var registrantUri: any | null = null;
   if (typeof customClient === 'string'){
-    referenceInfo = null;
+    referenceStatus = null;
   } else { 
-    referenceInfo = await getReferenceLastStatus(
+    referenceStatus = await getReferenceLastStatus(
       smDirAddress,
       transaction.to as `0x${string}`,
       customClient,
@@ -231,10 +231,12 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
     );
   }
 
+  console.log('onTransaction referenceInfo', referenceStatus);
+  console.log('onTransaction registrantUri', registrantUri);
   const interfaceId = await snap.request({
     method: 'snap_createInterface',
     params: {
-      ui: <Insight from={from} referenceInfo={referenceInfo} registrantUri={registrantUri} 
+      ui: <Insight from={from} referenceStatus={referenceStatus} registrantUri={registrantUri} 
                    registrantTitle={await getTitle(registrantUri)} authorityTitle={smDirTitle}/>,
       context: { transaction },
     },
