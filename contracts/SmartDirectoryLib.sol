@@ -405,9 +405,7 @@ library SmartDirectoryLib {
     ) public onlyParentAndActive(self) {
 
         uint256 registrantIndex = getRegistrantIndex(self,_registrantAddress);
-
         require(registrantIndex <= self.registrants.length, "Index too large");
-        //require(registrantIndex > 0, "Registrant not found or disabled");
         require(self.adminCode == AdminCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
         require(isValidRegistrant(self, _registrantAddress), "Registrant not found or disabled");
 
