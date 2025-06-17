@@ -23,7 +23,7 @@ library SmartDirectoryLib {
         uint256 timeStamp;
     }
 
-    /// @dev Structure packing to optimize memory space and gas costs.
+    /// @dev Structure packing to optimize storage space and gas costs.
     struct Reference {
         uint96 latestStatusIndex;
         address registrantAddress;
@@ -40,7 +40,7 @@ library SmartDirectoryLib {
         address[] references;
     }
 
-    /// @dev Structure packing to optimize memory space and gas costs.
+    /// @dev Structure packing to optimize storage space and gas costs.
     /// Replaced parents[2] array with individual parent1 and parent2 fields.
     struct SmartDirectoryStorage {
         ActivationCode activationCode;
