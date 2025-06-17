@@ -2,8 +2,9 @@
 pragma solidity ^0.8.17;
 
 import {SmartDirectoryLib} from "./SmartDirectoryLib.sol";
+import {ISmartDirectory} from "./ISmartDirectory.sol";
 
-contract SmartDirectory {
+contract SmartDirectory is ISmartDirectory {
 
     string private constant VERSION = "SD 1.09";
     uint8 private constant TYPE = 42;

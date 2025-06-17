@@ -23,14 +23,15 @@ library SmartDirectoryLib {
         uint256 timeStamp;
     }
 
+    /// @dev Structure packing to optimize memory space and gas costs.
     struct Reference {
+        uint96 latestStatusIndex;
         address registrantAddress;
         address referenceAddress;
         string projectId;
         string referenceType;
         string referenceVersion;
         mapping(uint256 => ReferenceStatus) statusHistory;
-        uint256 latestStatusIndex;
     }
 
     struct Registrant {
@@ -39,11 +40,14 @@ library SmartDirectoryLib {
         address[] references;
     }
 
+    /// @dev Structure packing to optimize memory space and gas costs.
+    /// Replaced parents[2] array with individual parent1 and parent2 fields.
     struct SmartDirectoryStorage {
-        address[2] parents;
-        string contractUri;
         ActivationCode activationCode;
         AdminCode adminCode;
+        address parent1;
+        address parent2;
+        string contractUri;
         address[] registrants;
         mapping(address => Registrant) registrantData;
         mapping(address => Reference) referenceData;
@@ -106,8 +110,8 @@ library SmartDirectoryLib {
         require(_parent2 != address(0), "Parent2 must not be address 0");
         require(_parent1 != _parent2, "Parent1 and Parent2 must be different addresses");
 
-        self.parents[0] = _parent1;
-        self.parents[1] = _parent2;
+        self.parent1 = _parent1;
+        self.parent2 = _parent2;
         self.contractUri = _contractUri;
         self.activationCode = ActivationCode.pending;
         self.adminCode = AdminCode(_adminCode);
@@ -125,7 +129,7 @@ library SmartDirectoryLib {
 
     modifier onlyParent(SmartDirectoryStorage storage self) {
         require(
-            msg.sender == self.parents[0] || msg.sender == self.parents[1],
+            msg.sender == self.parent1 || msg.sender == self.parent2,
             "unauthorized access: only a parent may call this function"
         );
         _;
@@ -133,7 +137,7 @@ library SmartDirectoryLib {
 
     modifier onlyParentAndActive(SmartDirectoryStorage storage self) {
         require(
-            msg.sender == self.parents[0] || msg.sender == self.parents[1],
+            msg.sender == self.parent1 || msg.sender == self.parent2,
             "unauthorized access: only a parent may call this function"
         );
         require(
@@ -180,7 +184,7 @@ library SmartDirectoryLib {
         ref.referenceType = _referenceType;
         ref.referenceVersion = _referenceVersion;
 
-        uint256 currentIndex = ref.latestStatusIndex + 1;
+        uint96 currentIndex = ref.latestStatusIndex + 1;
         ref.statusHistory[currentIndex] = ReferenceStatus(_status, block.timestamp);
         ref.latestStatusIndex = currentIndex;
 
@@ -232,6 +236,7 @@ library SmartDirectoryLib {
         return true;
     }
 
+    /// @dev Modified function to restrict status updates to either the reference creator or parent addresses.
     function updateReferenceStatus(
         SmartDirectoryStorage storage self,
         address _referenceAddress,
@@ -242,7 +247,14 @@ library SmartDirectoryLib {
 
         Reference storage ref = self.referenceData[_referenceAddress];
 
-        uint256 newIndex = ref.latestStatusIndex + 1;
+        require(
+            msg.sender == ref.registrantAddress ||
+            msg.sender == self.parent1 ||
+            msg.sender == self.parent2,
+            "Unauthorized access: only reference owner or parents can call this function"
+        );
+
+        uint96 newIndex = ref.latestStatusIndex + 1;
         ref.statusHistory[newIndex] = ReferenceStatus(_newStatus, block.timestamp);
         ref.latestStatusIndex = newIndex;
 
@@ -395,9 +407,9 @@ library SmartDirectoryLib {
         uint256 registrantIndex = getRegistrantIndex(self,_registrantAddress);
 
         require(registrantIndex <= self.registrants.length, "Index too large");
-        require(registrantIndex > 0, "Registrant not found or disabled");
+        //require(registrantIndex > 0, "Registrant not found or disabled");
         require(self.adminCode == AdminCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
-        require(isValidRegistrant(self, _registrantAddress), "registrant not known");
+        require(isValidRegistrant(self, _registrantAddress), "Registrant not found or disabled");
 
         self.registrantData[_registrantAddress].index = 0;
         emit RegistrantDisabled(_registrantAddress, block.timestamp);
@@ -418,6 +430,9 @@ library SmartDirectoryLib {
 
         // GETTERS
 
+    /// @dev Returns the list of disabled registrant addresses.
+    /// Note: If a registrant is disabled and then re-created, they may appear multiple times in the list.
+    /// Front-end implementation should handle duplicate address filtering.
     function getDisabledRegistrants(SmartDirectoryStorage storage self) public view returns (address[] memory) {
 
         uint256 disabledCount = 0;
@@ -490,11 +505,11 @@ library SmartDirectoryLib {
     }
 
     function getParent1(SmartDirectoryStorage storage self) public view returns (address) {
-        return self.parents[0];
+        return self.parent1;
     }
 
     function getParent2(SmartDirectoryStorage storage self) public view returns (address) {
-        return self.parents[1];
+        return self.parent2;
     }
 
     function getContractUri(SmartDirectoryStorage storage self) public view returns (string memory) {
