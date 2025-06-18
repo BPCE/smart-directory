@@ -428,7 +428,6 @@ library SmartDirectoryLib {
 
         // GETTERS
 
-    /// @dev Returns the list of disabled registrant addresses.
     /// Note: If a registrant is disabled and then re-created, they may appear multiple times in the list.
     /// Front-end implementation should handle duplicate address filtering.
     function getDisabledRegistrants(SmartDirectoryStorage storage self) public view returns (address[] memory) {
