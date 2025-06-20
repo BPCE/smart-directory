@@ -2,7 +2,6 @@
 pragma solidity ^0.8.17;
 
 import {SmartDirectoryLib} from "./SmartDirectoryLib.sol";
-import {SmartDirectory} from "./SmartDirectory.sol";
 
 interface ISmartDirectory {
 
@@ -64,6 +63,8 @@ interface ISmartDirectory {
 
     function getRegistrantReferencesCount(address _registrantAddress) external view returns (uint256);
 
+    /// Note: If a registrant is disabled and then re-created, they may appear multiple times in the list.
+    /// Front-end implementation should handle duplicate address filtering.
     function getDisabledRegistrants() external view returns (address[] memory disabledRegistrantsList);
 
 //SMART DIRECTORY UTILITY FUNCTIONS
