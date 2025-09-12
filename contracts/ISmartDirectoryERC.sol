@@ -13,6 +13,7 @@ interface ISmartDirectoryERC {
         closed    // SmartDirectory is closed: no transactions or updates allowed
     }
 
+
 // NOTE: constructor has one argument: _contractURI
 function getContractUri() external view returns(string memory);
 
@@ -29,7 +30,7 @@ function getActivationCode() external view returns(ActivationCode);
 
     function disableRegistrant (address _registrantAddress) external;
 
-    function updateRegistrantUri(string memory _registrantUri) external returns (bool);
+    function updateRegistrantUri(string memory _registrantUri) external;
 
 
 //VALIDITY CHECK
@@ -43,14 +44,14 @@ function getActivationCode() external view returns(ActivationCode);
                         string memory referenceDescription, 
                         string memory _referenceType,
                         string memory _referenceVersion, 
-                        string memory _status) external returns (bool);
+                        string memory _status) external;
 
     function updateReferenceStatus(address _referenceAddress, string memory _status) external;
 
 //REFERENCE GETTERS
 
     function getReferenceStatus(address _referenceAddress) external view 
-                                returns (string memory status, uint256 timeStamp);
+                                returns (string memory status);
 
     function getReference(address _referenceAddress) external view returns (
         address registrantAddress,
@@ -58,17 +59,13 @@ function getActivationCode() external view returns(ActivationCode);
         string memory referenceDescription,
         string memory referenceType,
         string memory referenceVersion,
-        string memory status,
-        uint256 timeStamp);
+        string memory status
+        );
 
 
-    function getReferenceStatusAtIndex(address _referenceAddress, uint256 _index) external view returns
-    (string memory status, uint256 timeStamp);
-
-    function getReferenceLastStatusIndex (address _referenceAddress) external view returns(uint256 lastStatusIndex);
-
-    function getReferencesLists(address _registrantAddress) external view returns (address[] memory referenceAddresses,
-        string[] memory projectIds);
+    function getReferencesLists(address _registrantAddress) external view 
+                returns (address[] memory referenceAddresses,
+                         string[] memory referenceDescriptions);
 
     
 
@@ -80,7 +77,7 @@ function getActivationCode() external view returns(ActivationCode);
 
 //SMART DIRECTORY UTILITY FUNCTIONS
 
-    function version() external pure returns (string memory);
+    function getContractVersion() external view returns (string memory);
 
 
 
