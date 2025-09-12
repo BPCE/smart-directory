@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+import {ISmartDirectoryLib} from "./ISmartDirectoryLib.sol";
 import {SmartDirectoryLib} from "./SmartDirectoryLib.sol";
 import {ISmartDirectory} from "./ISmartDirectory.sol";
 
@@ -174,16 +175,16 @@ contract SmartDirectory is ISmartDirectory {
         return smartDirectoryStorage.getContractUri();
     }
 
-    function getAdminCode() public view returns(SmartDirectoryLib.AdminCode adminCode) {
+    function getAdminCode() public view returns(ISmartDirectoryLib.AdminCode adminCode) {
         return smartDirectoryStorage.getAdminCode();
     }
 
-    function getActivationCode() public view returns(SmartDirectoryLib.ActivationCode) {
+    function getActivationCode() public view returns(ISmartDirectoryLib.ActivationCode) {
         return smartDirectoryStorage.getActivationCode();
     }
 
     //smartDirectoryActivationCodeEoaUpdate
-    function setActivationCode(SmartDirectoryLib.ActivationCode _activationCode) public {
+    function setActivationCode(ISmartDirectoryLib.ActivationCode _activationCode) public {
         smartDirectoryStorage.setActivationCode(_activationCode);
     }
 

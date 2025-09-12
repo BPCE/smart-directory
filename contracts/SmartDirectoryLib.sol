@@ -1,22 +1,14 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+import {ISmartDirectoryLib} from "./ISmartDirectoryLib.sol";
+
 library SmartDirectoryLib {
 
     string private constant VERSION = "SDL 1.17";
 
     // DATA STRUCTURES
 
-    enum ActivationCode {
-        pending,  // SmartDirectory is not activated: no functions available
-        active,   // SmartDirectory is activated: all functions available
-        closed    // SmartDirectory is closed: no transactions or updates allowed
-    }
-
-    enum AdminCode {
-        parentsAuthorized,  // Only addresses registered by parents can create references
-        selfDeclaration     // Any addresses can create references
-    }
 
     struct ReferenceStatus {
         string status;
@@ -43,8 +35,8 @@ library SmartDirectoryLib {
     /// @dev Structure packing to optimize storage space and gas costs.
     /// Replaced parents[2] array with individual parent1 and parent2 fields.
     struct SmartDirectoryStorage {
-        ActivationCode activationCode;
-        AdminCode adminCode;
+        ISmartDirectoryLib.ActivationCode activationCode;
+        ISmartDirectoryLib.AdminCode adminCode;
         address parent1;
         address parent2;
         string contractUri;
@@ -63,7 +55,7 @@ library SmartDirectoryLib {
 
     event SmartDirectoryActivationUpdated(
         address indexed from,
-        ActivationCode activationCode,
+        ISmartDirectoryLib.ActivationCode activationCode,
         uint256 timeStamp
     );
 
@@ -113,8 +105,8 @@ library SmartDirectoryLib {
         self.parent1 = _parent1;
         self.parent2 = _parent2;
         self.contractUri = _contractUri;
-        self.activationCode = ActivationCode.pending;
-        self.adminCode = AdminCode(_adminCode);
+        self.activationCode = ISmartDirectoryLib.ActivationCode.pending;
+        self.adminCode = ISmartDirectoryLib.AdminCode(_adminCode);
         self.registrants.push(address(0)); // list of addresses start at 1
 
         emit SmartDirectoryCreated(_parent1, _parent2, block.timestamp);
@@ -123,7 +115,7 @@ library SmartDirectoryLib {
     // MODIFIERS
 
     modifier onlyActive(SmartDirectoryStorage storage self) {
-        require(self.activationCode == ActivationCode.active, "SmartDirectory is not active");
+        require(self.activationCode == ISmartDirectoryLib.ActivationCode.active, "SmartDirectory is not active");
         _;
     }
 
@@ -141,7 +133,7 @@ library SmartDirectoryLib {
             "unauthorized access: only a parent may call this function"
         );
         require(
-            self.activationCode == ActivationCode.active, "SmartDirectory is not active");
+            self.activationCode == ISmartDirectoryLib.ActivationCode.active, "SmartDirectory is not active");
         _;
     }
 
@@ -201,7 +193,7 @@ library SmartDirectoryLib {
         string memory _referenceVersion,
         string memory _status
     ) public returns (bool) {
-        if (self.adminCode == AdminCode.parentsAuthorized) {
+        if (self.adminCode == ISmartDirectoryLib.AdminCode.parentsAuthorized) {
             require(isValidRegistrant(self, msg.sender), "unknown or disabled registrant");
             createReferenceInternal(
                 self,
@@ -211,7 +203,7 @@ library SmartDirectoryLib {
                 _referenceVersion,
                 _status
             );
-        } else if (self.adminCode == AdminCode.selfDeclaration) {
+        } else if (self.adminCode == ISmartDirectoryLib.AdminCode.selfDeclaration) {
             if (!isValidRegistrant(self, msg.sender)) {
                 createRegistrantInternal(self, msg.sender);
                 createReferenceInternal(
@@ -392,7 +384,7 @@ library SmartDirectoryLib {
     ) public onlyParentAndActive(self) {
 
         require(
-            self.adminCode == AdminCode.parentsAuthorized,
+            self.adminCode == ISmartDirectoryLib.AdminCode.parentsAuthorized,
             "in selfDeclaration mode, just create a reference, registrant will be create from msg.sender");
         require(self.registrantData[_registrantAddress].index == 0, "registrant already known");
 
@@ -406,7 +398,7 @@ library SmartDirectoryLib {
 
         uint256 registrantIndex = getRegistrantIndex(self,_registrantAddress);
         require(registrantIndex <= self.registrants.length, "Index too large");
-        require(self.adminCode == AdminCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
+        require(self.adminCode == ISmartDirectoryLib.AdminCode.parentsAuthorized, "SmartDirectory must be in parentsAuthorized mode");
         require(isValidRegistrant(self, _registrantAddress), "Registrant not found or disabled");
 
         self.registrantData[_registrantAddress].index = 0;
@@ -513,22 +505,26 @@ library SmartDirectoryLib {
         return self.contractUri;
     }
 
-    function getAdminCode(SmartDirectoryStorage storage self) public view returns (AdminCode) {
+    function getAdminCode(SmartDirectoryStorage storage self) public view 
+                returns (ISmartDirectoryLib.AdminCode) {
         return self.adminCode;
     }
 
-    function getActivationCode(SmartDirectoryStorage storage self) public view returns (ActivationCode) {
+    function getActivationCode(SmartDirectoryStorage storage self) public view 
+                returns (ISmartDirectoryLib.ActivationCode) {
         return self.activationCode;
     }
 
     function setActivationCode(
         SmartDirectoryStorage storage self,
-        ActivationCode _activationCode
+        ISmartDirectoryLib.ActivationCode _activationCode
     ) external onlyParent(self) {
 
-        require(self.activationCode == ActivationCode.pending || self.activationCode == ActivationCode.active,
+        require(self.activationCode == ISmartDirectoryLib.ActivationCode.pending || 
+                self.activationCode == ISmartDirectoryLib.ActivationCode.active,
             "SmartDirectory activation code cannot be modified");
-        require(_activationCode == ActivationCode.active || _activationCode == ActivationCode.closed,
+        require(_activationCode == ISmartDirectoryLib.ActivationCode.active || 
+                _activationCode == ISmartDirectoryLib.ActivationCode.closed,
             "invalid activation value");
 
         self.activationCode = _activationCode;
