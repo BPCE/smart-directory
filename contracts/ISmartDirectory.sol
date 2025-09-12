@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {SmartDirectoryLib} from "./SmartDirectoryLib.sol";
+import {ISmartDirectoryLib} from "./ISmartDirectoryLib.sol";
 
 interface ISmartDirectory {
 
@@ -77,10 +77,10 @@ interface ISmartDirectory {
 
     function getContractUri() external view returns(string memory);
 
-    function getAdminCode() external view returns(SmartDirectoryLib.AdminCode adminCode);
+    function getAdminCode() external view returns(ISmartDirectoryLib.AdminCode adminCode);
 
-    function getActivationCode() external view returns(SmartDirectoryLib.ActivationCode);
+    function getActivationCode() external view returns(ISmartDirectoryLib.ActivationCode);
 
-    function setActivationCode(SmartDirectoryLib.ActivationCode _activationCode) external;
+    function setActivationCode(ISmartDirectoryLib.ActivationCode _activationCode) external;
 
 }
