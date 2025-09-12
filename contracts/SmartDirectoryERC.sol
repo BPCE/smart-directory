@@ -1,35 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {SmartDirectoryLib} from "./SmartDirectoryLib.sol";
-import {ISmartDirectory} from "./ISmartDirectory.sol";
+import {ISmartDirectoryERC} from "./ISmartDirectoryERC.sol";
 
-contract SmartDirectory is ISmartDirectory {
+contract SmartDirectoryERC is ISmartDirectoryERC {
 
     string private constant VERSION = "ERC 0.1";
 
-    enum ActivationCode {
-        pending,  // SmartDirectory is not activated: no functions available
-        active,   // SmartDirectory is activated: all functions available
-        closed    // SmartDirectory is closed: no transactions or updates allowed
-    }
 
-    enum AdminCode {
-        parentsAuthorized,  // Only addresses registered by parents can create references
-        selfDeclaration     // Any addresses can create references
-    }
-
-    struct ReferenceStatus {
-        string status;
-        uint256 timeStamp;
-    }
 
     /// @dev Structure packing to optimize storage space and gas costs.
     struct Reference {
         uint96 latestStatusIndex;
         address registrantAddress;
         address referenceAddress;
-        string projectId;
+        string referenceDescription;
         string referenceType;
         string referenceVersion;
         string status;
@@ -41,30 +26,65 @@ contract SmartDirectory is ISmartDirectory {
         address[] references;
     }
 
+    // EVENTS
+
+    event SmartDirectoryCreated(
+    );
+
+    event SmartDirectoryActivationUpdated(
+        address indexed from,
+        ActivationCode activationCode
+    );
+
+    event ReferenceCreated(
+        address indexed registrant,
+        address indexed referenceAddress
+    );
+
+    event ReferenceStatusUpdated(
+        address indexed registrant,
+        address indexed referenceAddress
+    );
+
+    event RegistrantCreated(
+        address indexed registrant,
+        address createdBy
+    );
+
+    event RegistrantUriUpdated(
+        address indexed registrant,
+        string indexed registrantUri
+    );
+
+    event RegistrantDisabled(
+        address indexed registrant
+    );
+
     // contract DATA
     address owner;
     string URI;
     address[] registrants;
     mapping(address => Registrant) registrantData;
     mapping(address => Reference) referenceData;
+    ActivationCode activationCode;
 
     constructor (
         string memory _contractUri)  {
         owner = msg.sender;
         URI = _contractUri;
-        activationCode = pending;
+        activationCode = ActivationCode.pending;
     }
 
     // MODIFIERS
 
-    modifier onlyActive(SmartDirectoryStorage storage self) {
-        require(activationCode == active, "SmartDirectory is not active");
+    modifier onlyActive() {
+        require(activationCode == ActivationCode.active, "SmartDirectory is not active");
         _;
     }
 
     modifier onlyOwner() {
         require(
-            msg.sender == owner
+            msg.sender == owner,
             "unauthorized access: only the owner may call this function"
         );
         _;
@@ -83,47 +103,57 @@ contract SmartDirectory is ISmartDirectory {
     }
 
 //  SmartDirectory Management
-    function getContractUri() public view returns (string memory) {
-        return contractUri;
+
+    function setActivationCode(ActivationCode _activationCode) external{
+        activationCode = _activationCode;
     }
 
-    function getContractVersion() public view returns (string memory) {
+    function getContractUri() public view returns (string memory) {
+        return URI;
+    }
+
+    function getContractVersion() public pure returns (string memory) {
         return VERSION;
     }
 
+    function getActivationCode() external view returns(ActivationCode){
+        return activationCode;
+    }
+
+    
 //  registrant Management
     function createRegistrant(address _registrantAddress) public {
 
        require(registrantData[_registrantAddress].index == 0, "registrant already known");
 
         Registrant memory registrant = Registrant("", 0, new address[](0));
-        registrant.index = self.registrants.length;
+        registrant.index = registrants.length;
 
         registrants.push(_registrantAddress);
         registrantData[_registrantAddress] = registrant;
-        emit RegistrantCreated(_registrantAddress, msg.sender,block.timestamp);
+        emit RegistrantCreated(_registrantAddress, msg.sender);
     }
 
     function disableRegistrant(
         address _registrantAddress
-    ) public onlyParentAndActive(self) {
+    ) public onlyOwner() onlyActive(){
 
-        uint256 registrantIndex = getRegistrantIndex(self,_registrantAddress);
-        require(registrantIndex <= self.registrants.length, "Inconsistent: index too large");
-        require(isValidRegistrant(self, _registrantAddress), "Registrant not found or disabled");
+        uint256 registrantIndex = getRegistrantIndex(_registrantAddress);
+        require(registrantIndex <= registrants.length, "Inconsistent: index too large");
+        require(isValidRegistrant(_registrantAddress), "Registrant not found or disabled");
 
-        self.registrantData[_registrantAddress].index = 0;
-        emit RegistrantDisabled(_registrantAddress, block.timestamp);
+        registrantData[_registrantAddress].index = 0;
+        emit RegistrantDisabled(_registrantAddress);
     }
 
     function updateRegistrantUri(
         string memory _registrantUri
-    ) public onlyActive(self) {
+    ) public onlyActive() {
 
-        require(isValidRegistrant(self, msg.sender), "unknown registrant");
+        require(isValidRegistrant(msg.sender), "unknown registrant");
 
         registrantData[msg.sender].uri = _registrantUri;
-        emit RegistrantUriUpdated(msg.sender, _registrantUri, block.timestamp);
+        emit RegistrantUriUpdated(msg.sender, _registrantUri);
     }
 
     function getRegistrantUri(
@@ -135,6 +165,34 @@ contract SmartDirectory is ISmartDirectory {
         return registrantData[_registrantAddress].uri;
     }
 
+    function getRegistrantIndex(
+        address _registrantAddress
+    ) internal view returns(uint256) {
+        return registrantData[_registrantAddress].index;
+    }
+
+    function getDisabledRegistrants() external view 
+                returns (address[] memory disabledRegistrantsList){
+        uint256 disabledCount = 0;
+        for (uint256 i = 1; i < registrants.length; i++) {
+            if (registrantData[registrants[i]].index == 0) {
+                disabledCount++;
+            }
+        }
+
+        address[] memory disabledRegistrants = new address[](disabledCount);
+        uint256 index = 0;
+
+        for (uint256 i = 1; i < registrants.length; i++) {
+            if (registrantData[registrants[i]].index == 0) {
+                disabledRegistrants[index] = registrants[i];
+                index++;
+            }
+        }
+
+        return disabledRegistrants;
+    }
+
 // Reference Management
 
     function createReference(
@@ -143,7 +201,7 @@ contract SmartDirectory is ISmartDirectory {
         string memory _referenceType,
         string memory _referenceVersion,
         string memory _status
-    )  onlyActive(self) {
+    )  public onlyActive() {
         require(_referenceAddress != address(0x0), "reference must not be address 0");
         require(!isDeclaredReference(_referenceAddress), "reference already known");
 
@@ -151,20 +209,19 @@ contract SmartDirectory is ISmartDirectory {
 
         ref.registrantAddress = msg.sender;
         ref.referenceAddress = _referenceAddress;
-        ref.projectId = _referenceDescription;
+        ref.referenceDescription = _referenceDescription;
         ref.referenceType = _referenceType;
         ref.referenceVersion = _referenceVersion;
 
-        uint96 currentIndex = ref.latestStatusIndex + 1;
         ref.status = _status;
 
-        emit ReferenceCreated(msg.sender, _referenceAddress, block.timestamp);
+        emit ReferenceCreated(msg.sender, _referenceAddress);
     }
 
     function updateReferenceStatus(
         address _referenceAddress,
         string memory _newStatus
-    ) public onlyActive(self) {
+    ) public onlyActive() {
         require(isValidRegistrant(msg.sender), "unknown or disabled registrant");
         require(isDeclaredReference(_referenceAddress), "unknown reference");
 
@@ -172,13 +229,13 @@ contract SmartDirectory is ISmartDirectory {
 
         require(
             msg.sender == ref.registrantAddress ||
-            msg.sender == owner 
+            msg.sender == owner, 
             "Unauthorized access: only reference owner or contract owner can call this function"
         );
 
         ref.status = _newStatus;
 
-        emit ReferenceStatusUpdated(msg.sender, _referenceAddress, block.timestamp);
+        emit ReferenceStatusUpdated(msg.sender, _referenceAddress);
     }
 
 
@@ -186,9 +243,8 @@ contract SmartDirectory is ISmartDirectory {
         address _referenceAddress
     ) public view returns (
         address registrantAddress,
-        uint256 registrantIndex,
         address referenceAddress,
-        string memory projectDescription,
+        string memory referenceDescription,
         string memory referenceType,
         string memory referenceVersion,
         string memory status) {
@@ -197,13 +253,10 @@ contract SmartDirectory is ISmartDirectory {
 
         require(ref.referenceAddress != address(0), "unknown reference");
 
-        uint256 index = registrantData[ref.registrantAddress].index;
-
-
         return (
             ref.registrantAddress,
             ref.referenceAddress,
-            ref.projectDescription,
+            ref.referenceDescription,
             ref.referenceType,
             ref.referenceVersion,
             ref.status
@@ -218,12 +271,38 @@ contract SmartDirectory is ISmartDirectory {
 
         Reference storage ref = referenceData[_referenceAddress];
 
-        require(isDeclaredReference(self, _referenceAddress), "unknown reference");
+        require(isDeclaredReference(_referenceAddress), "unknown reference");
 
         return (ref.status);
     }
 
+    function getReferencesLists(
+        address _registrantAddress
+    ) public view returns(address[] memory referenceAddressesList, 
+                          string[] memory referenceDescriptionsList) {
 
+        require(isValidRegistrant(_registrantAddress), "Unknown or disabled registrant");
+
+        address[] storage references = registrantData[_registrantAddress].references;
+        uint256 count = references.length;
+
+        address[] memory referenceAddressesResult = new address[](count);
+        string[] memory referenceDescriptionsResult = new string[](count);
+
+        for (uint256 i = 0; i < count; i++) {
+            address referenceAddress = references[i];
+
+            require(
+                referenceData[referenceAddress].registrantAddress == _registrantAddress,
+                "Reference does not belong to the given registrant"
+            );
+
+            referenceAddressesResult[i] = referenceAddress;
+            referenceDescriptionsResult[i] = referenceData[referenceAddress].referenceDescription;
+        }
+
+        return (referenceAddressesResult, referenceDescriptionsResult);
+    }
 
 
 }
