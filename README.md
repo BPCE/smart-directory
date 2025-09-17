@@ -2,6 +2,8 @@
 ## SmartDirectory
 [Documentation complète](SmartDirectory_Specifications.md)
 
+Note: an ERC is being written from this work, you can read it and give feedback to the authors [ERC draft](https://github.com/joseluu/ERCs/blob/master/ERCS/draft-erc-smart-directory.md)
+
 Confronté à la prolifération des adresses, l'utilisateur à besoin de s'assurer de leur authenticité lorsqu'il s'apprete à effectuer une transaction d'importance qu'elle soit monétaire ou de confiance.
 
 Nous proposons une structuration de l'offre: le "smart directory" est une liste blanche administrée.
