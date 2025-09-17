@@ -2,7 +2,7 @@
 ## SmartDirectory
 
 
-Note: an ERC is being written from this work, you can read it and give feedback to the authors [draft ERC on a directory of smart contracts](https://github.com/joseluu/ERCs/blob/master/ERCS/draft-erc-smart-directory.md)
+Note: an ERC is being written from this work, please give feedback to the authors [draft ERC on a directory of smart contracts](https://github.com/joseluu/ERCs/blob/master/ERCS/draft-erc-smart-directory.md)
 
 [Documentation complète](SmartDirectory_Specifications.md)
 
