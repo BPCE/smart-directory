@@ -13,6 +13,12 @@ contract SmartDirectory is ISmartDirectory {
     using SmartDirectoryLib for SmartDirectoryLib.SmartDirectoryStorage;
     SmartDirectoryLib.SmartDirectoryStorage smartDirectoryStorage;
 
+    event SmartDirectoryActivationUpdated(address indexed from, ISmartDirectoryLib.ActivationCode activationCode, uint256 timeStamp);
+    event RegistrantUriUpdated(address indexed registrant, string indexed registrantUri, uint256 timeStamp);
+    event RegistrantDisabled(address indexed registrant, uint256 timeStamp);
+    event ReferenceCreated(address indexed registrant, address indexed referenceAddress, uint256 timeStamp);
+    event ReferenceStatusUpdated(address indexed registrant, address indexed referenceAddress, uint256 timeStamp);
+
     //CONSTRUCTOR to initialize the SmartDirectory
 
     constructor (
