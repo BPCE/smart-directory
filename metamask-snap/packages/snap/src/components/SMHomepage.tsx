@@ -27,7 +27,7 @@ export const Homepage: SnapComponent<HomepageProps> = ({smartDirectoryConfig_par
   return (
     <Box>
       {(smartDirectoryConfig_param.length == 0 )?
-        <Heading>No Smart Directory Configurations Found Please add a configuration to get started.</Heading>:<Heading> </Heading>
+        <Heading>No Smart Directory Configurations Found. Please add a configuration to get started.</Heading>:<Heading> </Heading>
       }
       <Section>
         <Heading>Add a new Smart Directory:</Heading>
